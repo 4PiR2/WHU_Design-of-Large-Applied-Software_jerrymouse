@@ -1,8 +1,8 @@
 package net.happygod.jerry.server;
 
+//import java.lang.reflect.*;
 import java.net.*;
 import java.io.*;
-import java.util.*;
 
 class Service implements Runnable
 {
@@ -34,16 +34,18 @@ class Service implements Runnable
     }
     private void handleRequests() throws IOException
     {
-        HTTPRequestParser httpRequestParser = new HTTPRequestParser(is);
+        Request request = new Request(is);
         // Only support GET or POST
-        String requestMethod = httpRequestParser.getRequestMethod();
-        if (!(requestMethod.equals("GET") || requestMethod.equals("POST"))) {
+        String requestMethod = request.getMethod();
+        if (!(requestMethod.equals("GET") || requestMethod.equals("POST")))
+        {
             invalidRequestError();
             return;
         }
 
-        String fileName = httpRequestParser.getFileName();
+        String fileName = request.getFileName();
         String filePath = config.webroot + fileName;
+        
         File file = new File(filePath);
 
         // Check for file permission or not found error.
@@ -58,51 +60,54 @@ class Service implements Runnable
         }
 
         // Assume everything is OK then.  Send back a reply.
-        dos.writeBytes("HTTP/1.1 200 OK\r\n");
-
-        String queryString = httpRequestParser.getQueryString();
-
-        if (fileName.endsWith("pl"))
+        if(fileName.endsWith(".class"))
         {
-            Process p;
-            String env = "REQUEST_METHOD=" + requestMethod + " ";
-
-            if (requestMethod.equals("POST")) {
-                env += "CONTENT_TYPE=" + httpRequestParser.getContentType() + " " +
-                        "CONTENT_LENGTH=" + Integer.toString(httpRequestParser.getContentLength()) + " ";
-            } else {
-                env += "QUERY_STRING=" + queryString + " ";
-            }
-
-            p = Runtime.getRuntime().exec("/usr/bin/env " + env +
-                    "/usr/bin/perl " + filePath);
-
-            if (requestMethod.equals("POST"))
+            int index=fileName.lastIndexOf("/");
+            String classPath=config.webroot+fileName.substring(0,index);
+            String className=fileName.substring(index+1,fileName.length()-6);
+            dos.writeBytes("HTTP/1.1 200 OK\r\n\r\n");
+            //Load servlet
+            Response response=new Response(dos);
+            ServletLoader servletLoader=new ServletLoader(classPath);
+            try
             {
-                // Pass form data into Perl process
-                DataOutputStream o = new DataOutputStream(p.getOutputStream());
-                o.writeBytes(httpRequestParser.getFormData() + "\r\n");
-                o.close();
+                Class c=servletLoader.loadClass(className);
+                if(c!=null)
+                {
+                    Servlet servlet=(Servlet)c.newInstance();
+                    //Method method=c.getDeclaredMethod(doMethod,Request.class,Response.class);
+                    //method.invoke(servlet,request,response);
+                    if(requestMethod.equals("GET"))
+                    {
+                        servlet.doGet(request,response);
+                    }
+                    else
+                    {
+                        servlet.doPost(request,response);
+                    }
+                }
             }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            // Write response content
-            String l;
-            while ((l = br.readLine()) != null) {
-                dos.writeBytes(l + "\r\n");
+            catch(Exception e)
+            {
+                e.printStackTrace();
             }
-            dos.writeBytes("\r\n");
+        }
+        else if(fileName.endsWith(".redirect"))
+        {
+            BufferedReader redirectReader=new BufferedReader(new FileReader(file));
+            dos.writeBytes("HTTP/1.1 "+redirectReader.readLine()+"\r\n");
+            dos.writeBytes("Location: "+redirectReader.readLine()+"\r\n");
         }
         else
         {
+            dos.writeBytes("HTTP/1.1 200 OK\r\n");
             staticFileRequests(filePath);
         }
-
         dos.flush();
     }
 
-    private void staticFileRequests(String filePath) {
+    private void staticFileRequests(String filePath)
+    {
         try
         {
             if (filePath.endsWith(".html")) {
@@ -161,119 +166,5 @@ class Service implements Runnable
         dos.writeBytes("HTTP/1.1 403 Forbidden\r\n");
         dos.writeBytes("Content-length: " + errorMessage.length() + "\r\n\r\n");
         dos.writeBytes(errorMessage);
-    }
-}
-
-class HTTPRequestParser
-{
-    private String requestMethod, fileName, queryString, formData;
-    private Hashtable<String, String> headers;
-    private int[] ver;
-
-    HTTPRequestParser(InputStream is)
-    {
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        requestMethod = "";
-        fileName = "";
-        queryString = "";
-        formData = "";
-        headers = new Hashtable<String, String>();
-        try {
-            // Wait for HTTP request from the connection
-            String line = br.readLine();
-
-            // Bail out if line is null. In case some client tries to be
-            // funny and close immediately after connection.  (I am
-            // looking at you, Chrome!)
-            if (line == null) {
-                return;
-            }
-
-            // Log client's requests.
-            System.out.println("Request: " + line);
-
-            String tokens[] = line.split(" ");
-
-            requestMethod = tokens[0];
-
-            if (tokens[1].indexOf("?") != -1)
-            {
-                String urlComponents[] = tokens[1].split("\\?");
-                fileName = urlComponents[0];
-                if (urlComponents.length > 0)
-                {
-                    queryString = urlComponents[1];
-                }
-            }
-            else
-            {
-                fileName = tokens[1];
-            }
-
-            // Read and parse the rest of the HTTP headers
-            int idx;
-            line = br.readLine();
-            while (!line.equals(""))
-            {
-                idx = line.indexOf(":");
-                if (idx < 0)
-                {
-                    headers = null;
-                    break;
-                }
-                else
-                {
-                    headers.put(line.substring(0, idx).toLowerCase(),
-                            line.substring(idx+1).trim());
-                }
-                line = br.readLine();
-            }
-
-            // read form data if POST
-            if (requestMethod.equals("POST"))
-            {
-                int contentLength = getContentLength();
-                final char[] data = new char[contentLength];
-                for (int i = 0; i < contentLength; i++)
-                {
-                    data[i] = (char)br.read();
-                }
-                formData = new String(data);
-            }
-        }
-        catch(IOException e)
-        {
-            System.err.println("Unable to read/write: "  + e.getMessage());
-        }
-    }
-
-    public String getRequestMethod()
-    {
-        return requestMethod;
-    }
-
-    public String getFileName()
-    {
-        return fileName;
-    }
-
-    public String getQueryString()
-    {
-        return queryString;
-    }
-
-    public String getContentType()
-    {
-        return headers.get("content-type");
-    }
-
-    public int getContentLength()
-    {
-        return Integer.parseInt(headers.get("content-length"));
-    }
-
-    public String getFormData()
-    {
-        return formData;
     }
 }
