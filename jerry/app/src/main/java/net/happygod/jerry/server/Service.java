@@ -1,8 +1,8 @@
 package net.happygod.jerry.server;
 
-//import java.lang.reflect.*;
 import java.net.*;
 import java.io.*;
+import dalvik.system.DexClassLoader;
 
 class Service implements Runnable
 {
@@ -35,6 +35,7 @@ class Service implements Runnable
     private void handleRequests() throws IOException
     {
         Request request = new Request(is);
+        Response response=new Response(dos);
         // Only support GET or POST
         String requestMethod = request.getMethod();
         if (!(requestMethod.equals("GET") || requestMethod.equals("POST")))
@@ -45,7 +46,6 @@ class Service implements Runnable
 
         String fileName = request.getFileName();
         String filePath = config.webroot + fileName;
-        
         File file = new File(filePath);
 
         // Check for file permission or not found error.
@@ -60,37 +60,23 @@ class Service implements Runnable
         }
 
         // Assume everything is OK then.  Send back a reply.
-        if(fileName.endsWith(".class"))
+        if(fileName.endsWith(".jar")||fileName.endsWith(".dex"))
         {
-            int index=fileName.lastIndexOf("/");
-            String classPath=config.webroot+fileName.substring(0,index);
-            String className=fileName.substring(index+1,fileName.length()-6);
-            dos.writeBytes("HTTP/1.1 200 OK\r\n\r\n");
             //Load servlet
-            Response response=new Response(dos);
-            ServletLoader servletLoader=new ServletLoader(classPath);
-            try
+            Servlet servlet=servletLoader(filePath);
+            if(servlet!=null)
             {
-                Class c=servletLoader.loadClass(className);
-                if(c!=null)
+                dos.writeBytes("HTTP/1.1 200 OK\r\n\r\n");
+                if(requestMethod.equals("GET"))
                 {
-                    Servlet servlet=(Servlet)c.newInstance();
-                    //Method method=c.getDeclaredMethod(doMethod,Request.class,Response.class);
-                    //method.invoke(servlet,request,response);
-                    if(requestMethod.equals("GET"))
-                    {
-                        servlet.doGet(request,response);
-                    }
-                    else
-                    {
-                        servlet.doPost(request,response);
-                    }
+                    servlet.doGet(request,response);
+                }
+                else
+                {
+                    servlet.doPost(request,response);
                 }
             }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
+
         }
         else if(fileName.endsWith(".redirect"))
         {
@@ -142,6 +128,32 @@ class Service implements Runnable
         {
             System.err.println("Unable to read/write: "  + e.getMessage());
         }
+    }
+
+    private Servlet servletLoader(String filePath)
+    {
+        int index=filePath.lastIndexOf("/");
+        String classPath=filePath.substring(0,index);
+        String className=filePath.substring(index+1,filePath.lastIndexOf("."));
+        //Load servlet
+        DexClassLoader classLoader = new DexClassLoader(filePath, config.cacheDir, null, getClass().getClassLoader());
+        try
+        {
+            Class<?> c = classLoader.loadClass(className);
+            if(c!=null)
+            {
+                Object servlet=c.newInstance();
+                if(servlet instanceof Servlet)
+                {
+                    return (Servlet)servlet;
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void invalidRequestError() throws IOException
