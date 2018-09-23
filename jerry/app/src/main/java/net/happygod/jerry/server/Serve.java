@@ -1,7 +1,8 @@
 package net.happygod.jerry.server;
 
-import java.net.*;
 import java.io.*;
+import java.net.*;
+
 import dalvik.system.DexClassLoader;
 
 class Serve implements Runnable
@@ -20,8 +21,8 @@ class Serve implements Runnable
     {
         try
         {
-            Request request=new Request(s.getInputStream());
-            Response response=new Response(s.getOutputStream());
+            Request request=new Request(s);
+            Response response=new Response(s);
 
             //dos.writeBytes("HTTP/1.1 200 OK\r\n\r\n\r\n");dos.flush();if(true)return;
             PrintWriter out = response.getWriter();
@@ -53,6 +54,7 @@ class Serve implements Runnable
                     out.println("Server: Jerrymouse");
                     out.println();
                     out.flush();
+                    servlet.init();
                     if (requestMethod.equals("GET")) {
                         servlet.doGet(request, response);
                     } else {
@@ -81,37 +83,30 @@ class Serve implements Runnable
         }
     }
 
-    private void staticFileRequests(DataOutputStream dos, String filePath)
+    private void staticFileRequests(DataOutputStream dos, String filePath) throws IOException
     {
         String extension=filePath.substring(filePath.lastIndexOf(".")+1),mime;
-        try
+        switch (extension)
         {
-            switch (extension)
-            {
-                case "html": mime="text/html"; break;
-                case "jpg": mime="image/jpeg"; break;
-                case "gif": mime="image/gif"; break;
-                case "css": mime="text/css"; break;
-                default: mime="application/octet-stream";
-                //TODO add file types
-            }
-            dos.writeBytes("Content-type: "+mime+"\r\n\r\n");
-            // Read the content 1KB at a time.
-            File file = new File(filePath);
-            byte[] buffer = new byte[(int) file.length()];
-            BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file));
-            int size = bis.read(buffer);
-            while (size > 0)
-            {
-                dos.write(buffer, 0, size);
-                size = bis.read(buffer);
-            }
-            dos.flush();
+            case "html": mime="text/html"; break;
+            case "jpg": mime="image/jpeg"; break;
+            case "gif": mime="image/gif"; break;
+            case "css": mime="text/css"; break;
+            default: mime="application/octet-stream";
+            //TODO add file types
         }
-        catch (IOException e)
+        dos.writeBytes("Content-type: "+mime+"\r\n\r\n");
+        // Read the content 1KB at a time.
+        File file = new File(filePath);
+        byte[] buffer = new byte[(int) file.length()];
+        BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file));
+        int size = bis.read(buffer);
+        while (size > 0)
         {
-            System.out.println("Unable to read/write: " + e.getMessage());
+            dos.write(buffer, 0, size);
+            size = bis.read(buffer);
         }
+        dos.flush();
     }
 
     private Servlet servletLoader(String filePath)

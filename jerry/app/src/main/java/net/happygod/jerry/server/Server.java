@@ -1,7 +1,7 @@
 package net.happygod.jerry.server;
 
-import java.net.*;
 import java.io.*;
+import java.net.*;
 
 public class Server implements Runnable
 {

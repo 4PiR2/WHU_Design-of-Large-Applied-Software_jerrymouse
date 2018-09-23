@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
         Intent intent = new Intent(this,WebService.class);
-        //启动service服务
+        //start service
         startService(intent);
     }
 
@@ -23,6 +23,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onDestroy();
         //Intent name = new Intent(this,WebService.class);
-        //stopService(name);//name表示停止哪一个服务
+        //stopService(name);
     }
 }

@@ -1,15 +1,16 @@
 package net.happygod.jerry.server;
 
 import java.io.*;
+import java.net.*;
 
 public class Response
 {
 	private final PrintWriter pw;
 	private final DataOutputStream dos;
-	Response(OutputStream os)
+	Response(Socket s) throws IOException
 	{
-		pw=new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
-		dos=new DataOutputStream(new BufferedOutputStream(os));
+		pw=new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())));
+		dos=new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
 	}
 	public void setContentType(String contentType)
 	{

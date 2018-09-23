@@ -5,22 +5,19 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.*;
 import android.support.v4.app.NotificationCompat;
-
 import net.happygod.jerry.server.*;
 
 public class WebService extends Service
 {
-    private Server server1,server2;
-    //Service启动时调用
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
-        System.out.println("OnCreate 服务启动时调用");
         Config config1,config2;
         config1=new Config(8080,"/storage/emulated/0/web",getCacheDir().getPath());
         config2=new Config(8000,"/storage/emulated/0/AAA",getCacheDir().getPath());
-        server1=new Server(config1);
-        server2=new Server(config2);
+        new Server(config1);
+        new Server(config2);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("fore_service", "foreground service", NotificationManager.IMPORTANCE_HIGH);
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -41,7 +38,6 @@ public class WebService extends Service
     @Override
     public int onStartCommand(Intent intent,int flags,int startId)
     {
-        System.out.println("服务onStart");
         //flags=START_STICKY;
         return super.onStartCommand(intent,flags,startId);
     }
@@ -50,12 +46,9 @@ public class WebService extends Service
     {
         return null;
     }
-    //服务被关闭时调用
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
-        //server1.stop();
-        //server2.stop();
-        System.out.println("onDestroy 服务关闭时");
     }
 }
