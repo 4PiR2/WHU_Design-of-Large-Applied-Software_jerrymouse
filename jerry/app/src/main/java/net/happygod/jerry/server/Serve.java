@@ -4,14 +4,14 @@ import java.net.*;
 import java.io.*;
 import dalvik.system.DexClassLoader;
 
-class Service implements Runnable
+class Serve implements Runnable
 {
     private Config config;
     private Socket s;
     private InputStream is;
     //private OutputStream os;
     private DataOutputStream dos;
-    Service(Socket s, Config config)
+    Serve(Socket s, Config config)
     {
         this.config=config;
         this.s=s;

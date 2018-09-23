@@ -42,7 +42,7 @@ public class Server implements Runnable
 				continue;
 			}
 			System.out.println("Connection accepted.");
-			new Service(s,config);
+			new Serve(s,config);
 		}
 	}
 }
