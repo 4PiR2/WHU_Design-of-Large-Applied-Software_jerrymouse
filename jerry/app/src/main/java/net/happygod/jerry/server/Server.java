@@ -6,7 +6,7 @@ import java.io.*;
 public class Server implements Runnable
 {
     private boolean running;
-    private Config config;
+    private final Config config;
     private ServerSocket serverSocket;
     public Server(Config config)
     {

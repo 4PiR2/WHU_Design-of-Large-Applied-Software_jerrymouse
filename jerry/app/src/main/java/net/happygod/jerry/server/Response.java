@@ -4,18 +4,24 @@ import java.io.*;
 
 public class Response
 {
-	private PrintWriter out;
-	Response(DataOutputStream dos)
+	private final PrintWriter pw;
+	private final DataOutputStream dos;
+	Response(OutputStream os)
 	{
-		out=new PrintWriter(dos);
+		pw=new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
+		dos=new DataOutputStream(new BufferedOutputStream(os));
 	}
 	public void setContentType(String contentType)
 	{
-		out.println("Content-Type: "+contentType);
+		pw.println("Content-Type: "+contentType);
 		//TODO set charset
 	}
 	public PrintWriter getWriter()
 	{
-		return out;
+		return pw;
+	}
+	public DataOutputStream getStream()
+	{
+		return dos;
 	}
 }
