@@ -6,12 +6,11 @@ import java.util.*;
 
 public class Request
 {
-	private String requestMethod="", fileName="";
+	private String requestMethod="", URI="", queryString="";
 	private Hashtable<String, String> headers= new Hashtable<>(),formData=new Hashtable<>();
 	Request(Socket s) throws IOException
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		String queryString="";
 		// Wait for HTTP request from the connection
 		String line = br.readLine();
 		// Bail out if line is null. In case some client tries to be
@@ -28,7 +27,7 @@ public class Request
 		if (tokens[1].contains("?"))
 		{
 			String urlComponents[] = tokens[1].split("\\?");
-			fileName = urlComponents[0];
+			URI = urlComponents[0];
 			if (urlComponents.length > 1)
 			{
 				queryString = urlComponents[1];
@@ -37,7 +36,7 @@ public class Request
 		}
 		else
 		{
-			fileName = tokens[1];
+			URI = tokens[1];
 		}
 		// Read and parse the rest of the HTTP headers
 		int idx;
@@ -67,6 +66,7 @@ public class Request
 			}
 			queryString = new String(data);
 			//TODO charset
+			//TODO file
 		}
 		String queries[] = queryString.split("&");
 		for(String query : queries)
@@ -87,9 +87,9 @@ public class Request
 	{
 		return requestMethod;
 	}
-	public String getFileName()
+	public String getRequestURI()
 	{
-		return fileName;
+		return URI;
 	}
 	public String getContentType()
 	{
@@ -103,8 +103,20 @@ public class Request
 	{
 		return formData.get(name);
 	}
-	public Enumeration<String> ParameterNames()
+	public Enumeration<String> getParameterNames()
 	{
 		return formData.keys();
+	}
+	public String getHeader(String name)
+	{
+		return headers.get(name);
+	}
+	public Enumeration<String> getHeaderNames()
+	{
+		return headers.keys();
+	}
+	public String getQueryString()
+	{
+		return queryString;
 	}
 }

@@ -32,21 +32,21 @@ class Serve implements Runnable
                 error(out, 400, "");
                 return;
             }
-            String fileName = request.getFileName();
-            String filePath = config.webroot + fileName;
+            String URI = request.getRequestURI();
+            String filePath = config.webroot + URI;
             File file = new File(filePath);
             // Check for file permission or not found error.
             if (!file.exists()) {
-                error(out, 404, fileName);
+                error(out, 404, URI);
                 return;
             }
-            if (!file.canRead()) {
-                error(out, 403, fileName);
+            if (file.isDirectory()||!file.canRead()) {
+                error(out, 403, URI);
                 return;
             }
 
             // Assume everything is OK then.  Send back a reply.
-            if (fileName.endsWith(".dex") || fileName.endsWith(".jar") || fileName.endsWith(".apk")) {
+            if (URI.endsWith(".dex") || URI.endsWith(".jar") || URI.endsWith(".apk")) {
                 //Load servlet
                 Servlet servlet = servletLoader(filePath);
                 if (servlet != null) {
@@ -54,14 +54,19 @@ class Serve implements Runnable
                     out.println("Server: Jerrymouse");
                     out.println();
                     out.flush();
-                    servlet.init();
-                    if (requestMethod.equals("GET")) {
-                        servlet.doGet(request, response);
-                    } else {
-                        servlet.doPost(request, response);
+                    try {
+                        servlet.init();
+                        if (requestMethod.equals("GET")) {
+                            servlet.doGet(request, response);
+                        } else {
+                            servlet.doPost(request, response);
+                        }
+                    }catch (Exception e)
+                    {
+                        e.printStackTrace();
                     }
                 }
-            } else if (fileName.endsWith(".redirect")) {
+            } else if (URI.endsWith(".redirect")) {
                 BufferedReader redirectReader = new BufferedReader(new FileReader(file));
                 out.println("HTTP/1.1 " + redirectReader.readLine());
                 out.println("Server: Jerrymouse");
@@ -131,7 +136,7 @@ class Serve implements Runnable
         return null;
     }
 
-    private void error(PrintWriter out, int code, String fileName)
+    private void error(PrintWriter out, int code, String URI)
     {
         String type = "", message = "";
         switch (code) {
@@ -141,11 +146,12 @@ class Serve implements Runnable
                 break;
             case 403:
                 type = "Forbidden";
-                message = "You have no permission to access " + fileName + " on this server.";
+                message = "You have no permission to access " + URI + " on this server.";
+                //TODO directory?
                 break;
             case 404:
                 type = "Not Found";
-                message = "Unable to find " + fileName + " on this server.";
+                message = "Unable to find " + URI + " on this server.";
                 break;
             default:
         }
