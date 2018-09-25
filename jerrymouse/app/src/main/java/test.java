@@ -17,7 +17,7 @@ public class test extends Servlet
 		PrintWriter out = response.getWriter();
 		out.println("<html>");
 		out.println("<head>");
-		out.println("<title>Modern Servlet</title>");
+		out.println("<title>ServletTest</title>");
 		out.println("</head>");
 		out.println("<body>");
 
