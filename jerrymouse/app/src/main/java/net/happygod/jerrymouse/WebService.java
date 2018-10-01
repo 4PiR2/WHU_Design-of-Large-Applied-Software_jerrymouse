@@ -5,19 +5,17 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.*;
 import android.support.v4.app.NotificationCompat;
+import java.util.*;
 import net.happygod.jerrymouse.server.*;
 
 public class WebService extends Service
 {
+    private static Set<Config> configs=new HashSet<>();
+    private static boolean running=false;
     @Override
     public void onCreate()
     {
         super.onCreate();
-        Config config1,config2;
-        config1=new Config(8080,"/storage/emulated/0/web",getCacheDir().getPath());
-        config2=new Config(8000,"/storage/emulated/0/AAA",getCacheDir().getPath());
-        new Server(config1);
-        new Server(config2);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("fore_service", "foreground service", NotificationManager.IMPORTANCE_HIGH);
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -33,6 +31,7 @@ public class WebService extends Service
                     .setContentIntent(pendingIntent)
                     .build();
             startForeground(1, notification);
+	        running=true;
         }
     }
     @Override
@@ -49,6 +48,26 @@ public class WebService extends Service
     @Override
     public void onDestroy()
     {
+        running=false;
+        for (Config config:configs)
+        {
+            removeServer(config);
+        }
+        //configs.clear();
         super.onDestroy();
     }
+    static boolean addServer(Config config)
+    {
+    	if(running||config.isRunning())
+    		return false;
+	    config.start();
+	    return configs.add(config);
+    }
+	static boolean removeServer(Config config)
+	{
+		if(!running)
+			return false;
+		config.stop();
+		return configs.remove(config);
+	}
 }

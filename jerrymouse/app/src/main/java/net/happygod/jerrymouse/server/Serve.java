@@ -1,9 +1,8 @@
 package net.happygod.jerrymouse.server;
 
+import dalvik.system.DexClassLoader;
 import java.io.*;
 import java.net.*;
-
-import dalvik.system.DexClassLoader;
 
 class Serve implements Runnable
 {
@@ -14,7 +13,6 @@ class Serve implements Runnable
     {
         this.config = config;
         this.s = s;
-        new Thread(this).start();
     }
 
     public void run()
@@ -33,7 +31,7 @@ class Serve implements Runnable
                 return;
             }
             String URI = request.getRequestURI();
-            String filePath = config.webroot + URI;
+            String filePath = config.webroot() + URI;
             File file = new File(filePath);
             // Check for file permission or not found error.
             if (!file.exists()) {
@@ -120,7 +118,7 @@ class Serve implements Runnable
         //String classPath = filePath.substring(0, index);
         String className = filePath.substring(index + 1, filePath.lastIndexOf("."));
         //Load servlet
-        DexClassLoader classLoader = new DexClassLoader(filePath, config.cacheDir, null, getClass().getClassLoader());
+        DexClassLoader classLoader = new DexClassLoader(filePath, config.cacheDir(), null, getClass().getClassLoader());
         try {
             Class<?> c = classLoader.loadClass(className);
             if (c != null)
