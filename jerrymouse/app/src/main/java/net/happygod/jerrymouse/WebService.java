@@ -28,8 +28,8 @@ public class WebService extends Service
                     .setContentTitle("Jerrymouse Web Server is running")
                     .setContentText("Touch for more options")
                     .setWhen(System.currentTimeMillis())
-                    .setSmallIcon(net.happygod.jerrymouse.R.mipmap.ic_launcher)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), net.happygod.jerrymouse.R.mipmap.ic_launcher))
+                    .setSmallIcon(R.drawable.ic_launcher_white)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_white))
                     .setContentIntent(pendingIntent)
                     .build();
             startForeground(1, notification);
