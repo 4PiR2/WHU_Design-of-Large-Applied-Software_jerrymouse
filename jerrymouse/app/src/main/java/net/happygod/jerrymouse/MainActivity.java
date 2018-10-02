@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(net.happygod.jerrymouse.R.layout.activity_main);
         intent = new Intent(this,WebService.class);
         setting=Setting.load(getFilesDir().getPath()+"/setting");
-        Switch st=findViewById(R.id.switchStartServer);
+        Switch st=findViewById(R.id.switchEnable);
        //st.setOnClickListener(new View.OnClickListener(){public void onClick(View v){}});
         st.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -30,11 +30,13 @@ public class MainActivity extends AppCompatActivity
                     if(b)
                     {
                         startService(intent);
-                        for(Conf conf:setting.confs)
+                        Conf conf=createConf();
+                        WebService.addServer(new Config(conf.port,conf.webroot,getCacheDir().getPath()));
+                        /*for(Conf conf:setting.confs)
                         {
 	                        configs.put(conf,new Config(conf.port,conf.webroot,getCacheDir().getPath()));
                             WebService.addServer(configs.get(conf));
-                        }
+                        }*/
                         setting.save();
                         Toast.makeText(getApplicationContext(), "Started", Toast.LENGTH_SHORT).show();
                     }
@@ -52,5 +54,11 @@ public class MainActivity extends AppCompatActivity
     {
         setting.save();
         super.onDestroy();
+    }
+    Conf createConf()
+    {
+        int port=Integer.parseInt(((EditText)findViewById(R.id.textPort)).getText().toString());
+        String webroot=((EditText)findViewById(R.id.textWebroot)).getText().toString();
+        return new Conf(port,webroot);
     }
 }

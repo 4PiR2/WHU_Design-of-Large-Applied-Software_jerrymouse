@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Jerrymouse</string>
+    <string name="disabled">Disabled</string>
+    <string name="enabled">Enabled</string>
 </resources>
