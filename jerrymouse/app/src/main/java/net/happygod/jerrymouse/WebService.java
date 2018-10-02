@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.*;
 import android.support.v4.app.NotificationCompat;
 import java.util.*;
-import net.happygod.jerrymouse.server.*;
+import net.happygod.jerrymouse.server.Config;
 
 public class WebService extends Service
 {
@@ -48,12 +48,13 @@ public class WebService extends Service
     @Override
     public void onDestroy()
     {
-        running=false;
         for (Config config:configs)
         {
-            removeServer(config);
+        	config.stop();
+            //removeServer(config);
         }
-        //configs.clear();
+	    running=false;
+        configs.clear();
         super.onDestroy();
     }
     static boolean addServer(Config config)

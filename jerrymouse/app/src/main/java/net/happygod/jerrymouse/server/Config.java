@@ -2,7 +2,7 @@ package net.happygod.jerrymouse.server;
 
 public class Config
 {
-	public boolean enable=false;
+	public boolean enabled;
     private Server server=null;
     private boolean running=false;
     private int port=0;
@@ -12,9 +12,7 @@ public class Config
     public Config(int port,String webroot,String cacheDir)
     {
 	    this();
-        port(port);
-        webroot(webroot);
-        cacheDir(cacheDir);
+        reset(port,webroot,cacheDir);
     }
     public String webroot()
     {
@@ -52,6 +50,16 @@ public class Config
 	{
 		if(running)
 			stop();
+		this.cacheDir=cacheDir;
+		if(running)
+			start();
+	}
+	public void reset(int port,String webroot,String cacheDir)
+	{
+		if(running)
+			stop();
+		this.port=port;
+		this.webroot=webroot;
 		this.cacheDir=cacheDir;
 		if(running)
 			start();

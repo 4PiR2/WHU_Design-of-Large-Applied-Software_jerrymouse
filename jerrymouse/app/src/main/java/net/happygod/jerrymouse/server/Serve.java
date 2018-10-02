@@ -71,7 +71,9 @@ class Serve implements Runnable
                 out.println("Location: " + redirectReader.readLine());
                 out.println();
                 out.flush();
-            } else {
+            }
+            else
+            {
                 out.println("HTTP/1.1 200 OK");
                 out.println("Server: Jerrymouse");
                 out.flush();
