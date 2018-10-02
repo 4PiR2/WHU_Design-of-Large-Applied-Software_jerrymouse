@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity
         setting=Setting.load(getFilesDir().getPath()+"/setting");
         Switch st=findViewById(R.id.switchEnable);
        //st.setOnClickListener(new View.OnClickListener(){public void onClick(View v){}});
+        //TODO restore statue
         st.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b)
