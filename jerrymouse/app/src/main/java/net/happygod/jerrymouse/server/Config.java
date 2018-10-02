@@ -2,7 +2,6 @@ package net.happygod.jerrymouse.server;
 
 public class Config
 {
-	public boolean enabled;
     private Server server=null;
     private boolean running=false;
     private int port=0;

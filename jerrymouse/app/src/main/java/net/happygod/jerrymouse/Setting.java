@@ -11,8 +11,8 @@ class Setting implements Serializable
 	Setting(String path)
 	{
 		file=new File(path);
-		confs.add(new Conf(8080,"/storage/emulated/0/web"));
-		confs.add(new Conf(8000,"/storage/emulated/0/AAA"));
+		//confs.add(new Conf(8080,"/storage/emulated/0/web"));
+		//confs.add(new Conf(8000,"/storage/emulated/0/AAA"));
 	}
 	boolean save()
 	{
@@ -32,7 +32,7 @@ class Setting implements Serializable
 	static Setting load(String path)
 	{
 		File file=new File(path);
-		if(!file.exists()||true)
+		if(!file.exists())
 			return new Setting(path);
 		try
 		{

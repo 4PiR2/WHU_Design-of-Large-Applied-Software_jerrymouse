@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.*;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*;
+import java.util.*;
 import net.happygod.jerrymouse.server.Config;
 
 public class MainActivity extends AppCompatActivity
 {
+	Map<Conf,Config> configs=new HashMap<>();
     Setting setting;
     Intent intent;
     @Override
@@ -30,8 +32,8 @@ public class MainActivity extends AppCompatActivity
                         startService(intent);
                         for(Conf conf:setting.confs)
                         {
-                            conf.config=new Config(conf.port,conf.webroot,getCacheDir().getPath());
-                            WebService.addServer((Config)conf.config);
+	                        configs.put(conf,new Config(conf.port,conf.webroot,getCacheDir().getPath()));
+                            WebService.addServer(configs.get(conf));
                         }
                         setting.save();
                         Toast.makeText(getApplicationContext(), "Started", Toast.LENGTH_SHORT).show();
