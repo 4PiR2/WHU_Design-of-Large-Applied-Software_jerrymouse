@@ -5,6 +5,7 @@ public class Config
     private Server server=null;
     private boolean running=false;
     private int port=0;
+    private boolean proxy=true;
     private String webroot=null;
     private String cacheDir=null;
     public Config(){}
@@ -21,7 +22,11 @@ public class Config
     {
         return port;
     }
-    public String cacheDir()
+	public boolean proxy()
+	{
+		return proxy;
+	}
+	public String cacheDir()
     {
         return cacheDir;
     }

@@ -8,9 +8,11 @@ public class Request
 {
 	private String requestMethod="", URI="", queryString="";
 	private Hashtable<String, String> headers= new Hashtable<>(),formData=new Hashtable<>();
+	private BufferedInputStream in;
 	Request(Socket s) throws IOException
 	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		in=new BufferedInputStream(s.getInputStream());
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		// Wait for HTTP request from the connection
 		String line = br.readLine();
 		// Bail out if line is null. In case some client tries to be
@@ -23,20 +25,13 @@ public class Request
 		// Log client's requests.
 		System.out.println("Request: " + line);
 		String tokens[] = line.split(" ");
-		requestMethod = tokens[0];
-		if (tokens[1].contains("?"))
+		requestMethod = tokens[0].toUpperCase();
+		String urlComponents[] = tokens[1].split("\\?");
+		URI = urlComponents[0];
+		if (urlComponents.length > 1)
 		{
-			String urlComponents[] = tokens[1].split("\\?");
-			URI = urlComponents[0];
-			if (urlComponents.length > 1)
-			{
-				queryString = urlComponents[1];
-				//TODO charset
-			}
-		}
-		else
-		{
-			URI = tokens[1];
+			queryString = urlComponents[1];
+			//TODO charset
 		}
 		// Read and parse the rest of the HTTP headers
 		int idx;
@@ -118,5 +113,9 @@ public class Request
 	public String getQueryString()
 	{
 		return queryString;
+	}
+	public BufferedInputStream getInput()
+	{
+		return in;
 	}
 }
