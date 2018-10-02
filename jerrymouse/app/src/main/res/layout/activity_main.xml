@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:ems="10"
-        android:hint="webroot"
+        android:hint="webroot/domain"
         android:inputType="textUri"
         android:text="/storage/emulated/0/web"
         app:layout_constraintEnd_toEndOf="parent"

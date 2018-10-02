@@ -25,9 +25,18 @@ class Serve implements Runnable
             Response response=new Response(s);
             if(config.proxy())
             {
-            	proxy(request,response);
+            	if(config.webroot().equals(""))
+	            {
+	            	request.parse();
+		            proxy(request,response);
+	            }
+                else
+	            {
+		            reverseProxy(request,response);
+	            }
             	return;
             }
+            request.parse();
 	        if(errorDetection(request,response))
 		        return;
 	        // Assume everything is OK then.  Send back a reply.
@@ -138,7 +147,7 @@ class Serve implements Runnable
 	    }
     }
 
-    private boolean errorDetection(Request request,Response response)
+    private boolean errorDetection(Request request,Response response) throws IOException
     {
     	int code=200;
 	    String URI = request.getRequestURI(),filePath = config.webroot() + URI;
@@ -219,7 +228,7 @@ class Serve implements Runnable
 	    }
 	    else
         {//http
-	        pout.print(requestMethod+" "+request.getRequestURI());
+	        /*pout.print(requestMethod+" "+request.getRequestURI());
 	        if(!request.getQueryString().equals(""))
 	        	pout.print("?"+request.getQueryString());
 	        pout.println(" HTTP/1.1");
@@ -233,7 +242,8 @@ class Serve implements Runnable
 			        pout.println(header+": "+request.getHeader(header));
 		        }
 	        }
-	        pout.println();
+	        pout.println();*/
+	        pout.println(request.getData());
 	        pout.flush();
 	    }
 	    Thread t=new Thread(new Runnable()
@@ -241,7 +251,14 @@ class Serve implements Runnable
 			@Override
 			public void run()
 			{
-				pipe(request.getInput(),proxyOutput);
+				try
+				{
+					pipe(request.getInput(),proxyOutput);
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		});
 	    t.start();
@@ -257,21 +274,52 @@ class Serve implements Runnable
 	    proxySocket.close();
     }
 
-    private void pipe(InputStream in,OutputStream out)
+    private void reverseProxy(final Request request,final Response response) throws IOException
+    {
+    	int port=80;
+    	String[] domains=config.webroot().split(":");
+    	String domain=domains[0];
+    	if(domains.length>1)
+    		port=Integer.parseInt(domains[1]);
+	    final Socket proxySocket = new Socket(domain,port);
+	    final BufferedInputStream proxyInput = new BufferedInputStream(proxySocket.getInputStream());
+	    final BufferedOutputStream proxyOutput = new BufferedOutputStream(proxySocket.getOutputStream());
+	    Thread t=new Thread(new Runnable()
+	    {
+		    @Override
+		    public void run()
+		    {
+			    try
+			    {
+				    pipe(request.getInput(),proxyOutput);
+			    }
+			    catch(IOException e)
+			    {
+				    e.printStackTrace();
+			    }
+		    }
+	    });
+	    t.start();
+	    pipe(proxyInput,response.getStream());
+	    try
+	    {
+		    t.join();
+	    }
+	    catch(InterruptedException e)
+	    {
+		    e.printStackTrace();
+	    }
+	    proxySocket.close();
+    }
+
+    private void pipe(InputStream in,OutputStream out) throws IOException
     {
 	    byte[] buffer=new byte[2048];
 	    int size;
-	    try
+	    while((size=in.read(buffer))>0)
 	    {
-		    while((size=in.read(buffer))>0)
-		    {
-			    out.write(buffer, 0, size);
-			    out.flush();
-		    }
-	    }
-	    catch(Exception e)
-	    {
-	    	e.printStackTrace();
+		    out.write(buffer, 0, size);
+		    out.flush();
 	    }
     }
 }

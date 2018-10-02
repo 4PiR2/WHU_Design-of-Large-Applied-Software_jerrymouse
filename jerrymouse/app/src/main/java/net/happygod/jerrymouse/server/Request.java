@@ -9,12 +9,21 @@ public class Request
 	private String requestMethod="", URI="", queryString="";
 	private Hashtable<String, String> headers= new Hashtable<>(),formData=new Hashtable<>();
 	private BufferedInputStream in;
+	private String data;
 	Request(Socket s) throws IOException
 	{
 		in=new BufferedInputStream(s.getInputStream());
+	}
+
+	public void parse() throws IOException
+	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		StringBuilder sb=new StringBuilder();
 		// Wait for HTTP request from the connection
-		String line = br.readLine();
+		String line;
+		line=br.readLine();
+		sb.append(line);
+		sb.append("\r\n");
 		// Bail out if line is null. In case some client tries to be
 		// funny and close immediately after connection.  (I am
 		// looking at you, Chrome!)
@@ -36,6 +45,8 @@ public class Request
 		// Read and parse the rest of the HTTP headers
 		int idx;
 		line = br.readLine();
+		sb.append(line);
+		sb.append("\r\n");
 		while (!line.equals(""))
 		{
 			idx = line.indexOf(":");
@@ -49,6 +60,8 @@ public class Request
 				headers.put(line.substring(0, idx).toLowerCase(),line.substring(idx+1).trim());
 			}
 			line = br.readLine();
+			sb.append(line);
+			sb.append("\r\n");
 		}
 		// read form data if POST
 		if (requestMethod.equals("POST"))
@@ -60,6 +73,9 @@ public class Request
 				data[i] = (char)br.read();
 			}
 			queryString = new String(data);
+			//queryString=br.readLine();
+			sb.append(queryString);
+			sb.append("\r\n");
 			//TODO charset
 			//TODO file
 		}
@@ -77,6 +93,7 @@ public class Request
 				formData.put(key,value);
 			}
 		}
+		data=sb.toString();
 	}
 	public String getMethod()
 	{
@@ -104,7 +121,7 @@ public class Request
 	}
 	public String getHeader(String name)
 	{
-		return headers.get(name);
+		return headers.get(name.toLowerCase());
 	}
 	public Enumeration<String> getHeaderNames()
 	{
@@ -117,5 +134,9 @@ public class Request
 	public BufferedInputStream getInput()
 	{
 		return in;
+	}
+	public String getData()
+	{
+		return data;
 	}
 }
