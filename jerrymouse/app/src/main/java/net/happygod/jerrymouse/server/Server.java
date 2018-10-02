@@ -50,6 +50,7 @@ class Server implements Runnable
 			try
             {
 				s = serverSocket.accept();
+				//TODO port in use
 				s.setKeepAlive(true);
 			}
 			catch(IOException e)

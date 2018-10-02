@@ -236,7 +236,7 @@ class Serve implements Runnable
 	        pout.println();
 	        pout.flush();
 	    }
-	    Thread t1=new Thread(new Runnable()
+	    Thread t=new Thread(new Runnable()
 		{
 			@Override
 			public void run()
@@ -244,20 +244,11 @@ class Serve implements Runnable
 				pipe(request.getInput(),proxyOutput);
 			}
 		});
-	    Thread t2=new Thread(new Runnable()
-	    {
-		    @Override
-		    public void run()
-		    {
-			    pipe(proxyInput,response.getStream());
-		    }
-	    });
-	    t1.start();
-	    t2.start();
+	    t.start();
+		pipe(proxyInput,response.getStream());
 	    try
 	    {
-		    t1.join();
-		    t2.join();
+		    t.join();
 	    }
 	    catch(InterruptedException e)
 	    {

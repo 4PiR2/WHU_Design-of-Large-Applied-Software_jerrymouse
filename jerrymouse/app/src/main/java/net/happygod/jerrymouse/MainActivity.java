@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity
         setting=Setting.load(getFilesDir().getPath()+"/setting");
         Switch st=findViewById(R.id.switchEnable);
        //st.setOnClickListener(new View.OnClickListener(){public void onClick(View v){}});
-        //TODO restore statue
+        //TODO restore status
         st.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b)
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         startService(intent);
                         Conf conf=createConf();
-                        WebService.addServer(new Config(conf.port,conf.webroot,getCacheDir().getPath()));
+                        WebService.addServer(new Config(conf.port,conf.proxy,conf.webroot,getCacheDir().getPath()));
                         /*for(Conf conf:setting.confs)
                         {
 	                        configs.put(conf,new Config(conf.port,conf.webroot,getCacheDir().getPath()));
@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity
     Conf createConf()
     {
         int port=Integer.parseInt(((EditText)findViewById(R.id.textPort)).getText().toString());
+        boolean proxy=((CheckBox)findViewById(R.id.checkProxy)).isChecked();
         String webroot=((EditText)findViewById(R.id.textWebroot)).getText().toString();
-        return new Conf(port,webroot);
+        return new Conf(port,proxy,webroot);
     }
 }

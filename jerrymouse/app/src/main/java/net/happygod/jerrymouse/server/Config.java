@@ -5,14 +5,14 @@ public class Config
     private Server server=null;
     private boolean running=false;
     private int port=0;
-    private boolean proxy=true;
+    private boolean proxy=false;
     private String webroot=null;
     private String cacheDir=null;
     public Config(){}
-    public Config(int port,String webroot,String cacheDir)
+    public Config(int port,boolean proxy,String webroot,String cacheDir)
     {
 	    this();
-        reset(port,webroot,cacheDir);
+        reset(port,proxy,webroot,cacheDir);
     }
     public String webroot()
     {
@@ -34,35 +34,12 @@ public class Config
 	{
 		return running;
 	}
-	public void port(int port)
+	public void reset(int port,boolean proxy,String webroot,String cacheDir)
 	{
 		if(running)
 			stop();
 		this.port=port;
-		if(running)
-			start();
-	}
-	public void webroot(String webroot)
-	{
-		if(running)
-			stop();
-		this.webroot=webroot;
-		if(running)
-			start();
-	}
-	public void cacheDir(String cacheDir)
-	{
-		if(running)
-			stop();
-		this.cacheDir=cacheDir;
-		if(running)
-			start();
-	}
-	public void reset(int port,String webroot,String cacheDir)
-	{
-		if(running)
-			stop();
-		this.port=port;
+		this.proxy=proxy;
 		this.webroot=webroot;
 		this.cacheDir=cacheDir;
 		if(running)
