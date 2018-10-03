@@ -39,14 +39,18 @@ class Setting implements Serializable
 			ObjectInputStream ois=new ObjectInputStream(new FileInputStream(file));
 			return (Setting)ois.readObject();
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 		return null;
 	}
 	boolean saveToFile()
-	{return true;}
+	{
+		return true;
+	}
 	static Setting loadFromFile()
-	{return null;}
+	{
+		return null;
+	}
 }

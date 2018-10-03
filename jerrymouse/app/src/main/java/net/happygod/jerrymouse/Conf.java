@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 class Conf implements Serializable
 {
-	boolean enabled,proxy;
+	boolean enabled, proxy;
 	int port;
 	String webroot;
 	Conf(int port,boolean proxy,String webroot)

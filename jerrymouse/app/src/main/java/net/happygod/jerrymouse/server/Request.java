@@ -7,7 +7,7 @@ import java.util.*;
 public class Request
 {
 	private String requestMethod="", URI="", queryString="";
-	private Hashtable<String, String> headers= new Hashtable<>(),formData=new Hashtable<>();
+	private Hashtable<String,String> headers=new Hashtable<>(), formData=new Hashtable<>();
 	private BufferedInputStream in;
 	private String data;
 	Request(Socket s) throws IOException
@@ -17,7 +17,7 @@ public class Request
 
 	public void parse() throws IOException
 	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		BufferedReader br=new BufferedReader(new InputStreamReader(in));
 		StringBuilder sb=new StringBuilder();
 		// Wait for HTTP request from the connection
 		String line;
@@ -27,63 +27,63 @@ public class Request
 		// Bail out if line is null. In case some client tries to be
 		// funny and close immediately after connection.  (I am
 		// looking at you, Chrome!)
-		if (line == null)
+		if(line==null)
 		{
 			return;
 		}
 		// Log client's requests.
-		System.out.println("Request: " + line);
-		String tokens[] = line.split(" ");
-		requestMethod = tokens[0].toUpperCase();
-		String urlComponents[] = tokens[1].split("\\?");
-		URI = urlComponents[0];
-		if (urlComponents.length > 1)
+		System.out.println("Request: "+line);
+		String tokens[]=line.split(" ");
+		requestMethod=tokens[0].toUpperCase();
+		String urlComponents[]=tokens[1].split("\\?");
+		URI=urlComponents[0];
+		if(urlComponents.length>1)
 		{
-			queryString = urlComponents[1];
+			queryString=urlComponents[1];
 			//TODO charset
 		}
 		// Read and parse the rest of the HTTP headers
 		int idx;
-		line = br.readLine();
+		line=br.readLine();
 		sb.append(line);
 		sb.append("\r\n");
-		while (!line.equals(""))
+		while(!line.equals(""))
 		{
-			idx = line.indexOf(":");
-			if (idx < 0)
+			idx=line.indexOf(":");
+			if(idx<0)
 			{
-				headers = null;
+				headers=null;
 				break;
 			}
 			else
 			{
-				headers.put(line.substring(0, idx).toLowerCase(),line.substring(idx+1).trim());
+				headers.put(line.substring(0,idx).toLowerCase(),line.substring(idx+1).trim());
 			}
-			line = br.readLine();
+			line=br.readLine();
 			sb.append(line);
 			sb.append("\r\n");
 		}
 		// read form data if POST
-		if (requestMethod.equals("POST"))
+		if(requestMethod.equals("POST"))
 		{
-			int contentLength = getContentLength();
-			final char[] data = new char[contentLength];
-			for (int i = 0; i < contentLength; i++)
+			int contentLength=getContentLength();
+			final char[] data=new char[contentLength];
+			for(int i=0;i<contentLength;i++)
 			{
-				data[i] = (char)br.read();
+				data[i]=(char)br.read();
 			}
-			queryString = new String(data);
+			queryString=new String(data);
 			//queryString=br.readLine();
 			sb.append(queryString);
 			sb.append("\r\n");
 			//TODO charset
 			//TODO file
 		}
-		String queries[] = queryString.split("&");
+		String queries[]=queryString.split("&");
 		for(String query : queries)
 		{
 			String[] keys=query.split("=");
-			String key=keys[0],value="";
+			String key=keys[0], value="";
 			if(keys.length>1)
 			{
 				value=keys[1];
