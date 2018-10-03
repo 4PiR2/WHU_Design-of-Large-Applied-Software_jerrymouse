@@ -14,7 +14,7 @@ public class test extends Servlet
 	public void doGet(Request request,Response response)
 	{
 		//response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
+		PrintWriter out=response.getWriter();
 		out.println("<html>");
 		out.println("<head>");
 		out.println("<title>ServletTest</title>");
@@ -22,33 +22,35 @@ public class test extends Servlet
 		out.println("<body>");
 
 		out.println("<h2>Headers</h2");
-		Enumeration headers = request.getHeaderNames();
-		while (headers.hasMoreElements()) {
-			String header = (String) headers.nextElement();
-			out.println("<br>" + header + " : " + request.getHeader(header));
+		Enumeration headers=request.getHeaderNames();
+		while(headers.hasMoreElements())
+		{
+			String header=(String)headers.nextElement();
+			out.println("<br>"+header+" : "+request.getHeader(header));
 		}
 
 		out.println("<br><h2>Method</h2");
-		out.println("<br>" + request.getMethod());
+		out.println("<br>"+request.getMethod());
 
 		out.println("<br><h2>Parameters</h2");
-		Enumeration parameters = request.getParameterNames();
-		while (parameters.hasMoreElements()) {
-			String parameter = (String) parameters.nextElement();
-			out.println("<br>" + parameter + " : " + request.getParameter(parameter));
+		Enumeration parameters=request.getParameterNames();
+		while(parameters.hasMoreElements())
+		{
+			String parameter=(String)parameters.nextElement();
+			out.println("<br>"+parameter+" : "+request.getParameter(parameter));
 		}
 
 		out.println("<br><h2>Query String</h2");
-		out.println("<br>" + request.getQueryString());
+		out.println("<br>"+request.getQueryString());
 
 		out.println("<br><h2>Request URI</h2");
-		out.println("<br>" + request.getRequestURI());
+		out.println("<br>"+request.getRequestURI());
 
 		out.println("</body>");
 		out.println("</html>");
 		out.flush();
 	}
-	
+
 	@Override
 	public void doPost(Request request,Response response)
 	{

@@ -1,67 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/check"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+<android.support.constraint.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools" android:id="@+id/check"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+	<TextView android:id="@+id/textView" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Hello World!"
+		app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent" app:layout_constraintTop_toTopOf="parent"/>
 
-    <Switch
-        android:id="@+id/switchEnable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:switchMinWidth="60dp"
-        android:textOff="@string/disabled"
-        android:textOn="@string/enabled"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+	<Switch android:id="@+id/switchEnable" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="200dp"
+		android:switchMinWidth="60dp" android:textOff="@string/disabled"
+		android:textOn="@string/enabled" app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
 
-    <EditText
-        android:id="@+id/textPort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="port"
-        android:inputType="numberDecimal"
-        android:text="8080"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+	<EditText android:id="@+id/textPort" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="20dp" android:ems="10"
+		android:hint="port" android:inputType="numberDecimal" android:text="8080"
+		app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
-    <EditText
-        android:id="@+id/textWebroot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="webroot/domain"
-        android:inputType="textUri"
-        android:text="/storage/emulated/0/web"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textPort" />
+	<EditText android:id="@+id/textWebroot" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="20dp" android:ems="10"
+		android:hint="webroot/domain" android:inputType="textUri"
+		android:text="/storage/emulated/0/web" app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/textPort"/>
 
-    <CheckBox
-        android:id="@+id/checkProxy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textWebroot" />
+	<CheckBox android:id="@+id/checkProxy" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="20dp"
+		app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/textWebroot"/>
 
 </android.support.constraint.ConstraintLayout>
