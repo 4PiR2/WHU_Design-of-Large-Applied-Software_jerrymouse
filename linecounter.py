@@ -1,3 +1,5 @@
+path='./jerrymouse/app/src'
+
 import os
 
 def list_all_files(rootdir):
@@ -19,7 +21,7 @@ def process(name):
 	txtfile.close()
 	return count
 
-fs=list_all_files('.\\jerrymouse\\app\\src')
+fs=list_all_files(path)
 count=0
 for name in fs:
 	print(name)
