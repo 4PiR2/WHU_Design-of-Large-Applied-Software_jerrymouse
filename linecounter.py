@@ -29,6 +29,7 @@ for name in fs:
 		d=process(name)
 	except:
 		print('b')
+		continue
 	print(d)
 	count+=d
 print(count)

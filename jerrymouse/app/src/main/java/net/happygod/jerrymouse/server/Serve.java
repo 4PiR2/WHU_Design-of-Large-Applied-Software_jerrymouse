@@ -3,7 +3,7 @@ package net.happygod.jerrymouse.server;
 import dalvik.system.DexClassLoader;
 import java.io.*;
 import java.net.*;
-import java.util.Enumeration;
+//import java.util.Enumeration;
 
 class Serve implements Runnable
 {
@@ -46,6 +46,7 @@ class Serve implements Runnable
 				case "dex":
 				case "jar":
 				case "apk":
+				case "class":
 					servlet(request,response);
 					break;
 				case "redirect":
@@ -92,10 +93,9 @@ class Serve implements Runnable
 		}
 		dos.writeBytes("Content-type: "+mime+"\r\n\r\n");
 		// Read the content 1KB at a time.
-		File file=new File(filePath);
-		byte[] buffer=new byte[(int)file.length()];
-		BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file));
+		BufferedInputStream bis=new BufferedInputStream(new FileInputStream(filePath));
 		pipe(bis,dos);
+		bis.close();
 	}
 
 	private void redirect(Request request,Response response) throws IOException
@@ -130,6 +130,7 @@ class Serve implements Runnable
 				{
 					servlet=(Servlet)s;
 				}
+				//TODO if not instance of Servlet
 			}
 		}
 		catch(Exception e)
@@ -161,7 +162,7 @@ class Serve implements Runnable
 		}
 	}
 
-	private boolean errorDetection(Request request,Response response) throws IOException
+	private boolean errorDetection(Request request,Response response)
 	{
 		int code=200;
 		String URI=request.getRequestURI(), filePath=config.webroot()+URI;
@@ -326,7 +327,7 @@ class Serve implements Runnable
 		proxySocket.close();
 	}
 
-	private void pipe(InputStream in,OutputStream out) throws IOException
+	static void pipe(InputStream in,OutputStream out) throws IOException
 	{
 		byte[] buffer=new byte[2048];
 		int size;
