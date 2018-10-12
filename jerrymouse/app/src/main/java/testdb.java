@@ -1,56 +1,58 @@
-import net.happygod.jerrymouse.server.*;
-
 import java.io.*;
-import java.util.Enumeration;
+import java.util.*;
 
-public class test extends Servlet
+import net.happygod.jerrymouse.server.*;
+import net.happygod.jerrymouse.database.*;
+
+public class testdb extends Servlet
 {
-	@Override
-	public void init()
-	{
-		System.out.println("Servlet -- init");
-	}
 	@Override
 	public void doGet(Request request,Response response)
 	{
 		//response.setContentType("text/html");
 		PrintWriter out=response.getWriter();
-		out.println("<html>");
-		out.println("<head>");
-		out.println("<title>ServletTest</title>");
-		out.println("</head>");
-		out.println("<body>");
-
-		out.println("<h2>Headers</h2");
-		Enumeration headers=request.getHeaderNames();
-		while(headers.hasMoreElements())
+		out.println("<html><head>");
+		out.println("<title>ServletDBTest</title>");
+		out.println("</head><body>");
+		out.println("<h2>Method</h2>");
+		out.println(request.getMethod()+"<br />");
+		out.println("<h2>Results</h2>");
+		String type=request.getParameter("type");
+		String sql=request.getParameter("sql");
+		Database db=new Database("test",super.config.Context());
+		if(type==null||sql==null)
 		{
-			String header=(String)headers.nextElement();
-			out.println("<br>"+header+" : "+request.getHeader(header));
+			out.println("<h3>Parameters Error</h3>");
 		}
-
-		out.println("<br><h2>Method</h2");
-		out.println("<br>"+request.getMethod());
-
-		out.println("<br><h2>Parameters</h2");
-		Enumeration parameters=request.getParameterNames();
-		while(parameters.hasMoreElements())
+		else if(type.equals("query"))
 		{
-			String parameter=(String)parameters.nextElement();
-			out.println("<br>"+parameter+" : "+request.getParameter(parameter));
+			Result result=db.query(sql);
+			out.println("<table border='1'>");
+			out.println("<tr>");
+			for(String column:result.columns())
+			{
+				out.println("<th>"+column+"</th>");
+			}
+			out.println("</tr>");
+			for(Map map:result.values())
+			{
+				out.println("<tr>");
+				for(String column:result.columns())
+				{
+					out.println("<td>"+map.get(column)+"</td>");
+				}
+				out.println("</tr>");
+			}
+			out.println("</table>");
 		}
-
-		out.println("<br><h2>Query String</h2");
-		out.println("<br>"+request.getQueryString());
-
-		out.println("<br><h2>Request URI</h2");
-		out.println("<br>"+request.getRequestURI());
-
-		out.println("</body>");
-		out.println("</html>");
+		else if(type.equals("execute"))
+		{
+			db.execSQL(sql);
+		}
+		db.close();
+		out.println("</body></html>");
 		out.flush();
 	}
-
 	@Override
 	public void doPost(Request request,Response response)
 	{

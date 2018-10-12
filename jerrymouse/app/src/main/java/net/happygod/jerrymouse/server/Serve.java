@@ -144,6 +144,7 @@ class Serve implements Runnable
 		out.println("Server: Jerrymouse");
 		out.println();
 		out.flush();
+		servlet.config=config;
 		try
 		{
 			servlet.init();
@@ -158,7 +159,9 @@ class Serve implements Runnable
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			//TODO 500 ByteArrayOutputStream
+			e.printStackTrace(out);
+			out.flush();
 		}
 	}
 

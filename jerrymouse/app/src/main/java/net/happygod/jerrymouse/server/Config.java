@@ -1,5 +1,7 @@
 package net.happygod.jerrymouse.server;
 
+import android.content.*;
+
 public class Config
 {
 	private Server server=null;
@@ -7,14 +9,14 @@ public class Config
 	private int port=0;
 	private boolean proxy=false;
 	private String webroot=null;
-	private String cacheDir=null;
+	private Context context=null;
 	public Config()
 	{
 	}
-	public Config(int port,boolean proxy,String webroot,String cacheDir)
+	public Config(int port,boolean proxy,String webroot,Context context)
 	{
 		this();
-		reset(port,proxy,webroot,cacheDir);
+		reset(port,proxy,webroot,context);
 	}
 	public String webroot()
 	{
@@ -28,22 +30,26 @@ public class Config
 	{
 		return proxy;
 	}
+	public Context Context()
+	{
+		return context;
+	}
 	public String cacheDir()
 	{
-		return cacheDir;
+		return context.getCacheDir().getPath();
 	}
 	public boolean isRunning()
 	{
 		return running;
 	}
-	public void reset(int port,boolean proxy,String webroot,String cacheDir)
+	public void reset(int port,boolean proxy,String webroot,Context context)
 	{
 		if(running)
 			stop();
 		this.port=port;
 		this.proxy=proxy;
 		this.webroot=webroot;
-		this.cacheDir=cacheDir;
+		this.context=context;
 		if(running)
 			start();
 	}

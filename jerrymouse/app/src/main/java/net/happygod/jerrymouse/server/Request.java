@@ -3,6 +3,7 @@ package net.happygod.jerrymouse.server;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.regex.*;
 
 public class Request
 {
@@ -80,7 +81,7 @@ public class Request
 			//TODO file
 		}
 		String queries[]=queryString.split("&");
-		for(String query : queries)
+		for(String query:queries)
 		{
 			String[] keys=query.split("=");
 			String key=keys[0], value="";
@@ -88,12 +89,28 @@ public class Request
 			{
 				value=keys[1];
 			}
-			if(!key.equals(""))
-			{
-				formData.put(key,value);
-			}
+			//if(!key.equals(""))
+			//{
+				formData.put(key,hex2char(value));
+			//}
 		}
 		data=sb.toString();
+	}
+	private String hex2char(String str)
+	{
+		str=str.replace('+',' ');
+		StringBuilder sb=new StringBuilder();
+		Matcher m=Pattern.compile("%[0-9A-F]{2}").matcher(str);
+		int i=0,start;
+		while(m.find())
+		{
+			start=m.start();
+			sb.append(str.substring(i,start));
+			i=start+3;
+			sb.append((char)Integer.parseInt(str.substring(start+1,i),16));
+		}
+		sb.append(str.substring(i));
+		return sb.toString();
 	}
 	public String getMethod()
 	{

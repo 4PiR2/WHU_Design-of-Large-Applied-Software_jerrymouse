@@ -3,18 +3,18 @@ package net.happygod.jerrymouse.database;
 import android.content.*;
 import android.database.sqlite.*;
 
-class OpenHelper extends SQLiteOpenHelper
+class Helper extends SQLiteOpenHelper
 {
 	private static Integer version = 1;
-	OpenHelper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version)
+	Helper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version)
 	{
 		super(context,name,factory,version);
 	}
-	OpenHelper(Context context,String name,int version)
+	Helper(Context context,String name,int version)
 	{
 		this(context,name,null,version);
 	}
-	OpenHelper(Context context,String name)
+	Helper(Context context,String name)
 	{
 		this(context, name, version);
 	}

@@ -2,6 +2,7 @@ package net.happygod.jerrymouse.server;
 
 public abstract class Servlet
 {
+	public Config config=null;
 	public void init() throws Exception
 	{
 	}

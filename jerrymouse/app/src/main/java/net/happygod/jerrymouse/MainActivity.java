@@ -1,6 +1,6 @@
 package net.happygod.jerrymouse;
 
-import android.content.Intent;
+import android.content.*;
 import android.os.*;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*;
@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity
 	Map<Conf,Config> configs=new HashMap<>();
 	Setting setting;
 	Intent intent;
+	Context context=this;//getApplicationContext();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity
 		StrictMode.setThreadPolicy(policy);
 		setContentView(net.happygod.jerrymouse.R.layout.activity_main);
 		intent=new Intent(this,WebService.class);
-		setting=Setting.load(getFilesDir().getPath()+"/setting");
+		//setting=Setting.load(getFilesDir().getPath()+"/setting");
 		Switch st=findViewById(R.id.switchEnable);
 		//st.setOnClickListener(new View.OnClickListener(){public void onClick(View v){}});
 		//TODO restore status
@@ -34,19 +35,19 @@ public class MainActivity extends AppCompatActivity
 				{
 					startService(intent);
 					Conf conf=createConf();
-					WebService.addServer(new Config(conf.port,conf.proxy,conf.webroot,getCacheDir().getPath()));
+					WebService.addServer(new Config(conf.port,conf.proxy,conf.webroot,context));
                         /*for(Conf conf:setting.confs)
                         {
 	                        configs.put(conf,new Config(conf.port,conf.webroot,getCacheDir().getPath()));
                             WebService.addServer(configs.get(conf));
                         }*/
-					setting.save();
+					//setting.save();
 					Toast.makeText(getApplicationContext(),"Started",Toast.LENGTH_SHORT).show();
 				}
 				else
 				{
 					stopService(intent);
-					setting.save();
+					//setting.save();
 					Toast.makeText(getApplicationContext(),"Stopped",Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity
 	@Override
 	public void onDestroy()
 	{
-		setting.save();
+		//setting.save();
 		super.onDestroy();
 	}
 
