@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.*;
 import android.support.v4.app.NotificationCompat;
 import java.util.*;
+import net.happygod.jerrymouse.database.*;
 import net.happygod.jerrymouse.server.Config;
 
 public class WebService extends Service
@@ -26,6 +27,7 @@ public class WebService extends Service
 			Notification notification=new NotificationCompat.Builder(this,"fore_service").setContentTitle("Jerrymouse Web Server is running").setContentText("Touch for more options").setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_launcher_white).setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher_white)).setContentIntent(pendingIntent).build();
 			startForeground(1,notification);
 			running=true;
+			startServers();
 		}
 	}
 	@Override
@@ -51,16 +53,33 @@ public class WebService extends Service
 		configs.clear();
 		super.onDestroy();
 	}
-	static boolean addServer(Config config)
+	void startServers()
 	{
-		if(running||config.isRunning())
+		Database db=new Database("jerrymouse",this);
+		Result result=db.query("select * from general;");
+		for(Map map:result.values)
+		{
+			if((int)map.get("enabled")!=0)
+			{
+				int port=(int)map.get("port");
+				String webroot=(String)map.get("webroot");
+				boolean proxyMode=(int)map.get("proxymode")!=0;
+				boolean allowIndex=(int)map.get("allowindex")!=0;
+				boolean servletVisible=(int)map.get("servletvisible")!=0;
+				addServer(new Config(port,webroot,this,proxyMode,allowIndex,servletVisible));
+			}
+		}
+	}
+	boolean addServer(Config config)
+	{
+		if(!running||config.isRunning())
 			return false;
 		config.start();
 		return configs.add(config);
 	}
-	static boolean removeServer(Config config)
+	boolean removeServer(Config config)
 	{
-		if(!running)
+		if(!running||!config.isRunning())
 			return false;
 		config.stop();
 		return configs.remove(config);

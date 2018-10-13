@@ -5,34 +5,36 @@ import android.content.*;
 public class Config
 {
 	private Server server=null;
-	private boolean running=false;
+	private boolean isRunning=false;
 	private int port=0;
-	private boolean proxy=false;
 	private String webroot=null;
 	private Context context=null;
+	private boolean proxyMode=false;
+	private boolean allowIndex=false;
+	private boolean servletVisible=false;
 	public Config()
 	{
 	}
-	public Config(int port,boolean proxy,String webroot,Context context)
+	public Config(int port,String webroot,Context context,boolean proxyMode,boolean allowIndex,boolean servletVisible)
 	{
 		this();
-		reset(port,proxy,webroot,context);
-	}
-	public String webroot()
-	{
-		return webroot;
+		reset(port,webroot,context,proxyMode,allowIndex,servletVisible);
 	}
 	public int port()
 	{
 		return port;
 	}
-	public boolean proxy()
+	public String webroot()
 	{
-		return proxy;
+		return webroot;
 	}
-	public Context Context()
+	public Context context()
 	{
 		return context;
+	}
+	public boolean proxyMode()
+	{
+		return proxyMode;
 	}
 	public String cacheDir()
 	{
@@ -40,35 +42,45 @@ public class Config
 	}
 	public boolean isRunning()
 	{
-		return running;
+		return isRunning;
 	}
-	public void reset(int port,boolean proxy,String webroot,Context context)
+	public boolean allowIndex()
 	{
-		if(running)
+		return allowIndex;
+	}
+	public boolean servletVisible()
+	{
+		return servletVisible;
+	}
+	public void reset(int port,String webroot,Context context,boolean proxyMode,boolean allowIndex,boolean servletVisible)
+	{
+		if(isRunning)
 			stop();
 		this.port=port;
-		this.proxy=proxy;
 		this.webroot=webroot;
 		this.context=context;
-		if(running)
+		this.proxyMode=proxyMode;
+		this.allowIndex=allowIndex;
+		this.servletVisible=servletVisible;
+		if(isRunning)
 			start();
 	}
 	public Server start()
 	{
-		if(running)
+		if(isRunning)
 			stop();
-		running=true;
+		isRunning=true;
 		server=new Server(this);
 		//TODO failure
 		return server;
 	}
 	public void stop()
 	{
-		if(!running)
+		if(!isRunning)
 			return;
 		server.stop();
 		//TODO failure
 		server=null;
-		running=false;
+		isRunning=false;
 	}
 }

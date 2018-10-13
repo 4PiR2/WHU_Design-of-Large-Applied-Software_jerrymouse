@@ -6,8 +6,8 @@ import java.util.concurrent.*;
 
 class Server implements Runnable
 {
-	private Thread thread;
-	private ExecutorService executor=Executors.newCachedThreadPool();
+	private final Thread thread;
+	private final ExecutorService executor=Executors.newCachedThreadPool();
 	private boolean running;
 	private final Config config;
 	private ServerSocket serverSocket;
@@ -48,14 +48,14 @@ class Server implements Runnable
 		{
 			System.out.println("Unable to listen on port "+config.port()+": "+e.getMessage());
 		}
-		Socket s;
+		Socket socket;
 		while(running)
 		{
 			try
 			{
-				s=serverSocket.accept();
+				socket=serverSocket.accept();
 				//TODO port in use
-				s.setKeepAlive(true);
+				socket.setKeepAlive(true);
 			}
 			catch(IOException e)
 			{
@@ -63,7 +63,7 @@ class Server implements Runnable
 				break;
 			}
 			System.out.println("Connection accepted.");
-			executor.execute(new Serve(s,config));
+			executor.execute(new Serve(socket,config));
 		}
 		executor.shutdownNow();
 		try

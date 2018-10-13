@@ -23,24 +23,24 @@ public class test extends Servlet
 		while(headers.hasMoreElements())
 		{
 			String header=(String)headers.nextElement();
-			out.println(header+" : "+request.getHeader(header));
+			out.println(header+" : "+request.getHeader(header)+"<br />");
 		}
-		out.println("<br /><h2>Method</h2>");
-		out.println(request.getMethod());
+		out.println("<h2>Method</h2>");
+		out.println(request.getMethod()+"<br />");
 
-		out.println("<br /><h2>Parameters</h2>");
+		out.println("<h2>Parameters</h2>");
 		Enumeration parameters=request.getParameterNames();
 		while(parameters.hasMoreElements())
 		{
 			String parameter=(String)parameters.nextElement();
-			out.println(parameter+" : "+request.getParameter(parameter));
+			out.println(parameter+" : "+request.getParameter(parameter)+"<br />");
 		}
 
-		out.println("<br /><h2>Query String</h2>");
-		out.println(request.getQueryString());
+		out.println("<h2>Query String</h2>");
+		out.println(request.getQueryString()+"<br />");
 
-		out.println("<br /><h2>Request URI</h2>");
-		out.println(request.getRequestURI());
+		out.println("<h2>Request URI</h2>");
+		out.println(request.getRequestURI()+"<br />");
 
 		out.println("</body></html>");
 		out.flush();

@@ -9,16 +9,16 @@ public class Request
 {
 	private String requestMethod="", URI="", queryString="";
 	private Hashtable<String,String> headers=new Hashtable<>(), formData=new Hashtable<>();
-	private BufferedInputStream in;
+	private final BufferedInputStream bis;
 	private String data;
 	Request(Socket s) throws IOException
 	{
-		in=new BufferedInputStream(s.getInputStream());
+		bis=new BufferedInputStream(s.getInputStream());
 	}
 
 	public void parse() throws IOException
 	{
-		BufferedReader br=new BufferedReader(new InputStreamReader(in));
+		BufferedReader br=new BufferedReader(new InputStreamReader(bis));
 		StringBuilder sb=new StringBuilder();
 		// Wait for HTTP request from the connection
 		String line;
@@ -150,7 +150,7 @@ public class Request
 	}
 	public BufferedInputStream getInput()
 	{
-		return in;
+		return bis;
 	}
 	public String getData()
 	{

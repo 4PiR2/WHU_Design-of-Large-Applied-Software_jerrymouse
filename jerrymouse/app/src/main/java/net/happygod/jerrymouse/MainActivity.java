@@ -4,16 +4,10 @@ import android.content.*;
 import android.os.*;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*;
-import java.util.*;
-import net.happygod.jerrymouse.server.Config;
 
 public class MainActivity extends AppCompatActivity
 {
-	Map<Conf,Config> configs=new HashMap<>();
-	Setting setting;
-	Intent intent;
-	Context context=this;//getApplicationContext();
-
+	private Intent intent;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -22,7 +16,6 @@ public class MainActivity extends AppCompatActivity
 		StrictMode.setThreadPolicy(policy);
 		setContentView(net.happygod.jerrymouse.R.layout.activity_main);
 		intent=new Intent(this,WebService.class);
-		//setting=Setting.load(getFilesDir().getPath()+"/setting");
 		Switch st=findViewById(R.id.switchEnable);
 		//st.setOnClickListener(new View.OnClickListener(){public void onClick(View v){}});
 		//TODO restore status
@@ -34,38 +27,19 @@ public class MainActivity extends AppCompatActivity
 				if(b)
 				{
 					startService(intent);
-					Conf conf=createConf();
-					WebService.addServer(new Config(conf.port,conf.proxy,conf.webroot,context));
-                        /*for(Conf conf:setting.confs)
-                        {
-	                        configs.put(conf,new Config(conf.port,conf.webroot,getCacheDir().getPath()));
-                            WebService.addServer(configs.get(conf));
-                        }*/
-					//setting.save();
 					Toast.makeText(getApplicationContext(),"Started",Toast.LENGTH_SHORT).show();
 				}
 				else
 				{
 					stopService(intent);
-					//setting.save();
 					Toast.makeText(getApplicationContext(),"Stopped",Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
 	}
-
 	@Override
 	public void onDestroy()
 	{
-		//setting.save();
 		super.onDestroy();
-	}
-
-	Conf createConf()
-	{
-		int port=Integer.parseInt(((EditText)findViewById(R.id.textPort)).getText().toString());
-		boolean proxy=((CheckBox)findViewById(R.id.checkProxy)).isChecked();
-		String webroot=((EditText)findViewById(R.id.textWebroot)).getText().toString();
-		return new Conf(port,proxy,webroot);
 	}
 }

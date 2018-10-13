@@ -3,17 +3,16 @@ package net.happygod.jerrymouse.server;
 import dalvik.system.DexClassLoader;
 import java.io.*;
 import java.net.*;
-//import java.util.Enumeration;
 
 class Serve implements Runnable
 {
 	private final Config config;
-	private final Socket s;
+	private final Socket socket;
 
-	Serve(Socket s,Config config)
+	Serve(Socket socket,Config config)
 	{
 		this.config=config;
-		this.s=s;
+		this.socket=socket;
 	}
 
 	public void run()
@@ -21,11 +20,11 @@ class Serve implements Runnable
 		try
 		{
 			//TODO invalid method detection
-			Request request=new Request(s);
-			Response response=new Response(s);
-			if(config.proxy())
+			Request request=new Request(socket);
+			Response response=new Response(socket);
+			if(config.proxyMode())
 			{
-				if(config.webroot().equals(""))
+				if(config.webroot()==null||config.webroot().equals(""))
 				{
 					request.parse();
 					proxy(request,response);
@@ -38,7 +37,10 @@ class Serve implements Runnable
 			}
 			request.parse();
 			if(errorDetection(request,response))
+			{
+				response.commit();
 				return;
+			}
 			// Assume everything is OK then.  Send back a reply.
 			String URI=request.getRequestURI(), extension=URI.substring(URI.lastIndexOf(".")+1);
 			switch(extension)
@@ -55,7 +57,8 @@ class Serve implements Runnable
 				default:
 					file(request,response);
 			}
-			s.close();
+			response.commit();
+			socket.close();
 			System.out.println("Connection closed\n");
 		}
 		catch(IOException e)
@@ -67,7 +70,7 @@ class Serve implements Runnable
 	private void file(Request request,Response response) throws IOException
 	{
 		PrintWriter out=response.getWriter();
-		DataOutputStream dos=response.getStream();
+		DataOutputStream dos=response.getDataStream();
 		String URI=request.getRequestURI(), filePath=config.webroot()+URI, extension=URI.substring(URI.lastIndexOf(".")+1);
 		out.println("HTTP/1.1 200 OK");
 		out.println("Server: Jerrymouse");
@@ -115,9 +118,7 @@ class Serve implements Runnable
 	{
 		Servlet servlet=null;
 		String filePath=config.webroot()+request.getRequestURI();
-		int index=filePath.lastIndexOf("/");
-		//String classPath = filePath.substring(0, index);
-		String className=filePath.substring(index+1,filePath.lastIndexOf("."));
+		String className=filePath.substring(filePath.lastIndexOf("/")+1,filePath.lastIndexOf("."));
 		//Load servlet
 		DexClassLoader classLoader=new DexClassLoader(filePath,config.cacheDir(),null,getClass().getClassLoader());
 		try
@@ -125,12 +126,16 @@ class Serve implements Runnable
 			Class<?> c=classLoader.loadClass(className);
 			if(c!=null)
 			{
-				Object s=c.newInstance();
-				if(s instanceof Servlet)
+				Object object=c.newInstance();
+				if(object instanceof Servlet)
 				{
-					servlet=(Servlet)s;
+					servlet=(Servlet)object;
 				}
 				//TODO if not instance of Servlet
+				if(config.servletVisible())
+				{
+					servlet.config(config);
+				}
 			}
 		}
 		catch(Exception e)
@@ -144,7 +149,6 @@ class Serve implements Runnable
 		out.println("Server: Jerrymouse");
 		out.println();
 		out.flush();
-		servlet.config=config;
 		try
 		{
 			servlet.init();
@@ -228,7 +232,7 @@ class Serve implements Runnable
 		catch(NullPointerException e)
 		{
 			//TODO why
-			errorDetection(request,response);
+			//errorDetection(request,response);
 			return;
 		}
 		host=hostTemp[0];
@@ -237,7 +241,7 @@ class Serve implements Runnable
 		final Socket proxySocket=new Socket(host,port);
 		final BufferedInputStream proxyInput=new BufferedInputStream(proxySocket.getInputStream());
 		final BufferedOutputStream proxyOutput=new BufferedOutputStream(proxySocket.getOutputStream());
-		PrintWriter out=response.getWriter(), pout=new PrintWriter(proxyOutput);
+		PrintWriter out=new PrintWriter(new BufferedOutputStream(response.getStream())),pout=new PrintWriter(proxyOutput);
 		if(requestMethod.equals("CONNECT"))
 		{//https
 			out.println("HTTP/1.1 200 Connection Established");
@@ -245,22 +249,7 @@ class Serve implements Runnable
 			out.flush();
 		}
 		else
-		{//http
-	        /*pout.print(requestMethod+" "+request.getRequestURI());
-	        if(!request.getQueryString().equals(""))
-	        	pout.print("?"+request.getQueryString());
-	        pout.println(" HTTP/1.1");
-	        String header;
-	        Enumeration<String> headers=request.getHeaderNames();
-	        if(requestMethod.equals("POST"))
-	        {
-		        while(headers.hasMoreElements())
-		        {
-			        header=headers.nextElement();
-			        pout.println(header+": "+request.getHeader(header));
-		        }
-	        }
-	        pout.println();*/
+		{
 			pout.println(request.getData());
 			pout.flush();
 		}

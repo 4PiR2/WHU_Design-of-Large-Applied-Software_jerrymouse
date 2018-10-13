@@ -2,7 +2,15 @@ package net.happygod.jerrymouse.server;
 
 public abstract class Servlet
 {
-	public Config config=null;
+	private Config config=null;
+	void config(Config config)
+	{
+		this.config=config;
+	}
+	public Config config()
+	{
+		return config;
+	}
 	public void init() throws Exception
 	{
 	}

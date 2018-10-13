@@ -5,12 +5,16 @@ import java.net.*;
 
 public class Response
 {
+	private final BufferedOutputStream bos;
+	private final ByteArrayOutputStream baos;
 	private final PrintWriter pw;
 	private final DataOutputStream dos;
 	Response(Socket s) throws IOException
 	{
-		pw=new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())));
-		dos=new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
+		bos=new BufferedOutputStream(s.getOutputStream());
+		baos=new ByteArrayOutputStream();
+		pw=new PrintWriter(baos);
+		dos=new DataOutputStream(baos);
 	}
 	public void setContentType(String contentType)
 	{
@@ -21,8 +25,23 @@ public class Response
 	{
 		return pw;
 	}
-	public DataOutputStream getStream()
+	public DataOutputStream getDataStream()
 	{
 		return dos;
+	}
+	BufferedOutputStream getStream()
+	{
+		return bos;
+	}
+	void reset() throws IOException
+	{
+		pw.flush();
+		dos.flush();
+		baos.reset();
+	}
+	void commit() throws IOException
+	{
+		baos.writeTo(bos);
+		bos.flush();
 	}
 }
