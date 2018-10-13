@@ -23,16 +23,14 @@
 		app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
-	<EditText android:id="@+id/textWebroot" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="20dp" android:ems="10"
-		android:hint="webroot/domain" android:inputType="textUri"
-		android:text="/storage/emulated/0/web" app:layout_constraintEnd_toEndOf="parent"
+	<Button
+		android:id="@+id/buttonSettings"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dp"
+		android:text="Settings"
+		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/textPort"/>
-
-	<CheckBox android:id="@+id/checkProxy" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="20dp"
-		app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/textWebroot"/>
+		app:layout_constraintTop_toBottomOf="@+id/textPort" />
 
 </android.support.constraint.ConstraintLayout>

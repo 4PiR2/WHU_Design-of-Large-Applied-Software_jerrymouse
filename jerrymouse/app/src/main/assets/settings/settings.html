@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>testdb</title>
+		<style>
+			input[type=text],textarea,input[type=url]
+			{
+				width:100%;
+			}
+			textarea
+			{
+				height:100px;
+			}
+			iframe
+			{
+				width:100%;
+				height:300px;
+			}
+		</style>
+		<script>
+			var prepare=function()
+			{
+				document.getElementById("form").action=document.getElementById("url").value;
+				if(document.getElementById("get").checked)
+					document.getElementById("form").method="GET";
+				else
+					document.getElementById("form").method="POST";
+			}
+		</script>
+	</head>
+	<body>
+		<label for="url">URL</label>
+		<br />
+		<input id="url" type="url" value="testdb.apk">
+		<br />
+		<label>Method</label>
+		<br />
+		<input id="get" type="radio" name="method" value="GET">
+		<label for="get">GET</label>
+		<input id="post" type="radio" name="method" value="POST" checked>
+		<label for="post">POST</label>
+		<form id="form" action="" method="" target="iframe">
+			<label>Type</label>
+			<br />
+			<input id="query" type="radio" name="type" value="query" checked>
+			<label for="query">Query</label>
+			<input id="execute" type="radio" name="type" value="execute">
+			<label for="execute">Execute</label>
+			<br />
+			<label for="sql">SQL</label>
+			<br />
+			<textarea id="sql" name="sql">select *&#x0A;from general&#x0A;where 1</textarea>
+			<br />
+			<button type="submit" onclick="prepare()">Submit</button>
+		</form>
+		<iframe name="iframe"></iframe>
+	</body>
+</html>

@@ -74,7 +74,6 @@ class Serve implements Runnable
 		String URI=request.getRequestURI(), filePath=config.webroot()+URI, extension=URI.substring(URI.lastIndexOf(".")+1);
 		out.println("HTTP/1.1 200 OK");
 		out.println("Server: Jerrymouse");
-		out.flush();
 		String mime;
 		switch(extension)
 		{
@@ -94,18 +93,49 @@ class Serve implements Runnable
 				mime="application/octet-stream";
 				//TODO add file types
 		}
-		dos.writeBytes("Content-type: "+mime+"\r\n\r\n");
+		out.println("Content-type: "+mime);
+		out.println();
+		out.flush();
 		// Read the content 1KB at a time.
-		BufferedInputStream bis=new BufferedInputStream(new FileInputStream(filePath));
-		pipe(bis,dos);
-		bis.close();
+		File file=new File(filePath);
+		if(file.isDirectory())
+		{
+			response.reset();
+			dir(request,response);
+		}
+		else
+		{
+			BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file));
+			pipe(bis,dos);
+			bis.close();
+		}
+	}
+
+	private void dir(Request request,Response response)
+	{
+		PrintWriter out=response.getWriter();
+		File file=new File(config.webroot()+request.getRequestURI());
+		if(file.isDirectory())
+		{
+			out.println("HTTP/1.1 200 OK");
+			out.println("Server: Jerrymouse");
+			out.println("Content-type: text/html");
+			out.println();
+			out.println("<html><head></head><body>");
+			out.println("<a href='..'>Parent</a><br />");
+			for(String fileName:file.list())
+			{
+				out.println("<a href='"+fileName+"'>"+fileName+"</a><br />");
+			}
+			out.println("</body></html>");
+			out.flush();
+		}
 	}
 
 	private void redirect(Request request,Response response) throws IOException
 	{
 		PrintWriter out=response.getWriter();
-		String URI=request.getRequestURI(), filePath=config.webroot()+URI;
-		File file=new File(filePath);
+		File file=new File(config.webroot()+request.getRequestURI());
 		BufferedReader redirectReader=new BufferedReader(new FileReader(file));
 		out.println("HTTP/1.1 "+redirectReader.readLine());
 		out.println("Server: Jerrymouse");
@@ -186,7 +216,7 @@ class Serve implements Runnable
 		{
 			code=404;
 		}
-		else if(file.isDirectory()||!file.canRead())
+		else if(!config.allowIndex()&&file.isDirectory()||!file.canRead())
 		{
 			code=403;
 		}
@@ -319,7 +349,7 @@ class Serve implements Runnable
 		proxySocket.close();
 	}
 
-	static void pipe(InputStream in,OutputStream out) throws IOException
+	private void pipe(InputStream in,OutputStream out) throws IOException
 	{
 		byte[] buffer=new byte[2048];
 		int size;
