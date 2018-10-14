@@ -4,7 +4,7 @@ import java.util.*;
 import net.happygod.jerrymouse.server.*;
 import net.happygod.jerrymouse.database.*;
 
-public class testdb extends Servlet
+public class DBManage extends Servlet
 {
 	@Override
 	public void doGet(Request request,Response response)
@@ -17,9 +17,8 @@ public class testdb extends Servlet
 		//response.setContentType("text/html");
 		PrintWriter out=response.getWriter();
 		out.println("<html><head>");
-		out.println("<title>ServletDBTest</title>");
+		out.println("<title>Results</title>");
 		out.println("</head><body>");
-		out.println("<h2>Results</h2>");
 		String type=request.getParameter("type");
 		String sql=request.getParameter("sql");
 		Database db=new Database("jerrymouse",super.config().context());

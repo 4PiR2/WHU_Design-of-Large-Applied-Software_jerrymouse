@@ -17,12 +17,6 @@
 		android:textOn="@string/enabled" app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
 
-	<EditText android:id="@+id/textPort" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="20dp" android:ems="10"
-		android:hint="port" android:inputType="numberDecimal" android:text="8080"
-		app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/textView"/>
-
 	<Button
 		android:id="@+id/buttonSettings"
 		android:layout_width="wrap_content"
@@ -31,6 +25,16 @@
 		android:text="Settings"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/textPort" />
+		app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+	<TextView
+		android:id="@+id/textviewIP"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="30dp"
+		android:textAlignment="center"
+		app:layout_constraintBottom_toTopOf="@+id/switchEnable"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -42,6 +42,7 @@ class Serve implements Runnable
 				return;
 			}
 			// Assume everything is OK then.  Send back a reply.
+			//TODO lastindexof -1
 			String URI=request.getRequestURI(), extension=URI.substring(URI.lastIndexOf(".")+1);
 			switch(extension)
 			{
@@ -83,6 +84,9 @@ class Serve implements Runnable
 			case "jpg":
 				mime="image/jpeg";
 				break;
+			case "png":
+				mime="image/png";
+				break;
 			case "gif":
 				mime="image/gif";
 				break;
@@ -123,9 +127,12 @@ class Serve implements Runnable
 			out.println();
 			out.println("<html><head></head><body>");
 			out.println("<a href='..'>Parent</a><br />");
-			for(String fileName:file.list())
+			for(File subFile:file.listFiles())
 			{
-				out.println("<a href='"+fileName+"'>"+fileName+"</a><br />");
+				if(subFile.isDirectory())
+					out.println("<a href='"+subFile.getName()+"/'>"+subFile.getName()+"</a><br />");
+				else
+					out.println("<a href='"+subFile.getName()+"'>"+subFile.getName()+"</a><br />");
 			}
 			out.println("</body></html>");
 			out.flush();

@@ -1,5 +1,6 @@
 package net.happygod.jerrymouse;
 
+import android.content.res.*;
 import android.graphics.*;
 import android.os.*;
 import android.support.v7.app.*;
@@ -10,7 +11,9 @@ import android.widget.*;
 
 import net.happygod.jerrymouse.server.Config;
 
-public class WebpageActivity extends AppCompatActivity
+import java.io.*;
+
+public class WebPageActivity extends AppCompatActivity
 {
 	private WebView webView;
 	private ProgressBar progressBar;
@@ -20,13 +23,22 @@ public class WebpageActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_webpage);
-		config=new Config(1998,getFilesDir().getPath(),this,false,true,true);
+		try
+		{
+			copyAssets(getAssets(),"settings/dynamic",getFilesDir().getPath()+"/settings");
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			//TODO fail
+		}
+		config=new Config(1998,getFilesDir().getPath()+"/settings",this,false,true,true);
 		config.start();
 		progressBar=(ProgressBar)findViewById(R.id.progressbar);//进度条
 
 		webView=(WebView)findViewById(R.id.webview);
-		//webView.loadUrl("file:///android_asset/settings.html");
-		webView.loadUrl("http://localhost:1998/");
+		webView.loadUrl("file:///android_asset/settings/dbmanage.html");
+		//webView.loadUrl("http://localhost:1998/dbmanage.html");
 
 		//使用webview显示html代码
 		//        webView.loadDataWithBaseURL(null,"<html><head><title> 欢迎您 </title></head>" +
@@ -75,7 +87,7 @@ public class WebpageActivity extends AppCompatActivity
 				Log.i("ansen","拦截url:"+url);
 				if(url.equals("http://www.google.com/"))
 				{
-					Toast.makeText(WebpageActivity.this,"国内不能访问google,拦截该url",Toast.LENGTH_LONG).show();
+					Toast.makeText(WebPageActivity.this,"国内不能访问google,拦截该url",Toast.LENGTH_LONG).show();
 					return true;//表示我已经处理过了
 				}
 				return super.shouldOverrideUrlLoading(view,url);
@@ -150,5 +162,36 @@ public class WebpageActivity extends AppCompatActivity
 		//释放资源
 		webView.destroy();
 		webView=null;
+	}
+
+	private boolean copyAssets(AssetManager am,String dir,String path) throws IOException
+	{
+		String[] list=am.list(dir);
+		//empty directories will not be compiled to apk, no need to detect
+		if(list.length==0)
+			return false;
+		//mkdir
+		new File(path).mkdirs();
+		for(String fileName : list)
+		{
+			//recursively call
+			String newDir=dir+(dir.equals("")?"":"/")+fileName, newPath=path+"/"+fileName;
+			if(!copyAssets(am,newDir,newPath))
+			{
+				//cp
+				BufferedInputStream bis=new BufferedInputStream(am.open(newDir));
+				BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(newPath));
+				byte[] buffer=new byte[2048];
+				int size;
+				while((size=bis.read(buffer))>0)
+				{
+					bos.write(buffer,0,size);
+				}
+				bos.flush();
+				bis.close();
+				bos.close();
+			}
+		}
+		return true;
 	}
 }
