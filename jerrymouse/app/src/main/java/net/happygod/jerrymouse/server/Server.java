@@ -1,78 +1,86 @@
 package net.happygod.jerrymouse.server;
 
-import java.io.*;
-import java.net.*;
-import java.util.concurrent.*;
+import android.content.*;
 
-class Server implements Runnable
+public class Server
 {
-	private final Thread thread;
-	private final ExecutorService executor=Executors.newCachedThreadPool();
-	private boolean running;
-	private final Config config;
-	private ServerSocket serverSocket;
-	Server(Config config)
+	private Listener listener=null;
+	private boolean isRunning=false;
+	private int port=0;
+	private String webroot=null;
+	private Context context=null;
+	private boolean proxyMode=false;
+	private boolean allowIndex=false;
+	private boolean servletVisible=false;
+	public Server()
 	{
-		this.config=config;
-		running=true;
-		thread=new Thread(this);
-		thread.start();
 	}
-	void stop()
+	public Server(int port,String webroot,Context context,boolean proxyMode,boolean allowIndex,boolean servletVisible)
 	{
-		running=false;
-		try
-		{
-			new Socket("localhost",config.port());
-		}
-		catch(Exception e)
-		{
-		}
-		try
-		{
-			thread.join();
-		}
-		catch(InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		this();
+		reset(port,webroot,context,proxyMode,allowIndex,servletVisible);
 	}
-	public void run()
+	public int port()
 	{
-		try
-		{
-			serverSocket=new ServerSocket(config.port());
-			System.out.println("Server listening on port "+config.port());
-		}
-		catch(IOException e)
-		{
-			System.out.println("Unable to listen on port "+config.port()+": "+e.getMessage());
-		}
-		Socket socket;
-		while(running)
-		{
-			try
-			{
-				socket=serverSocket.accept();
-				//TODO port in use
-				socket.setKeepAlive(true);
-			}
-			catch(IOException e)
-			{
-				System.out.println("Unable to accept connection: "+e.getMessage());
-				break;
-			}
-			System.out.println("Connection accepted.");
-			executor.execute(new Serve(socket,config));
-		}
-		executor.shutdownNow();
-		try
-		{
-			serverSocket.close();
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+		return port;
+	}
+	public String webroot()
+	{
+		return webroot;
+	}
+	public Context context()
+	{
+		return context;
+	}
+	public boolean proxyMode()
+	{
+		return proxyMode;
+	}
+	public String cacheDir()
+	{
+		return context.getCacheDir().getPath();
+	}
+	public boolean isRunning()
+	{
+		return isRunning;
+	}
+	public boolean allowIndex()
+	{
+		return allowIndex;
+	}
+	public boolean servletVisible()
+	{
+		return servletVisible;
+	}
+	public void reset(int port,String webroot,Context context,boolean proxyMode,boolean allowIndex,boolean servletVisible)
+	{
+		if(isRunning)
+			stop();
+		this.port=port;
+		this.webroot=webroot;
+		this.context=context;
+		this.proxyMode=proxyMode;
+		this.allowIndex=allowIndex;
+		this.servletVisible=servletVisible;
+		if(isRunning)
+			start();
+	}
+	public Listener start()
+	{
+		if(isRunning)
+			stop();
+		isRunning=true;
+		listener=new Listener(this);
+		//TODO failure
+		return listener;
+	}
+	public void stop()
+	{
+		if(!isRunning)
+			return;
+		listener.stop();
+		//TODO failure
+		listener=null;
+		isRunning=false;
 	}
 }

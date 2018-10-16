@@ -9,7 +9,7 @@ import android.view.*;
 import android.webkit.*;
 import android.widget.*;
 
-import net.happygod.jerrymouse.server.Config;
+import net.happygod.jerrymouse.server.Server;
 
 import java.io.*;
 
@@ -17,7 +17,7 @@ public class WebPageActivity extends AppCompatActivity
 {
 	private WebView webView;
 	private ProgressBar progressBar;
-	private Config config;
+	private Server server;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -32,8 +32,8 @@ public class WebPageActivity extends AppCompatActivity
 			e.printStackTrace();
 			//TODO fail
 		}
-		config=new Config(1998,getFilesDir().getPath()+"/settings",this,false,true,true);
-		config.start();
+		server=new Server(1998,getFilesDir().getPath()+"/settings",this,false,true,true);
+		server.start();
 		progressBar=(ProgressBar)findViewById(R.id.progressbar);//进度条
 
 		webView=(WebView)findViewById(R.id.webview);
@@ -158,7 +158,7 @@ public class WebPageActivity extends AppCompatActivity
 	protected void onDestroy()
 	{
 		super.onDestroy();
-		config.stop();
+		server.stop();
 		//释放资源
 		webView.destroy();
 		webView=null;

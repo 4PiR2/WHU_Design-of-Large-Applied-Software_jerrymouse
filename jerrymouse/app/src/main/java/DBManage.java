@@ -14,7 +14,7 @@ public class DBManage extends Servlet
 	@Override
 	public void doPost(Request request,Response response)
 	{
-		//response.setContentType("text/html");
+		response.setContentType("text/html; charset=utf-8");
 		PrintWriter out=response.getWriter();
 		out.println("<html><head>");
 		out.println("<title>Results</title>");

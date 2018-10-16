@@ -7,11 +7,11 @@ import android.os.*;
 import android.support.v4.app.NotificationCompat;
 import java.util.*;
 import net.happygod.jerrymouse.database.*;
-import net.happygod.jerrymouse.server.Config;
+import net.happygod.jerrymouse.server.Server;
 
 public class WebService extends Service
 {
-	private static Set<Config> configs=new HashSet<>();
+	private static Set<Server> servers=new HashSet<>();
 	private static boolean running=false;
 	@Override
 	public void onCreate()
@@ -44,13 +44,13 @@ public class WebService extends Service
 	@Override
 	public void onDestroy()
 	{
-		for(Config config : configs)
+		for(Server server : servers)
 		{
-			config.stop();
-			//removeServer(config);
+			server.stop();
+			//removeServer(server);
 		}
 		running=false;
-		configs.clear();
+		servers.clear();
 		super.onDestroy();
 	}
 	void startServers()
@@ -66,22 +66,22 @@ public class WebService extends Service
 				boolean proxyMode=(int)map.get("proxymode")!=0;
 				boolean allowIndex=(int)map.get("allowindex")!=0;
 				boolean servletVisible=(int)map.get("servletvisible")!=0;
-				addServer(new Config(port,webroot,this,proxyMode,allowIndex,servletVisible));
+				addServer(new Server(port,webroot,this,proxyMode,allowIndex,servletVisible));
 			}
 		}
 	}
-	boolean addServer(Config config)
+	boolean addServer(Server server)
 	{
-		if(!running||config.isRunning())
+		if(!running||server.isRunning())
 			return false;
-		config.start();
-		return configs.add(config);
+		server.start();
+		return servers.add(server);
 	}
-	boolean removeServer(Config config)
+	boolean removeServer(Server server)
 	{
-		if(!running||!config.isRunning())
+		if(!running||!server.isRunning())
 			return false;
-		config.stop();
-		return configs.remove(config);
+		server.stop();
+		return servers.remove(server);
 	}
 }

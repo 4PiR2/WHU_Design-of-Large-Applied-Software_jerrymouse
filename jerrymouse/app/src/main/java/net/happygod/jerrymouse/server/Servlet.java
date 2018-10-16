@@ -2,22 +2,27 @@ package net.happygod.jerrymouse.server;
 
 public abstract class Servlet
 {
-	private Config config=null;
-	void config(Config config)
+	private Server server=null;
+	void config(Server server)
 	{
-		this.config=config;
+		this.server=server;
 	}
-	public Config config()
+	public Server config()
 	{
-		return config;
+		return server;
 	}
-	public void init() throws Exception
-	{
-	}
-	public void doGet(Request request,Response response) throws Exception
+	public void init() throws HTTPException
 	{
 	}
-	public void doPost(Request request,Response response) throws Exception
+	public void doGet(Request request,Response response) throws HTTPException
+	{
+		doDefault(request,response);
+	}
+	public void doPost(Request request,Response response) throws HTTPException
+	{
+		doDefault(request,response);
+	}
+	void doDefault(Request request,Response response) throws HTTPException
 	{
 	}
 }

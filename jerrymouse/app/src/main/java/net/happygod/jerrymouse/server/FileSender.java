@@ -1,0 +1,83 @@
+package net.happygod.jerrymouse.server;
+
+import java.io.*;
+
+class FileSender extends Servlet
+{
+	@Override
+	void doDefault(Request request,Response response) throws HTTPException
+	{
+		String URI=request.getRequestURI();
+		File file=new File(config().webroot(),URI);
+		// Check for file permission or not found error.
+		if(!file.exists())
+		{
+			throw new HTTPException(404,"Unable to find "+URI+" on this server");
+		}
+		if(!file.canRead())
+		{
+			throw new HTTPException(403,"You have no permission to access "+URI+" on this server");
+		}
+		if(file.isDirectory())
+		{
+			if(config().allowIndex())
+			{
+				//TODO pretty page
+				PrintWriter pw=response.getWriter();
+				response.setContentType("text/html; charset=UTF-8");
+				pw.println("<html><head></head><body>");
+				pw.println("<a href='..'>Parent</a><br />");
+				for(File subFile:file.listFiles())
+				{
+					if(subFile.isDirectory())
+						pw.println("<a href='"+subFile.getName()+"/'>"+subFile.getName()+"</a><br />");
+					else
+						pw.println("<a href='"+subFile.getName()+"'>"+subFile.getName()+"</a><br />");
+				}
+				pw.println("</body></html>");
+			}
+			else
+				throw new HTTPException(403,"You have no permission to access "+URI+" on this server");
+			//throw new HTTPException(200);
+		}
+		else
+		{
+			String extension=URI.substring(URI.lastIndexOf(".")+1), mime;
+			switch(extension)
+			{
+				case "html":
+					mime="text/html; charset=utf-8";
+					break;
+				case "jpg":
+					mime="image/jpeg";
+					break;
+				case "png":
+					mime="image/png";
+					break;
+				case "gif":
+					mime="image/gif";
+					break;
+				case "css":
+					mime="text/css; charset=utf-8";
+					break;
+				default:
+					mime="application/octet-stream";
+					//TODO add file types
+					//TODO non-extension file
+			}
+			response.setContentType(mime);
+			try
+			{
+				BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file));
+				response.setHeader("content-length",file.length()+"");
+				response.commit(new HTTPException(200));
+				Pipe.pipe(bis,response.getRawStream());
+				bis.close();
+			}
+			catch(IOException ioe)
+			{
+				throw new HTTPException(500,ioe);
+			}
+		}
+	}
+}
