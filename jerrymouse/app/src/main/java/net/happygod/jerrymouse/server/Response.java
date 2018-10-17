@@ -46,7 +46,7 @@ public class Response
 	private void resetHeaders()
 	{
 		resetHeaders(new HashMap<String,String>());
-		setHeader("Listener","Jerrymouse");
+		setHeader("server","Jerrymouse");
 		//TODO more
 	}
 	public void setContentType(final String contentType)

@@ -9,7 +9,7 @@ import android.view.*;
 import android.webkit.*;
 import android.widget.*;
 
-import net.happygod.jerrymouse.server.Server;
+import net.happygod.jerrymouse.server.*;
 
 import java.io.*;
 
@@ -27,7 +27,7 @@ public class WebPageActivity extends AppCompatActivity
 		{
 			copyAssets(getAssets(),"settings/dynamic",getFilesDir().getPath()+"/settings");
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
 			e.printStackTrace();
 			//TODO fail
@@ -164,7 +164,7 @@ public class WebPageActivity extends AppCompatActivity
 		webView=null;
 	}
 
-	private boolean copyAssets(AssetManager am,String dir,String path) throws IOException
+	private boolean copyAssets(AssetManager am,String dir,String path) throws IOException,HTTPException
 	{
 		String[] list=am.list(dir);
 		//empty directories will not be compiled to apk, no need to detect
@@ -181,13 +181,7 @@ public class WebPageActivity extends AppCompatActivity
 				//cp
 				BufferedInputStream bis=new BufferedInputStream(am.open(newDir));
 				BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(newPath));
-				byte[] buffer=new byte[2048];
-				int size;
-				while((size=bis.read(buffer))>0)
-				{
-					bos.write(buffer,0,size);
-				}
-				bos.flush();
+				Pipe.pipe(bis,bos);
 				bis.close();
 				bos.close();
 			}

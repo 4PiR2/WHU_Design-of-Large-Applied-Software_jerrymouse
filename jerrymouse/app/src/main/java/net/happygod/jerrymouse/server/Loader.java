@@ -42,6 +42,9 @@ class Loader implements Runnable
 				{
 					request.parse();
 					String URI=request.getRequestURI();
+					//TODO URI
+					//GET http://localhost:8080/ HTTP/1.1
+					//Host: localhost:8080
 					// Only support GET or POST
 					//TODO HEAD
 					String requestMethod=request.getMethod();
