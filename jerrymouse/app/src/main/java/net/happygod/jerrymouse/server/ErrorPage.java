@@ -1,6 +1,5 @@
 package net.happygod.jerrymouse.server;
 
-import android.content.*;
 import net.happygod.jerrymouse.database.*;
 import java.io.*;
 

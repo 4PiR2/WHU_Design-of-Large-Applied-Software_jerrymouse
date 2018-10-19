@@ -1,8 +1,5 @@
 package net.happygod.jerrymouse.server;
 
-import android.content.*;
-import net.happygod.jerrymouse.*;
-
 public class Server
 {
 	private Listener listener=null;
@@ -82,6 +79,7 @@ public class Server
 	}
 	public String getMessage()
 	{
+		//TODO output msg
 		return message;
 	}
 }

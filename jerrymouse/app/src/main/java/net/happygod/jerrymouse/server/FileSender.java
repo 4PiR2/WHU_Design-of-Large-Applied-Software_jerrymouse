@@ -8,7 +8,7 @@ class FileSender extends Servlet
 	void doDefault(Request request,Response response) throws HTTPException
 	{
 		String URI=request.getRequestURI();
-		File file=new File(config().webroot(),URI);
+		File file=new File(server().webroot(),URI);
 		// Check for file permission or not found error.
 		if(!file.exists())
 		{
@@ -20,7 +20,7 @@ class FileSender extends Servlet
 		}
 		if(file.isDirectory())
 		{
-			if(config().allowIndex())
+			if(server().allowIndex())
 			{
 				//TODO pretty page
 				PrintWriter pw=response.getWriter();

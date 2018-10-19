@@ -19,7 +19,7 @@ class Loader implements Runnable
 		Request request;
 		Response response;
 		Class<?> c=null;
-		boolean setConfig=true;
+		boolean servletVisible=true;
 		try
 		{
 			request=new Request(socket);
@@ -37,7 +37,7 @@ class Loader implements Runnable
 					{
 						c=ReverseProxy.class;
 					}
-					loadServlet(c,request,response,setConfig);
+					loadServlet(c,request,response,servletVisible);
 				}
 				catch(HTTPException he)
 				{
@@ -65,7 +65,7 @@ class Loader implements Runnable
 							//Load servlet
 							DexClassLoader classLoader=new DexClassLoader(filePath,SharedContext.get().getCacheDir().getPath(),null,getClass().getClassLoader());
 							c=classLoader.loadClass(className);
-							setConfig=server.servletVisible();
+							servletVisible=server.servletVisible();
 							break;
 						case "redirect":
 							//redirect(request,response);
@@ -73,7 +73,7 @@ class Loader implements Runnable
 						default:
 							c=FileSender.class;
 					}
-					loadServlet(c,request,response,setConfig);
+					loadServlet(c,request,response,servletVisible);
 					if(c!=FileSender.class)
 						throw new HTTPException(200);
 				}
@@ -116,7 +116,7 @@ class Loader implements Runnable
 		}
 		if(setConfig)
 		{
-			servlet.config(server);
+			servlet.server(server);
 		}
 		//call servlet methods
 		try

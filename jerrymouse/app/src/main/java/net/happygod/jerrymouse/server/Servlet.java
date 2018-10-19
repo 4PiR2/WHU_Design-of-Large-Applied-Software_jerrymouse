@@ -3,11 +3,11 @@ package net.happygod.jerrymouse.server;
 public abstract class Servlet
 {
 	private Server server=null;
-	void config(Server server)
+	void server(Server server)
 	{
 		this.server=server;
 	}
-	protected Server config()
+	protected Server server()
 	{
 		return server;
 	}
