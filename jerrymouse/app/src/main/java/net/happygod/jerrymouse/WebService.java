@@ -7,7 +7,7 @@ import android.os.*;
 import android.support.v4.app.NotificationCompat;
 import java.util.*;
 import net.happygod.jerrymouse.database.*;
-import net.happygod.jerrymouse.server.Server;
+import net.happygod.jerrymouse.server.*;
 
 public class WebService extends Service
 {
@@ -56,19 +56,25 @@ public class WebService extends Service
 	void startServers()
 	{
 		Database db=new Database("jerrymouse");
-		Result result=db.query("select * from general;");
+		Result result=db.query("SELECT * FROM general WHERE enabled=1;");
 		for(Map map:result.values)
 		{
-			if((int)map.get("enabled")!=0)
-			{
-				int port=(int)map.get("port");
-				String webroot=(String)map.get("webroot");
-				boolean proxyMode=(int)map.get("proxymode")!=0;
-				boolean allowIndex=(int)map.get("allowindex")!=0;
-				boolean servletVisible=(int)map.get("servletvisible")!=0;
-				addServer(new Server(port,webroot,proxyMode,allowIndex,servletVisible));
-			}
+			int port=(int)map.get("port");
+			String webroot=(String)map.get("webroot");
+			boolean proxyMode=(int)map.get("proxymode")!=0;
+			boolean allowIndex=(int)map.get("allowindex")!=0;
+			boolean servletVisible=(int)map.get("servletvisible")!=0;
+			addServer(new Server(port,webroot,proxyMode,allowIndex,servletVisible));
 		}
+	}
+	static List<String> checkServer()
+	{
+		List<String> messages=new ArrayList<>();
+		for(Server server:servers)
+		{
+			messages.add(server.getMessage());
+		}
+		return messages;
 	}
 	boolean addServer(Server server)
 	{

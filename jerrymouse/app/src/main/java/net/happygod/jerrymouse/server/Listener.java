@@ -28,7 +28,7 @@ class Listener implements Runnable
 		}
 		catch(Exception e)
 		{
-			server.failure(e.getMessage());
+			//e.printStackTrace();
 		}
 	}
 	public void run()
@@ -52,10 +52,9 @@ class Listener implements Runnable
 				socket=serverSocket.accept();
 				socket.setKeepAlive(true);
 			}
-			catch(IOException e)
+			catch(IOException ioe)
 			{
-				server.failure("Unable to accept connection: "+server.port()+": "+e.getMessage());
-				break;
+				continue;
 			}
 			//System.err.println("Connection accepted.");
 			executor.execute(new Loader(socket,server));
@@ -65,9 +64,9 @@ class Listener implements Runnable
 		{
 			serverSocket.close();
 		}
-		catch(IOException e)
+		catch(IOException ioe)
 		{
-			server.failure(e.getMessage());
+			//ioe.printStackTrace();
 		}
 	}
 }

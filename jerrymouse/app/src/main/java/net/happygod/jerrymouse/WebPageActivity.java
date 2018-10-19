@@ -1,5 +1,6 @@
 package net.happygod.jerrymouse;
 
+import android.content.*;
 import android.content.res.*;
 import android.graphics.*;
 import android.os.*;
@@ -133,6 +134,10 @@ public class WebPageActivity extends AppCompatActivity
 		@Override
 		public boolean onKeyDown(int keyCode,KeyEvent event)
 		{
+			final Intent mainIntent=new Intent(SharedContext.get(),MainActivity.class);
+			startActivity(mainIntent);
+			return true;
+			/*
 			Log.i("ansen","是否有上一个页面:"+webView.canGoBack());
 			if(webView.canGoBack()&&keyCode==KeyEvent.KEYCODE_BACK)
 			{//点击返回按钮的时候判断有没有上一页
@@ -140,6 +145,7 @@ public class WebPageActivity extends AppCompatActivity
 				return true;
 			}
 			return super.onKeyDown(keyCode,event);
+			*/
 		}
 
 		/**

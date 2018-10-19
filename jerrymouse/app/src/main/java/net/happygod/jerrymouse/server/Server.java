@@ -74,12 +74,10 @@ public class Server
 	void failure(String message)
 	{
 		this.message=message;
-		stop();
 		isRunning=false;
 	}
 	public String getMessage()
 	{
-		//TODO output msg
 		return message;
 	}
 }

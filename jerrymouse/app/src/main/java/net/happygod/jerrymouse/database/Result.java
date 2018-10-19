@@ -24,7 +24,6 @@ public class Result
 						break;
 					case Cursor.FIELD_TYPE_INTEGER:
 						value=cursor.getInt(index);
-						//TODO Long
 						break;
 					case Cursor.FIELD_TYPE_FLOAT:
 						value=cursor.getFloat(index);

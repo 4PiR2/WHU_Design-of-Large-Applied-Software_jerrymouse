@@ -1,6 +1,7 @@
 package net.happygod.jerrymouse;
 
 import android.content.*;
+import android.widget.*;
 
 public class SharedContext
 {
@@ -12,5 +13,9 @@ public class SharedContext
 	public static Context get()
 	{
 		return context;
+	}
+	public static void toast(String str,int length)
+	{
+		Toast.makeText(context,str,length).show();
 	}
 }

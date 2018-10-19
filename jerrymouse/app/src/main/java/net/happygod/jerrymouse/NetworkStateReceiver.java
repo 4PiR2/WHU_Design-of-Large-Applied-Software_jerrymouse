@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-class NetworkStateReceiver extends BroadcastReceiver
+public class NetworkStateReceiver extends BroadcastReceiver
 {
 	private final TextView textviewIP;
 	NetworkStateReceiver(TextView textviewIP)
@@ -19,6 +19,15 @@ class NetworkStateReceiver extends BroadcastReceiver
 	{
 		//ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		//NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+		//wait for the IP to be stable
+		try
+		{
+			Thread.sleep(400);
+		}
+		catch(InterruptedException ie)
+		{
+			//ie.printStackTrace();
+		}
 		showIP(textviewIP);
 	}
 	static void showIP(TextView textView)
