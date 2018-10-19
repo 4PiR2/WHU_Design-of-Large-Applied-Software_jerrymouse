@@ -70,6 +70,8 @@ public class Server
 		if(isRunning)
 			stop();
 		isRunning=true;
+		ErrorPage.context=context;
+		//TODO context override
 		listener=new Listener(this);
 		//TODO failure
 		return listener;

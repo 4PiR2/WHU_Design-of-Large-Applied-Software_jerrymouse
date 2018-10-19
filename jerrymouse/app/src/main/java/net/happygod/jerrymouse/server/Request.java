@@ -11,7 +11,6 @@ public class Request
 	private final Hashtable<String,String> headers=new Hashtable<>(), formData=new Hashtable<>();
 	private final BufferedInputStream bis;
 	private String data;
-	private boolean parsed=false;
 	Request(Socket s) throws HTTPException
 	{
 		try
@@ -26,9 +25,6 @@ public class Request
 
 	void parse() throws HTTPException
 	{
-		if(parsed)
-			return;
-		parsed=true;
 		try
 		{
 			BufferedReader br=new BufferedReader(new InputStreamReader(bis));
@@ -43,19 +39,26 @@ public class Request
 			// looking at you, Chrome!)
 			if(line==null)
 			{
-				return;
-				//TODO empty request
+				throw new HTTPException(400);
 			}
-			// Log client's requests.
-			System.out.println("Request: "+line);
+			//Log client's requests.
+			//System.err.println("Request: "+line);
 			String tokens[]=line.split(" ");
+			if(!tokens[2].substring(0,4).equalsIgnoreCase("HTTP"))
+				throw new HTTPException(400);
 			requestMethod=tokens[0].toUpperCase();
-			String urlComponents[]=tokens[1].split("\\?");
-			URI=urlComponents[0];
+			//Only support GET or POST
+			if(!(requestMethod.equals("GET")||requestMethod.equals("POST")||requestMethod.equals("HEAD")||requestMethod.equals("CONNECT")))
+			{
+				throw new HTTPException(400,"The web server only understands GET or POST requests");
+			}
+			Matcher m=Pattern.compile("^([0-9A-Za-z]+):\\/\\/([^\\/]+)(.*)$").matcher(URI=tokens[1]);
+			if(m.find())
+				URI=m.group(3);
+			String urlComponents[]=URI.split("\\?");
 			if(urlComponents.length>1)
 			{
 				queryString=urlComponents[1];
-				//TODO charset
 			}
 			// Read and parse the rest of the HTTP headers
 			int idx;
@@ -91,8 +94,6 @@ public class Request
 				//queryString=br.readLine();
 				sb.append(queryString);
 				sb.append("\r\n");
-				//TODO charset
-				//TODO file
 			}
 			String queries[]=queryString.split("&");
 			for(String query : queries)
@@ -105,7 +106,7 @@ public class Request
 				}
 				if(!key.equals(""))
 				{
-				//formData.put(key,hex2char(value));
+					//formData.put(key,hex2char(value));
 					formData.put(key,URLDecoder.decode(value,"UTF-8"));
 				}
 			}
@@ -113,7 +114,7 @@ public class Request
 		}
 		catch(IOException ioe)
 		{
-			throw new HTTPException(400);
+			throw new HTTPException(400,ioe);
 		}
 	}
 
@@ -141,9 +142,9 @@ public class Request
 	{
 		return URI;
 	}
-	public String getContentType()
+	public void setContentType(String enc)
 	{
-		return headers.get("content-type");
+		headers.put("content-type",enc);
 	}
 	public int getContentLength()
 	{

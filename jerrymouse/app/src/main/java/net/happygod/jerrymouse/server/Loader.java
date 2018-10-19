@@ -1,7 +1,6 @@
 package net.happygod.jerrymouse.server;
 
 import dalvik.system.DexClassLoader;
-import java.io.*;
 import java.net.*;
 
 class Loader implements Runnable
@@ -17,18 +16,18 @@ class Loader implements Runnable
 	public void run()
 	{
 		Request request;
-		Response response=null;
+		Response response;
 		Class<?> c=null;
-		String function="doDefault";
+		boolean setConfig=true;
 		try
 		{
-			try
+			request=new Request(socket);
+			response=new Response(socket);
+			if(server.proxyMode())
 			{
-				request=new Request(socket);
-				response=new Response(socket);
-				if(server.proxyMode())
+				//proxy and reverse-proxy mode
+				try
 				{
-					//proxy and reverse-proxy mode
 					if(server.webroot()==null||server.webroot().equals(""))
 					{
 						c=Proxy.class;
@@ -37,23 +36,22 @@ class Loader implements Runnable
 					{
 						c=ReverseProxy.class;
 					}
+					loadServlet(c,request,response,setConfig);
 				}
-				else
+				catch(HTTPException he)
+				{
+					response.commit(he);
+				}
+			}
+			while(!server.proxyMode())
+			{
+				try
 				{
 					request.parse();
 					String URI=request.getRequestURI();
-					//TODO URI
-					//GET http://localhost:8080/ HTTP/1.1
-					//Host: localhost:8080
-					// Only support GET or POST
 					//TODO HEAD
-					String requestMethod=request.getMethod();
-					if(!(requestMethod.equals("GET")||requestMethod.equals("POST")||requestMethod.equals("HEAD")||requestMethod.equals("CONNECT")))
-					{
-						throw new HTTPException(400,"The web server only understands GET or POST requests");
-					}
 					// Assume everything is OK then.  Send back a reply.
-					//TODO lastindexof -1
+					//TODO
 					String extension=URI.substring(URI.lastIndexOf(".")+1);
 					switch(extension)
 					{
@@ -66,6 +64,7 @@ class Loader implements Runnable
 							//Load servlet
 							DexClassLoader classLoader=new DexClassLoader(filePath,server.cacheDir(),null,getClass().getClassLoader());
 							c=classLoader.loadClass(className);
+							setConfig=server.servletVisible();
 							break;
 						case "redirect":
 							//redirect(request,response);
@@ -73,44 +72,20 @@ class Loader implements Runnable
 						default:
 							c=FileSender.class;
 					}
+					loadServlet(c,request,response,setConfig);
+					if(c!=FileSender.class)
+						throw new HTTPException(200);
 				}
-				Servlet servlet;
-				Object object=c.newInstance();
-				if(object instanceof Servlet)
+				catch(HTTPException he)
 				{
-					servlet=(Servlet)object;
+					response.commit(he);
 				}
-				else
-				{
-					//if not instance of Servlet
-					throw new HTTPException(500,"This is not a Servlet.");
-				}
-				//if(server.servletVisible())
-				{
-					servlet.config(server);
-				}
-				//call servlet methods
-				servlet.init();
-				//c.getMethod(function,Request.class,Response.class).invoke(servlet,request,response);
-				if(request.getMethod().equals("GET"))
-					servlet.doGet(request,response);
-				else
-					servlet.doPost(request,response);
-				throw new HTTPException(200);
-			}
-			catch(HTTPException he)
-			{
-				response.commit(he);
-			}
-			catch(Exception e)
-			{
-				response.commit(new HTTPException(500,e));
 			}
 			socket.close();
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
-			System.err.println("Unable to read/write: "+e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -124,5 +99,44 @@ class Loader implements Runnable
 		response.setHeader("location",redirectReader.readLine());
 		throw new HTTPException(code);
 		*/
+	}
+	private void loadServlet(Class<?> c,Request request,Response response,boolean setConfig) throws Exception
+	{
+		Servlet servlet;
+		Object object=c.newInstance();
+		if(object instanceof Servlet)
+		{
+			servlet=(Servlet)object;
+		}
+		else
+		{
+			//if not instance of Servlet
+			throw new HTTPException(500,"This is not a Servlet.");
+		}
+		if(setConfig)
+		{
+			servlet.config(server);
+		}
+		//call servlet methods
+		try
+		{
+			servlet.init();
+			switch(request.getMethod())
+			{
+				case "GET":
+					servlet.doGet(request,response);
+					break;
+				case "POST":
+					servlet.doPost(request,response);
+					break;
+				default:
+					servlet.doDefault(request,response);
+					break;
+			}
+		}
+		catch(RuntimeException re)
+		{
+			throw new HTTPException(500,re);
+		}
 	}
 }

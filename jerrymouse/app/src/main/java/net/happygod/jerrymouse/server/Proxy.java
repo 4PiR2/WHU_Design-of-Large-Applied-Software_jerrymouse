@@ -25,8 +25,7 @@ class Proxy extends Servlet
 			PrintWriter pout=new PrintWriter(proxyOutput);
 			if(requestMethod.equals("CONNECT"))
 			{
-				//https
-				//response.commit("HTTP/1.1 200 Connection Established\r\n");
+				//HTTPS Connection Established
 				response.commit(new HTTPException(200));
 			}
 			else

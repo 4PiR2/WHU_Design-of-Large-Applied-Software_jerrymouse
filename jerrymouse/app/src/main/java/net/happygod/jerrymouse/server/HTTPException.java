@@ -12,12 +12,21 @@ public class HTTPException extends Exception
 		this.code=code;
 		switch(code)
 		{
-			case 200: description="OK";break;
-			case 400: description="BAD REQUEST";break;
-			case 403: description="FORBIDDEN";break;
-			case 404: description="NOT FOUND";break;
-			default: description="";
-			//TODO more
+			case 200:
+				description="OK";
+				break;
+			case 400:
+				description="BAD REQUEST";
+				break;
+			case 403:
+				description="FORBIDDEN";
+				break;
+			case 404:
+				description="NOT FOUND";
+				break;
+			default:
+				description="";
+				//TODO more
 		}
 	}
 	public HTTPException(int code,String message)

@@ -46,14 +46,14 @@ public class Pipe extends Thread
 	{
 		Pipe p=new Pipe(in2,out1);
 		pipe(in1,out2);
-		try
+		/*try
 		{
 			p.join();
 		}
 		catch(InterruptedException ie)
 		{
 			throw new HTTPException(500,ie);
-		}
+		}*/
 		if(p.he!=null)
 			throw p.he;
 	}

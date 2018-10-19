@@ -41,7 +41,8 @@ public class DBManage extends Servlet
 				out.println("<tr>");
 				for(String column:result.columns)
 				{
-					out.println("<td>"+map.get(column)+"</td>");
+					Object v=map.get(column);
+					out.println("<td>"+(v!=null?v:"")+"</td>");
 				}
 				out.println("</tr>");
 			}

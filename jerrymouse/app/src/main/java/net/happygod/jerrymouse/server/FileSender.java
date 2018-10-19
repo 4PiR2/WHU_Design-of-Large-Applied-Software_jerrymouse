@@ -35,14 +35,17 @@ class FileSender extends Servlet
 						pw.println("<a href='"+subFile.getName()+"'>"+subFile.getName()+"</a><br />");
 				}
 				pw.println("</body></html>");
+				throw new HTTPException(200);
 			}
 			else
 				throw new HTTPException(403,"You have no permission to access "+URI+" on this server");
-			//throw new HTTPException(200);
 		}
 		else
 		{
-			String extension=URI.substring(URI.lastIndexOf(".")+1), mime;
+			String extension="",mime;
+			int index=URI.lastIndexOf(".");
+			if(index>=0)
+				extension=URI.substring(index+1);
 			switch(extension)
 			{
 				case "html":
@@ -62,8 +65,7 @@ class FileSender extends Servlet
 					break;
 				default:
 					mime="application/octet-stream";
-					//TODO add file types
-					//TODO non-extension file
+					//TODO more file types
 			}
 			response.setContentType(mime);
 			try

@@ -12,7 +12,6 @@ public class Response
 	private final ByteArrayOutputStream baos;
 	private final PrintWriter pw,rpw;
 	private final DataOutputStream dos;
-	private boolean committed=false;
 	Response(Socket socket) throws IOException
 	{
 		bos=new BufferedOutputStream(socket.getOutputStream());
@@ -69,52 +68,34 @@ public class Response
 	{
 		return bos;
 	}
-	/*void resetStream() throws IOException
-	{
-		pw.flush();
-		dos.flush();
-		baos.reset();
-	}
-	void commit(String str)
-	{
-		if(committed)
-			return;
-		committed=true;
-		rpw.println(str);
-		rpw.flush();
-	}*/
 	void commit(HTTPException he) throws IOException
 	{
-		if(committed)
-			return;
-		committed=true;
 		int code=he.code();
 		String message=he.message();
 		if(code<=0)
 			return;
 		pw.flush();
 		dos.flush();
-		if(code==500)
+		if(code!=200)
 		{
-			resetHeaders();
+			if(code==500)
+				resetHeaders();
 			baos.reset();
+			new ErrorPage(he).baos.writeTo(baos);
 		}
 		if(headers.get("content-length")==null)
-			setHeader("content-length",message.length()+(code==200?baos.size():0)+"");
+			setHeader("content-length",baos.size()+"");
 		rpw.println("HTTP/1.1 "+code+" "+he.description());
 		for(String key:headers.keySet())
 		{
 			rpw.println(capitalize(key)+": "+headers.get(key));
 		}
 		rpw.println();
-		if(!message.equals(""))
-		{
-			//TODO generate a page
-			rpw.println(message);
-		}
 		rpw.flush();
 		baos.writeTo(bos);
+		baos.reset();
 		bos.flush();
+		resetHeaders();
 	}
 	private String capitalize(String str)
 	{
