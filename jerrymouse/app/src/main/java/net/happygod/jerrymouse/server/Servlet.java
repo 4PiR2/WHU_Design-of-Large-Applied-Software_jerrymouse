@@ -7,7 +7,7 @@ public abstract class Servlet
 	{
 		this.server=server;
 	}
-	public Server config()
+	protected Server config()
 	{
 		return server;
 	}
