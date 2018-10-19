@@ -1,22 +1,22 @@
 package net.happygod.jerrymouse.database;
 
-import android.content.*;
 import android.database.sqlite.*;
+import net.happygod.jerrymouse.*;
 
 class Helper extends SQLiteOpenHelper
 {
 	private final static Integer version = 1;
-	Helper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version)
+	Helper(String name,SQLiteDatabase.CursorFactory factory,int version)
 	{
-		super(context,name,factory,version);
+		super(SharedContext.get(),name,factory,version);
 	}
-	Helper(Context context,String name,int version)
+	Helper(String name,int version)
 	{
-		this(context,name,null,version);
+		this(name,null,version);
 	}
-	Helper(Context context,String name)
+	Helper(String name)
 	{
-		this(context, name, version);
+		this(name,version);
 	}
 	@Override
 	public void onCreate(SQLiteDatabase db)

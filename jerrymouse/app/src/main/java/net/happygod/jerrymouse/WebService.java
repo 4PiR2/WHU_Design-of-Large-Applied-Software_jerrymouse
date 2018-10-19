@@ -22,9 +22,9 @@ public class WebService extends Service
 			NotificationChannel channel=new NotificationChannel("fore_service","foreground service",NotificationManager.IMPORTANCE_HIGH);
 			NotificationManager notificationManager=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 			notificationManager.createNotificationChannel(channel);
-			Intent intentForeService=new Intent(this,MainActivity.class);
-			PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intentForeService,0);
-			Notification notification=new NotificationCompat.Builder(this,"fore_service").setContentTitle("Jerrymouse Web Server is running").setContentText("Touch for more options").setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_launcher_white).setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher_white)).setContentIntent(pendingIntent).build();
+			Intent intentForeService=new Intent(SharedContext.get(),MainActivity.class);
+			PendingIntent pendingIntent=PendingIntent.getActivity(SharedContext.get(),0,intentForeService,0);
+			Notification notification=new NotificationCompat.Builder(SharedContext.get(),"fore_service").setContentTitle("Jerrymouse Web Server is running").setContentText("Touch for more options").setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_launcher_white).setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher_white)).setContentIntent(pendingIntent).build();
 			startForeground(1,notification);
 			running=true;
 			startServers();
@@ -55,7 +55,7 @@ public class WebService extends Service
 	}
 	void startServers()
 	{
-		Database db=new Database("jerrymouse",this);
+		Database db=new Database("jerrymouse");
 		Result result=db.query("select * from general;");
 		for(Map map:result.values)
 		{
@@ -66,7 +66,7 @@ public class WebService extends Service
 				boolean proxyMode=(int)map.get("proxymode")!=0;
 				boolean allowIndex=(int)map.get("allowindex")!=0;
 				boolean servletVisible=(int)map.get("servletvisible")!=0;
-				addServer(new Server(port,webroot,this,proxyMode,allowIndex,servletVisible));
+				addServer(new Server(port,webroot,proxyMode,allowIndex,servletVisible));
 			}
 		}
 	}

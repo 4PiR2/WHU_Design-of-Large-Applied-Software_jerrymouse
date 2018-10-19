@@ -24,17 +24,11 @@ class Listener implements Runnable
 		try
 		{
 			new Socket("localhost",server.port());
+			thread.join();
 		}
 		catch(Exception e)
 		{
-		}
-		try
-		{
-			thread.join();
-		}
-		catch(InterruptedException e)
-		{
-			e.printStackTrace();
+			server.failure(e.getMessage());
 		}
 	}
 	public void run()
@@ -42,11 +36,13 @@ class Listener implements Runnable
 		try
 		{
 			serverSocket=new ServerSocket(server.port());
-			System.out.println("Listener listening on port "+server.port());
+			//System.err.println("Listener listening on port "+server.port());
 		}
 		catch(IOException e)
 		{
-			System.out.println("Unable to listen on port "+server.port()+": "+e.getMessage());
+			//port in use
+			server.failure("Unable to listen on port "+server.port()+": "+e.getMessage());
+			return;
 		}
 		Socket socket;
 		while(running)
@@ -54,15 +50,14 @@ class Listener implements Runnable
 			try
 			{
 				socket=serverSocket.accept();
-				//TODO port in use
 				socket.setKeepAlive(true);
 			}
 			catch(IOException e)
 			{
-				System.out.println("Unable to accept connection: "+e.getMessage());
+				server.failure("Unable to accept connection: "+server.port()+": "+e.getMessage());
 				break;
 			}
-			System.out.println("Connection accepted.");
+			//System.err.println("Connection accepted.");
 			executor.execute(new Loader(socket,server));
 		}
 		executor.shutdownNow();
@@ -72,7 +67,7 @@ class Listener implements Runnable
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			server.failure(e.getMessage());
 		}
 	}
 }

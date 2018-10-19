@@ -2,6 +2,7 @@ package net.happygod.jerrymouse.server;
 
 import dalvik.system.DexClassLoader;
 import java.net.*;
+import net.happygod.jerrymouse.*;
 
 class Loader implements Runnable
 {
@@ -62,7 +63,7 @@ class Loader implements Runnable
 							String filePath=server.webroot()+request.getRequestURI();
 							String className=filePath.substring(filePath.lastIndexOf("/")+1,filePath.lastIndexOf("."));
 							//Load servlet
-							DexClassLoader classLoader=new DexClassLoader(filePath,server.cacheDir(),null,getClass().getClassLoader());
+							DexClassLoader classLoader=new DexClassLoader(filePath,SharedContext.get().getCacheDir().getPath(),null,getClass().getClassLoader());
 							c=classLoader.loadClass(className);
 							setConfig=server.servletVisible();
 							break;

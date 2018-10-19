@@ -1,14 +1,13 @@
 package net.happygod.jerrymouse.database;
 
-import android.content.*;
 import android.database.sqlite.*;
 
 public class Database
 {
 	private SQLiteDatabase db;
-	public Database(String name, Context context)
+	public Database(String name)
 	{
-		db=new Helper(context,name).getReadableDatabase();
+		db=new Helper(name).getReadableDatabase();
 		//db=helper.getWritableDatabase();
 	}
 	public void execSQL(String sql)

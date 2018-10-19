@@ -1,7 +1,6 @@
 package net.happygod.jerrymouse.database;
 
 import android.database.*;
-
 import java.util.*;
 
 public class Result

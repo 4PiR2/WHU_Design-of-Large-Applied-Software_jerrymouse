@@ -71,7 +71,6 @@ public class Response
 	void commit(HTTPException he) throws IOException
 	{
 		int code=he.code();
-		String message=he.message();
 		if(code<=0)
 			return;
 		pw.flush();

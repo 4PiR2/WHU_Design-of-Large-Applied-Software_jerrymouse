@@ -21,12 +21,13 @@ public class MainActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 		setContentView(net.happygod.jerrymouse.R.layout.activity_main);
+		SharedContext.set(getApplicationContext());
 		checkPermission();
 		final Switch switchEnable=findViewById(R.id.switchEnable);
 		final Button buttonSettings=findViewById(R.id.buttonSettings);
 		final TextView textviewIP=findViewById(R.id.textviewIP);
 		//TODO restore status
-		final Intent serviceIntent=new Intent(this,WebService.class);
+		final Intent serviceIntent=new Intent(SharedContext.get(),WebService.class);
 		switchEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			@Override
@@ -35,16 +36,16 @@ public class MainActivity extends AppCompatActivity
 				if(b)
 				{
 					startService(serviceIntent);
-					Toast.makeText(getApplicationContext(),"Started",Toast.LENGTH_SHORT).show();
+					Toast.makeText(SharedContext.get(),"Started",Toast.LENGTH_SHORT).show();
 				}
 				else
 				{
 					stopService(serviceIntent);
-					Toast.makeText(getApplicationContext(),"Stopped",Toast.LENGTH_SHORT).show();
+					Toast.makeText(SharedContext.get(),"Stopped",Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
-		final Intent webIntent=new Intent(this,WebPageActivity.class);
+		final Intent webIntent=new Intent(SharedContext.get(),WebPageActivity.class);
 		buttonSettings.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity
 				NetworkStateReceiver.showIP(textviewIP);
 				//TODO onchange
 				((ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE)).setText(textviewIP.getText());
-				Toast.makeText(getApplicationContext(),"Copied",Toast.LENGTH_SHORT).show();
+				Toast.makeText(SharedContext.get(),"Copied",Toast.LENGTH_SHORT).show();
 			}
 		});
 		NetworkStateReceiver networkStateReceiver=new NetworkStateReceiver(textviewIP);
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		registerReceiver(networkStateReceiver,filter);
 
-		if(isServiceRunning(this,"WebService"))
+		if(isServiceRunning(SharedContext.get(),"WebService"))
 			(switchEnable).setChecked(true);
 	}
 	@Override
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity
 		boolean isAllGranted=true;
 		for(String permission : permissions)
 		{
-			if(ContextCompat.checkSelfPermission(this,permission)!=PackageManager.PERMISSION_GRANTED)
+			if(ContextCompat.checkSelfPermission(SharedContext.get(),permission)!=PackageManager.PERMISSION_GRANTED)
 			{
 				// 只要有一个权限没有被授予, 则直接返回 false
 				isAllGranted=false;

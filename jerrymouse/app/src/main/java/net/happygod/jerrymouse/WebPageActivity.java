@@ -32,7 +32,7 @@ public class WebPageActivity extends AppCompatActivity
 			e.printStackTrace();
 			//TODO fail
 		}
-		server=new Server(1998,getFilesDir().getPath()+"/settings",this,false,true,true);
+		server=new Server(1998,getFilesDir().getPath()+"/settings",false,true,true);
 		server.start();
 		progressBar=(ProgressBar)findViewById(R.id.progressbar);//进度条
 

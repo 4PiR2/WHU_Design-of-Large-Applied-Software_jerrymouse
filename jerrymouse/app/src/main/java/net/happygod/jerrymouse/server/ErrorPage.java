@@ -6,13 +6,12 @@ import java.io.*;
 
 class ErrorPage
 {
-	static Context context;
 	final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 	ErrorPage(HTTPException he)
 	{
 		int code=he.code();
 		String description=he.description(),message=he.message();
-		Database db=new Database("jerrymouse",context);
+		Database db=new Database("jerrymouse");
 		Result result=db.query("SELECT page FROM error WHERE enabled=1 AND code="+code);
 		try
 		{

@@ -1,9 +1,11 @@
 package net.happygod.jerrymouse.server;
 
 import java.io.*;
+import java.util.concurrent.*;
 
-public class Pipe extends Thread
+public class Pipe implements Runnable
 {
+	private final static ExecutorService executor=Executors.newCachedThreadPool();
 	private final InputStream in;
 	private final OutputStream out;
 	private HTTPException he;
@@ -11,7 +13,6 @@ public class Pipe extends Thread
 	{
 		this.in=in;
 		this.out=out;
-		start();
 	}
 	@Override
 	public void run()
@@ -45,6 +46,7 @@ public class Pipe extends Thread
 	public static void pipe(InputStream in1,OutputStream out2,InputStream in2,OutputStream out1) throws HTTPException
 	{
 		Pipe p=new Pipe(in2,out1);
+		executor.execute(p);
 		pipe(in1,out2);
 		/*try
 		{

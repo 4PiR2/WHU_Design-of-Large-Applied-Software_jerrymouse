@@ -39,14 +39,21 @@ public class HTTPException extends Exception
 		this(code);
 		if(e instanceof HTTPException)
 		{
-			this.message=((HTTPException)e).message;
+			message=((HTTPException)e).message;
 		}
 		else
 		{
 			StringWriter sw=new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
-			this.message=sw.toString();
-			//sw.close();
+			message=sw.toString();
+			try
+			{
+				sw.close();
+			}
+			catch(IOException ioe)
+			{
+				message+="\n"+ioe.getMessage();
+			}
 		}
 	}
 	int code()

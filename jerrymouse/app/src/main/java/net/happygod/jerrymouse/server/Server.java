@@ -1,6 +1,7 @@
 package net.happygod.jerrymouse.server;
 
 import android.content.*;
+import net.happygod.jerrymouse.*;
 
 public class Server
 {
@@ -8,17 +9,17 @@ public class Server
 	private boolean isRunning=false;
 	private int port=0;
 	private String webroot=null;
-	private Context context=null;
 	private boolean proxyMode=false;
 	private boolean allowIndex=false;
 	private boolean servletVisible=false;
+	private String message;
 	public Server()
 	{
 	}
-	public Server(int port,String webroot,Context context,boolean proxyMode,boolean allowIndex,boolean servletVisible)
+	public Server(int port,String webroot,boolean proxyMode,boolean allowIndex,boolean servletVisible)
 	{
 		this();
-		reset(port,webroot,context,proxyMode,allowIndex,servletVisible);
+		reset(port,webroot,proxyMode,allowIndex,servletVisible);
 	}
 	public int port()
 	{
@@ -28,17 +29,9 @@ public class Server
 	{
 		return webroot;
 	}
-	public Context context()
-	{
-		return context;
-	}
 	public boolean proxyMode()
 	{
 		return proxyMode;
-	}
-	public String cacheDir()
-	{
-		return context.getCacheDir().getPath();
 	}
 	public boolean isRunning()
 	{
@@ -52,13 +45,13 @@ public class Server
 	{
 		return servletVisible;
 	}
-	public void reset(int port,String webroot,Context context,boolean proxyMode,boolean allowIndex,boolean servletVisible)
+	public void reset(int port,String webroot,boolean proxyMode,boolean allowIndex,boolean servletVisible)
 	{
+		message=null;
 		if(isRunning)
 			stop();
 		this.port=port;
 		this.webroot=webroot;
-		this.context=context;
 		this.proxyMode=proxyMode;
 		this.allowIndex=allowIndex;
 		this.servletVisible=servletVisible;
@@ -70,10 +63,7 @@ public class Server
 		if(isRunning)
 			stop();
 		isRunning=true;
-		ErrorPage.context=context;
-		//TODO context override
 		listener=new Listener(this);
-		//TODO failure
 		return listener;
 	}
 	public void stop()
@@ -81,8 +71,17 @@ public class Server
 		if(!isRunning)
 			return;
 		listener.stop();
-		//TODO failure
 		listener=null;
 		isRunning=false;
+	}
+	void failure(String message)
+	{
+		this.message=message;
+		stop();
+		isRunning=false;
+	}
+	public String getMessage()
+	{
+		return message;
 	}
 }

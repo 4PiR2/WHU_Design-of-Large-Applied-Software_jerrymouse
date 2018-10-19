@@ -21,7 +21,7 @@ public class DBManage extends Servlet
 		out.println("</head><body>");
 		String type=request.getParameter("type");
 		String sql=request.getParameter("sql");
-		Database db=new Database("jerrymouse",super.config().context());
+		Database db=new Database("jerrymouse");
 		if(type==null||sql==null)
 		{
 			out.println("<h3>Parameters Error</h3>");
