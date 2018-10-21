@@ -11,6 +11,7 @@ import net.happygod.jerrymouse.server.*;
 
 public class WebService extends Service
 {
+	private static final Database db=new Database("jerrymouse");
 	private static Set<Server> servers=new HashSet<>();
 	private static boolean running=false;
 	@Override
@@ -55,16 +56,13 @@ public class WebService extends Service
 	}
 	void startServers()
 	{
-		Database db=new Database("jerrymouse");
-		Result result=db.query("SELECT * FROM general WHERE enabled=1;");
+		Result result=db.query("SELECT port,path,proxy FROM general WHERE port<>1998;");
 		for(Map map:result.values)
 		{
-			int port=(int)map.get("port");
-			String webroot=(String)map.get("webroot");
-			boolean proxyMode=(int)map.get("proxymode")!=0;
-			boolean allowIndex=(int)map.get("allowindex")!=0;
-			boolean servletVisible=(int)map.get("servletvisible")!=0;
-			addServer(new Server(port,webroot,proxyMode,allowIndex,servletVisible));
+			Integer port=(Integer)map.get("port");
+			String webroot=(String)map.get("path");
+			Integer proxy=(Integer)map.get("proxy");
+			addServer(new Server(port,webroot,proxy));
 		}
 	}
 	static List<String> checkServer()

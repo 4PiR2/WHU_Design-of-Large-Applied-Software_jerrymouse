@@ -9,7 +9,7 @@ class ReverseProxy extends Servlet
 	void doDefault(Request request,Response response) throws HTTPException
 	{
 		int port=80;
-		String[] hostTemp=server().webroot().split(":");
+		String[] hostTemp=settings().webroot.split(":");
 		String host=hostTemp[0];
 		if(hostTemp.length>1)
 			port=Integer.parseInt(hostTemp[1]);

@@ -9,10 +9,8 @@ import android.util.*;
 import android.view.*;
 import android.webkit.*;
 import android.widget.*;
-
-import net.happygod.jerrymouse.server.*;
-
 import java.io.*;
+import net.happygod.jerrymouse.server.*;
 
 public class WebPageActivity extends AppCompatActivity
 {
@@ -30,10 +28,10 @@ public class WebPageActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
-			//TODO fail
+			//e.printStackTrace();
+			Toast.makeText(SharedContext.get(),"Oops! Files are damaged!\nPlease try to reinstall the APP!",Toast.LENGTH_LONG).show();
 		}
-		server=new Server(1998,getFilesDir().getPath()+"/settings",false,true,true);
+		server=new Server(1998,getFilesDir().getPath()+"/settings",0);
 		server.start();
 		progressBar=(ProgressBar)findViewById(R.id.progressbar);//进度条
 

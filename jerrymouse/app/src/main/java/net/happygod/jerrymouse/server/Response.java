@@ -12,6 +12,7 @@ public class Response
 	private final ByteArrayOutputStream baos;
 	private final PrintWriter pw,rpw;
 	private final DataOutputStream dos;
+	private String method;
 	Response(Socket socket) throws IOException
 	{
 		bos=new BufferedOutputStream(socket.getOutputStream());
@@ -47,6 +48,10 @@ public class Response
 		resetHeaders(new HashMap<String,String>());
 		setHeader("server","Jerrymouse");
 		//TODO more
+	}
+	void setMethod(String method)
+	{
+		this.method=method.toUpperCase();
 	}
 	public void setContentType(final String contentType)
 	{
@@ -91,9 +96,12 @@ public class Response
 		}
 		rpw.println();
 		rpw.flush();
-		baos.writeTo(bos);
-		baos.reset();
-		bos.flush();
+		if(!method.equals("HEAD"))
+		{
+			baos.writeTo(bos);
+			baos.reset();
+			bos.flush();
+		}
 		resetHeaders();
 	}
 	private String capitalize(String str)

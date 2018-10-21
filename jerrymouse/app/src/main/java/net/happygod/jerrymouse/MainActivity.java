@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity
 				else
 					sb.append("Status: OK");
 				textviewStatus.setText(sb);
+				//TODO auto-update
 			}
 		});
 		NetworkStateReceiver networkStateReceiver=new NetworkStateReceiver(textviewIP);

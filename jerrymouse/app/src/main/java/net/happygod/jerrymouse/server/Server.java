@@ -6,17 +6,15 @@ public class Server
 	private boolean isRunning=false;
 	private int port=0;
 	private String webroot=null;
-	private boolean proxyMode=false;
-	private boolean allowIndex=false;
-	private boolean servletVisible=false;
+	private int proxy;
 	private String message;
 	public Server()
 	{
 	}
-	public Server(int port,String webroot,boolean proxyMode,boolean allowIndex,boolean servletVisible)
+	public Server(int port,String webroot,int proxy)
 	{
 		this();
-		reset(port,webroot,proxyMode,allowIndex,servletVisible);
+		reset(port,webroot,proxy);
 	}
 	public int port()
 	{
@@ -26,32 +24,22 @@ public class Server
 	{
 		return webroot;
 	}
-	public boolean proxyMode()
+	public int proxy()
 	{
-		return proxyMode;
+		return proxy;
 	}
 	public boolean isRunning()
 	{
 		return isRunning;
 	}
-	public boolean allowIndex()
-	{
-		return allowIndex;
-	}
-	public boolean servletVisible()
-	{
-		return servletVisible;
-	}
-	public void reset(int port,String webroot,boolean proxyMode,boolean allowIndex,boolean servletVisible)
+	public void reset(int port,String webroot,int proxy)
 	{
 		message=null;
 		if(isRunning)
 			stop();
 		this.port=port;
 		this.webroot=webroot;
-		this.proxyMode=proxyMode;
-		this.allowIndex=allowIndex;
-		this.servletVisible=servletVisible;
+		this.proxy=proxy;
 		if(isRunning)
 			start();
 	}

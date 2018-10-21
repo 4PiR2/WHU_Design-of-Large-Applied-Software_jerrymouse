@@ -5,16 +5,16 @@ import java.io.*;
 
 class ErrorPage
 {
+	private static final Database db=new Database("jerrymouse");
 	final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 	ErrorPage(HTTPException he)
 	{
 		int code=he.code();
 		String description=he.description(),message=he.message();
-		Database db=new Database("jerrymouse");
-		Result result=db.query("SELECT page FROM error WHERE enabled=1 AND code="+code);
+		Result result=db.query("SELECT path FROM error WHERE code="+code+" LIMIT 1;");
 		try
 		{
-			String page=(String)result.values.iterator().next().get("page");
+			String page=(String)result.values.iterator().next().get("path");
 			//String page="/storage/emulated/0/web/404.html";
 			BufferedInputStream bis=new BufferedInputStream(new FileInputStream(page));
 			Pipe.pipe(bis,baos);

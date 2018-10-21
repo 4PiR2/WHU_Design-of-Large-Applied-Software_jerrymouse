@@ -8,7 +8,7 @@ class FileSender extends Servlet
 	void doDefault(Request request,Response response) throws HTTPException
 	{
 		String URI=request.getRequestURI();
-		File file=new File(server().webroot(),URI);
+		File file=new File(getPath(settings(),URI));
 		// Check for file permission or not found error.
 		if(!file.exists())
 		{
@@ -20,7 +20,7 @@ class FileSender extends Servlet
 		}
 		if(file.isDirectory())
 		{
-			if(server().allowIndex())
+			if(settings().directory)
 			{
 				//TODO pretty page
 				PrintWriter pw=response.getWriter();
@@ -73,7 +73,8 @@ class FileSender extends Servlet
 				BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file));
 				response.setHeader("content-length",file.length()+"");
 				response.commit(new HTTPException(200));
-				Pipe.pipe(bis,response.getRawStream());
+				if(!request.getMethod().equals("HEAD"))
+					Pipe.pipe(bis,response.getRawStream());
 				bis.close();
 			}
 			catch(IOException ioe)
@@ -81,5 +82,14 @@ class FileSender extends Servlet
 				throw new HTTPException(500,ioe);
 			}
 		}
+	}
+	static String getPath(Settings settings,String URI)
+	{
+		if(settings==null||settings.path.equals(""))
+			return settings.webroot+URI;
+		else if(settings.path.charAt(0)!='/')
+			return settings.webroot+'/'+settings.path;
+		else
+			return settings.path;
 	}
 }

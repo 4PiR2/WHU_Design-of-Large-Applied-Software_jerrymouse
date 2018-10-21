@@ -57,7 +57,7 @@ class Listener implements Runnable
 				continue;
 			}
 			//System.err.println("Connection accepted.");
-			executor.execute(new Loader(socket,server));
+			executor.execute(new Connector(socket,server));
 		}
 		executor.shutdownNow();
 		try

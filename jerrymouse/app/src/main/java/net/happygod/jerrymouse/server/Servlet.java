@@ -2,14 +2,14 @@ package net.happygod.jerrymouse.server;
 
 public abstract class Servlet
 {
-	private Server server=null;
-	void server(Server server)
+	private Settings settings;
+	void settings(Settings settings)
 	{
-		this.server=server;
+		this.settings=settings;
 	}
-	protected Server server()
+	protected Settings settings()
 	{
-		return server;
+		return settings;
 	}
 	public void init() throws HTTPException
 	{
