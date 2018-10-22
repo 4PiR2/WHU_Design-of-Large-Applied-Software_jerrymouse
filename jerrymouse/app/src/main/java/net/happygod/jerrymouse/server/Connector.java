@@ -64,8 +64,18 @@ class Connector implements Runnable
 			request.parse();
 			Settings settings=new Settings(server,request.getRequestURI());
 			response.setMethod(request.getMethod());
+			//check permission
 			if(settings.permission==0||settings.permission==1&&!socket.getInetAddress().isLoopbackAddress())
 				throw new HTTPException(403,"You have no permission to access "+request.getRequestURI()+" on this server");
+			if(settings.authentication!=null&&!"".equals(settings.authentication))
+			{
+				String authorization=request.getHeader("authorization");
+				if(authorization==null||!authorization.substring(authorization.indexOf(' ')+1).equals(settings.authentication))
+				{
+					response.setHeader("www-authenticate","Basic realm=\"Connecting to Jerrymouse Web Server\"");
+					throw new HTTPException(401);
+				}
+			}
 			//Assume everything is OK then.  Send back a reply.
 			Container container=new Container(settings,request,response);
 			switch(settings.type)

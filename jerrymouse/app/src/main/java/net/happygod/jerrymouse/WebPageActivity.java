@@ -36,7 +36,7 @@ public class WebPageActivity extends AppCompatActivity
 		progressBar=(ProgressBar)findViewById(R.id.progressbar);//进度条
 
 		webView=(WebView)findViewById(R.id.webview);
-		webView.loadUrl("file:///android_asset/settings/dbmanage.html");
+		webView.loadUrl("file:///android_asset/settings/dbmanager.html");
 		//webView.loadUrl("http://localhost:1998/dbmanage.html");
 
 		//使用webview显示html代码

@@ -22,6 +22,16 @@ class Proxy extends Servlet
 			final Socket proxySocket=new Socket(host,port);
 			final BufferedInputStream proxyInput=new BufferedInputStream(proxySocket.getInputStream());
 			final BufferedOutputStream proxyOutput=new BufferedOutputStream(proxySocket.getOutputStream());
+			//check permission
+			if(settings().authentication!=null&&!"".equals(settings().authentication))
+			{
+				String authorization=request.getHeader("proxy-authorization");
+				if(authorization==null||!authorization.substring(authorization.indexOf(' ')+1).equals(settings().authentication))
+				{
+					response.setHeader("proxy-authenticate","Basic realm=\"Connecting to Jerrymouse Proxy\"");
+					throw new HTTPException(407);
+				}
+			}
 			if("CONNECT".equals(requestMethod))
 			{
 				//HTTPS Connection Established

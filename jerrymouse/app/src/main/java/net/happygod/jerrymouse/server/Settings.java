@@ -28,10 +28,11 @@ public class Settings
 		webroot=server.webroot();
 		if(URI==null)
 		{
-			permission=type=0;
-			directory=visible=false;
-			authentication=path=URIs=null;
-			return;
+			URI="/";
+			//permission=type=0;
+			//directory=visible=false;
+			//authentication=path=URIs=null;
+			//return;
 		}
 		StringBuilder sb=new StringBuilder("'/',");
 		String tmp="";

@@ -11,7 +11,7 @@ public class Request
 	private final Hashtable<String,String> headers=new Hashtable<>();
 	private final Hashtable<String,Object> parameters=new Hashtable<>();
 	private final BufferedInputStream bis;
-	private byte[] readData;
+	private RequestInputStream rs;
 	Request(Socket s) throws HTTPException
 	{
 		try
@@ -31,7 +31,7 @@ public class Request
 			queryString="";
 			headers.clear();
 			parameters.clear();
-			RequestInputStream rs=new RequestInputStream(bis);
+			rs=new RequestInputStream(bis);
 			//Wait for HTTP request from the connection
 			String line;
 			line=rs.readLine();
@@ -123,7 +123,6 @@ public class Request
 					parseQueryString(line,contentType.startsWith("application/x-www-form-urlencoded"));
 				}
 			}
-			readData=rs.getReadData();
 		}
 		catch(IOException ioe)
 		{
@@ -219,7 +218,7 @@ public class Request
 	}
 	public byte[] getReadData()
 	{
-		return readData;
+		return rs.getReadData();
 	}
 	public class BinaryParameter
 	{
@@ -249,12 +248,17 @@ public class Request
 		String readLine() throws IOException
 		{
 			StringWriter sw=new StringWriter();
-			int i;
+			int i,max=100000000;
+			label:
 			while(true)
 			{
 				while((i=read())!=(int)'\r')
+				{
+					if(max--<=0||i==-1)
+						break label;
 					sw.write(i);
-				if((i=read())=='\n')
+				}
+				if((i=read())=='\n'||i==-1)
 					break;
 				sw.write((int)'\r');
 				sw.write(i);
@@ -263,7 +267,9 @@ public class Request
 		}
 		byte[] getReadData()
 		{
-			return baos.toByteArray();
+			byte[] readData=baos.toByteArray();
+			baos.reset();
+			return readData;
 		}
 	}
 }

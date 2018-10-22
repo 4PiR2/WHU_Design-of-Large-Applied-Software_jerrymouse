@@ -1,10 +1,10 @@
 package net.happygod.jerrymouse;
 
 import android.app.*;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.content.*;
+import android.graphics.*;
 import android.os.*;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.*;
 import java.util.*;
 import net.happygod.jerrymouse.database.*;
 import net.happygod.jerrymouse.server.*;

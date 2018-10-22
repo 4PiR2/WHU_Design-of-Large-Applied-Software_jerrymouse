@@ -11,7 +11,6 @@ import android.support.v4.content.*;
 import android.support.v7.app.*;
 import android.view.*;
 import android.widget.*;
-
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity

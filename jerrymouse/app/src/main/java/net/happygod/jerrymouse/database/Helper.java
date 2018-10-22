@@ -63,7 +63,8 @@ class Helper extends SQLiteOpenHelper
 		       + "(8080,'/redirectp',NULL,NULL,NULL,NULL,1,'https://www.happygod.net'),"
 		       + "(8080,'/redirect',NULL,NULL,NULL,NULL,2,'https://www.happygod.net'),"
 		       + "(8080,'/test.dex',NULL,NULL,NULL,NULL,3,NULL),"
-		       + "(8050,'/',2,'',1,1,0,'')"
+		       + "(8050,'/',2,'dXNlcm5hbWU6cGFzc3dvcmQ=',1,1,0,''),"
+		       + "(8000,'/',2,'dXNlcm5hbWU6cGFzc3dvcmQ=',1,1,0,'')"
 		       + ";";
 		sql[5]="INSERT INTO error VALUES"
 		       + "(404,'/storage/emulated/0/web/error/404.html')"
