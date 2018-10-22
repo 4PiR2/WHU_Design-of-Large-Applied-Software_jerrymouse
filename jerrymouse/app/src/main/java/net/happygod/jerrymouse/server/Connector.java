@@ -1,6 +1,6 @@
 package net.happygod.jerrymouse.server;
 
-import dalvik.system.DexClassLoader;
+import dalvik.system.*;
 import java.net.*;
 import net.happygod.jerrymouse.*;
 
@@ -75,7 +75,7 @@ class Connector implements Runnable
 					response.setHeader("location",settings.path);
 					throw new HTTPException(300+settings.type);
 				case 3:
-					String filePath=FileSender.getPath(settings,request.getRequestURI());
+					String filePath=FileManager.getPath(settings,request.getRequestURI());
 					String className=filePath.substring(filePath.lastIndexOf("/")+1);
 					if(className.contains("."))
 						className=className.substring(0,className.lastIndexOf("."));
@@ -84,7 +84,7 @@ class Connector implements Runnable
 					container.run(classLoader.loadClass(className));
 					throw new HTTPException(200);
 				default:
-					container.run(FileSender.class);
+					container.run(FileManager.class);
 			}
 		}
 		catch(HTTPException he)

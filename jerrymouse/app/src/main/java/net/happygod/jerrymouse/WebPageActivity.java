@@ -179,7 +179,7 @@ public class WebPageActivity extends AppCompatActivity
 		for(String fileName : list)
 		{
 			//recursively call
-			String newDir=dir+(dir.equals("")?"":"/")+fileName, newPath=path+"/"+fileName;
+			String newDir=dir+("".equals(dir)?"":"/")+fileName, newPath=path+"/"+fileName;
 			if(!copyAssets(am,newDir,newPath))
 			{
 				//cp

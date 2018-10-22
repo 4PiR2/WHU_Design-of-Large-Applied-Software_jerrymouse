@@ -8,9 +8,10 @@ import java.util.regex.*;
 public class Request
 {
 	private String requestMethod="", URI="", queryString="";
-	private final Hashtable<String,String> headers=new Hashtable<>(), formData=new Hashtable<>();
+	private final Hashtable<String,String> headers=new Hashtable<>();
+	private final Hashtable<String,Object> parameters=new Hashtable<>();
 	private final BufferedInputStream bis;
-	private String data;
+	private byte[] readData;
 	Request(Socket s) throws HTTPException
 	{
 		try
@@ -27,16 +28,16 @@ public class Request
 	{
 		try
 		{
-			BufferedReader br=new BufferedReader(new InputStreamReader(bis));
-			StringBuilder sb=new StringBuilder();
-			// Wait for HTTP request from the connection
+			queryString="";
+			headers.clear();
+			parameters.clear();
+			RequestInputStream rs=new RequestInputStream(bis);
+			//Wait for HTTP request from the connection
 			String line;
-			line=br.readLine();
-			sb.append(line);
-			sb.append("\r\n");
-			// Bail out if line is null. In case some client tries to be
-			// funny and close immediately after connection.  (I am
-			// looking at you, Chrome!)
+			line=rs.readLine();
+			//Bail out if line is null. In case some client tries to be
+			//funny and close immediately after connection.  (I am
+			//looking at you, Chrome!)
 			if(line==null)
 			{
 				throw new HTTPException(400);
@@ -44,73 +45,85 @@ public class Request
 			//Log client's requests.
 			//System.err.println("Request: "+line);
 			String tokens[]=line.split(" ");
-			if(!tokens[2].substring(0,4).equalsIgnoreCase("HTTP"))
+			if(!"HTTP".equalsIgnoreCase(tokens[2].substring(0,4)))
 				throw new HTTPException(400);
 			requestMethod=tokens[0].toUpperCase();
 			//Only support GET or POST
-			if(!(requestMethod.equals("GET")||requestMethod.equals("POST")||requestMethod.equals("HEAD")||requestMethod.equals("CONNECT")))
+			if(!("GET".equals(requestMethod)||"POST".equals(requestMethod)||"HEAD".equals(requestMethod)||"CONNECT".equals(requestMethod)))
 			{
 				throw new HTTPException(400,"The web server only understands GET or POST requests");
 			}
-			Matcher m=Pattern.compile("^([0-9A-Za-z]+):\\/\\/([^\\/]+)(.*)$").matcher(URI=tokens[1]);
+			Matcher m=Pattern.compile("^(([0-9A-Za-z]+):\\/\\/([^\\/]+))?([^?]*)(\\?(.*))?$").matcher(URI=tokens[1]);
 			if(m.find())
-				URI=m.group(3);
-			String urlComponents[]=URI.split("\\?");
-			if(urlComponents.length>1)
 			{
-				queryString=urlComponents[1];
+				URI=m.group(4);
+				queryString=m.group(6);
+				parseQueryString(queryString,true);
 			}
-			// Read and parse the rest of the HTTP headers
-			int idx;
-			line=br.readLine();
-			sb.append(line);
-			sb.append("\r\n");
-			while(!line.equals(""))
+
+			//Read and parse the rest of the HTTP headers
+			line=rs.readLine();
+			while(!"".equals(line))
 			{
-				idx=line.indexOf(":");
-				if(idx<0)
+				int index=line.indexOf(":");
+				if(index<0)
 				{
-					//headers=null;
 					break;
 				}
 				else
 				{
-					headers.put(line.substring(0,idx).toLowerCase(),line.substring(idx+1).trim());
+					headers.put(line.substring(0,index).toLowerCase(),line.substring(index+1).trim());
 				}
-				line=br.readLine();
-				sb.append(line);
-				sb.append("\r\n");
+				line=rs.readLine();
 			}
-			// read form data if POST
-			if(requestMethod.equals("POST"))
+
+			//read form formData if POST
+			if("POST".equals(requestMethod))
 			{
 				int contentLength=getContentLength();
-				final char[] data=new char[contentLength];
+				byte[] bytes=new byte[contentLength];
+				rs.read(bytes,0,contentLength);
+				char[] chars=new char[contentLength];
 				for(int i=0;i<contentLength;i++)
+					chars[i]=(char)bytes[i];
+				line=new String(chars);
+				String contentType=getContentType();
+				if(contentType.startsWith("multipart/form-data"))
 				{
-					data[i]=(char)br.read();
+					String boundary="--"+contentType.split("=")[1];
+					Pattern p=Pattern.compile("Content-Disposition: ?([^ ;]*); ?name=\"([^\"]*)\"(; ?filename=\"([^\"]*)\")? ?\\r?\\n( ?Content-Type: ?([^ \\r\\n]*) ?\\r?\\n)?\\r?\\n(.*)\\r?\\n"
+	                      ,Pattern.MULTILINE|Pattern.DOTALL);
+					for(String zone:line.split(boundary))
+					{
+						m=p.matcher(zone);
+						if(m.find())
+						{
+							BinaryParameter bp=new BinaryParameter();
+							bp.attr.put("Content-Disposition",m.group(1));
+							bp.attr.put("name",m.group(2));
+							if(m.group(4)!=null)
+								bp.attr.put("filename",m.group(4));
+							if(m.group(6)!=null)
+								bp.attr.put("Content-Type",m.group(6));
+							char[] data=m.group(7).toCharArray();
+							bp.data=new byte[data.length];
+							for(int i=0;i<data.length;i++)
+							{
+								bp.data[i]=(byte)data[i];
+							}
+							if(bp.attr.get("name")!=null&&!"".equals(bp.attr.get("name")))
+								parameters.put(bp.attr.get("name"),bp);
+						}
+					}
 				}
-				queryString=new String(data);
-				//queryString=br.readLine();
-				sb.append(queryString);
-				sb.append("\r\n");
+				else
+				{
+					//application/x-www-form-urlencoded
+					//text/plain
+					parseQueryString(line,contentType.startsWith("application/x-www-form-urlencoded"));
+				}
 			}
-			String queries[]=queryString.split("&");
-			for(String query : queries)
-			{
-				String[] keys=query.split("=");
-				String key=keys[0], value="";
-				if(keys.length>1)
-				{
-					value=keys[1];
-				}
-				if(!key.equals(""))
-				{
-					//formData.put(key,hex2char(value));
-					formData.put(key,URLDecoder.decode(value,"UTF-8"));
-				}
-			}
-			data=sb.toString();
+			readData=rs.getReadData();
 		}
 		catch(IOException ioe)
 		{
@@ -134,6 +147,32 @@ public class Request
 		sb.append(str.substring(i));
 		return sb.toString();
 	}
+
+	private void parseQueryString(String queryString,boolean decode) throws UnsupportedEncodingException
+	{
+		if(queryString==null||"".equals(queryString))
+			return;
+		if(queryString.charAt(0)=='?')
+			queryString=queryString.substring(1);
+		if(decode)
+			queryString=URLDecoder.decode(queryString,"UTF-8");//parameters.put(key,hex2char(value));
+		else
+			queryString=queryString.replace('+',' ');
+		for(String query : queryString.split("&"))
+		{
+			String[] keys=query.split("=");
+			String key=keys[0], value="";
+			if(keys.length>1)
+			{
+				value=keys[1];
+			}
+			if(!"".equals(key))
+			{
+				parameters.put(key,value);
+			}
+		}
+	}
+
 	public String getMethod()
 	{
 		return requestMethod;
@@ -142,9 +181,9 @@ public class Request
 	{
 		return URI;
 	}
-	public void setContentType(String enc)
+	public String getContentType()
 	{
-		headers.put("content-type",enc);
+		return headers.get("content-type");
 	}
 	public int getContentLength()
 	{
@@ -152,11 +191,15 @@ public class Request
 	}
 	public String getParameter(String name)
 	{
-		return formData.get(name);
+		return parameters.get(name).toString();
+	}
+	public byte[] getBinaryParameter(String name)
+	{
+		return ((BinaryParameter)parameters.get(name)).data;
 	}
 	public Enumeration<String> getParameterNames()
 	{
-		return formData.keys();
+		return parameters.keys();
 	}
 	public String getHeader(String name)
 	{
@@ -174,8 +217,53 @@ public class Request
 	{
 		return bis;
 	}
-	public String getData()
+	public byte[] getReadData()
 	{
-		return data;
+		return readData;
+	}
+	public class BinaryParameter
+	{
+		public final Map<String,String> attr=new HashMap<>();
+		public byte[] data;
+		@Override
+		public String toString()
+		{
+			return new String(data);
+		}
+	}
+	private class RequestInputStream extends InputStream
+	{
+		private final InputStream is;
+		private final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+		RequestInputStream(InputStream is)
+		{
+			this.is=is;
+		}
+		@Override
+		public int read() throws IOException
+		{
+			int i=is.read();
+			baos.write(i);
+			return i;
+		}
+		String readLine() throws IOException
+		{
+			StringWriter sw=new StringWriter();
+			int i;
+			while(true)
+			{
+				while((i=read())!=(int)'\r')
+					sw.write(i);
+				if((i=read())=='\n')
+					break;
+				sw.write((int)'\r');
+				sw.write(i);
+			}
+			return sw.toString();
+		}
+		byte[] getReadData()
+		{
+			return baos.toByteArray();
+		}
 	}
 }

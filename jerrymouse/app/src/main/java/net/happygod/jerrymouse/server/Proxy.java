@@ -22,16 +22,15 @@ class Proxy extends Servlet
 			final Socket proxySocket=new Socket(host,port);
 			final BufferedInputStream proxyInput=new BufferedInputStream(proxySocket.getInputStream());
 			final BufferedOutputStream proxyOutput=new BufferedOutputStream(proxySocket.getOutputStream());
-			PrintWriter pout=new PrintWriter(proxyOutput);
-			if(requestMethod.equals("CONNECT"))
+			if("CONNECT".equals(requestMethod))
 			{
 				//HTTPS Connection Established
 				response.commit(new HTTPException(200));
 			}
 			else
 			{
-				pout.println(request.getData());
-				pout.flush();
+				proxyOutput.write(request.getReadData());
+				proxyOutput.flush();
 			}
 			Pipe.pipe(proxyInput,response.getRawStream(),request.getStream(),proxyOutput);
 			proxySocket.close();

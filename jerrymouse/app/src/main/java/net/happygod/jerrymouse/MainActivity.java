@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
 		for(int i=0;i<serviceList.size();i++)
 		{
 			System.out.println(serviceList.get(i).service.getClassName());
-			if(serviceList.get(i).service.getClassName().equals(className)==true)
+			if(className.equals(serviceList.get(i).service.getClassName())==true)
 			{
 				isRunning=true;
 				break;

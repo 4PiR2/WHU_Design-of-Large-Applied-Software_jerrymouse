@@ -4,7 +4,7 @@ import java.util.*;
 import net.happygod.jerrymouse.server.*;
 import net.happygod.jerrymouse.database.*;
 
-public class DBManage extends Servlet
+public class DBManager extends Servlet
 {
 	@Override
 	public void doGet(Request request,Response response)
@@ -26,7 +26,7 @@ public class DBManage extends Servlet
 		{
 			out.println("<h3>Parameters Error</h3>");
 		}
-		else if(type.equals("query"))
+		else if("query".equals(type))
 		{
 			Result result=db.query(sql);
 			out.println("<table border='1'>");
@@ -48,7 +48,7 @@ public class DBManage extends Servlet
 			}
 			out.println("</table>");
 		}
-		else if(type.equals("execute"))
+		else if("execute".equals(type))
 		{
 			db.execSQL(sql);
 		}

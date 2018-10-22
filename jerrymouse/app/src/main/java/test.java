@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.Enumeration;
+import java.util.*;
 import net.happygod.jerrymouse.server.*;
 
 public class test extends Servlet
@@ -10,9 +10,9 @@ public class test extends Servlet
 		System.out.println("Servlet -- init");
 	}
 	@Override
-	public void doGet(Request request,Response response)
+	public void doGet(final Request request,final Response response)
 	{
-		//response.setContentType("text/html");
+		response.setContentType("text/html");
 		PrintWriter out=response.getWriter();
 		out.println("<html><head>");
 		out.println("<title>ServletTest</title>");
@@ -42,6 +42,30 @@ public class test extends Servlet
 		out.println("<h2>Request URI</h2>");
 		out.println(request.getRequestURI()+"<br />");
 
+		out.println("<h2>RAW</h2>");
+		out.println("<pre>");
+		out.write(new String(request.getReadData()));
+		out.flush();
+		Thread t=new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					byte[] buffer=new byte[2048];
+					InputStream in=request.getStream();
+					OutputStream out=response.getStream();
+					out.write(buffer,0,in.read(buffer));
+					out.flush();
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+		out.println("</pre>");
 		out.println("</body></html>");
 		out.flush();
 	}

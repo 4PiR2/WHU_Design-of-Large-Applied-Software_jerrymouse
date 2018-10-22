@@ -2,7 +2,7 @@ package net.happygod.jerrymouse.server;
 
 import net.happygod.jerrymouse.database.*;
 
-class Settings
+public class Settings
 {
 	private static final Database db=new Database("jerrymouse");
 	private static Object getValue(Settings settings,String key)
@@ -18,9 +18,9 @@ class Settings
 			return null;
 		}
 	}
-	final int port, permission,type;
-	final boolean directory,visible;
-	final String webroot,authentication,path;
+	public final int port, permission,type;
+	public final boolean directory,visible;
+	public final String webroot,authentication,path;
 	private final String URIs;
 	Settings(Server server,String URI)
 	{
@@ -37,7 +37,7 @@ class Settings
 		String tmp="";
 		for(String s:URI.split("/"))
 		{
-			if(s.equals(""))
+			if("".equals(s))
 				continue;
 			tmp+="/"+s;
 			sb.append("'"+tmp+"',");
