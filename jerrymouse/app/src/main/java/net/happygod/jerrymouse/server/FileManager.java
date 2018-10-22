@@ -142,18 +142,9 @@ class FileManager extends Servlet
 		}
 		doGet(request,response);
 	}
-	static String getPath(Settings settings,String URI)
+	private File fetchFile(String URI) throws HTTPException
 	{
-		if(settings==null||"".equals(settings.path))
-			return settings.webroot+URI;
-		else if(settings.path.charAt(0)!='/')
-			return settings.webroot+'/'+settings.path;
-		else
-			return settings.path;
-	}
-	File fetchFile(String URI) throws HTTPException
-	{
-		File file=new File(getPath(settings(),URI));
+		File file=new File(Connector.getPath(settings(),URI));
 		// Check for file permission or not found error.
 		if(!file.exists())
 		{

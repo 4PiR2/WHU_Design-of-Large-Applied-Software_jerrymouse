@@ -85,7 +85,7 @@ class Connector implements Runnable
 					response.setHeader("location",settings.path);
 					throw new HTTPException(300+settings.type);
 				case 3:
-					String filePath=FileManager.getPath(settings,request.getRequestURI());
+					String filePath=getPath(settings,request.getRequestURI());
 					String className=filePath.substring(filePath.lastIndexOf("/")+1);
 					if(className.contains("."))
 						className=className.substring(0,className.lastIndexOf("."));
@@ -101,5 +101,14 @@ class Connector implements Runnable
 		{
 			response.commit(he);
 		}
+	}
+	static String getPath(Settings settings,String URI)
+	{
+		if(settings==null||"".equals(settings.path))
+			return settings.webroot+URI;
+		else if(settings.path.charAt(0)!='/')
+			return settings.webroot+'/'+settings.path;
+		else
+			return settings.path;
 	}
 }
