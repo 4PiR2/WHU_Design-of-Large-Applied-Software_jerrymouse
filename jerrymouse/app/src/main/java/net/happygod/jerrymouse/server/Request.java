@@ -12,6 +12,7 @@ public class Request
 	private final Hashtable<String,Object> parameters=new Hashtable<>();
 	private final BufferedInputStream bis;
 	private RequestInputStream rs;
+	private boolean proxyMode;
 	Request(Socket s) throws HTTPException
 	{
 		try
@@ -77,8 +78,8 @@ public class Request
 				line=rs.readLine();
 			}
 
-			//read form formData if POST
-			if("POST".equals(requestMethod))
+			//read data if POST
+			if(!proxyMode&&"POST".equals(requestMethod))
 			{
 				int contentLength=getContentLength();
 				byte[] bytes=new byte[contentLength];
@@ -153,10 +154,6 @@ public class Request
 			return;
 		if(queryString.charAt(0)=='?')
 			queryString=queryString.substring(1);
-		if(decode)
-			queryString=URLDecoder.decode(queryString,"UTF-8");//parameters.put(key,hex2char(value));
-		else
-			queryString=queryString.replace('+',' ');
 		for(String query : queryString.split("&"))
 		{
 			String[] keys=query.split("=");
@@ -167,6 +164,16 @@ public class Request
 			}
 			if(!"".equals(key))
 			{
+				if(decode)
+				{
+					key=URLDecoder.decode(key,"UTF-8");
+					value=URLDecoder.decode(value,"UTF-8");
+				}
+				else
+				{
+					key=key.replace('+',' ');
+					value=value.replace('+',' ');
+				}
 				parameters.put(key,value);
 			}
 		}
@@ -190,11 +197,25 @@ public class Request
 	}
 	public String getParameter(String name)
 	{
-		return parameters.get(name).toString();
+		try
+		{
+			return parameters.get(name).toString();
+		}
+		catch(RuntimeException re)
+		{
+			return "";
+		}
 	}
 	public byte[] getBinaryParameter(String name)
 	{
-		return ((BinaryParameter)parameters.get(name)).data;
+		try
+		{
+			return ((BinaryParameter)parameters.get(name)).data;
+		}
+		catch(RuntimeException re)
+		{
+			return null;
+		}
 	}
 	public Enumeration<String> getParameterNames()
 	{
@@ -219,6 +240,10 @@ public class Request
 	public byte[] getReadData()
 	{
 		return rs.getReadData();
+	}
+	void setProxyMode(boolean proxyMode)
+	{
+		this.proxyMode=proxyMode;
 	}
 	public class BinaryParameter
 	{
@@ -254,7 +279,7 @@ public class Request
 			{
 				while((i=read())!=(int)'\r')
 				{
-					if(max--<=0||i==-1)
+					if(--max<=0||i==-1)
 						break label;
 					sw.write(i);
 				}

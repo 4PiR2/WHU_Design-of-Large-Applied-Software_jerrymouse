@@ -1,19 +1,31 @@
 package net.happygod.jerrymouse.server;
 
+import java.util.*;
 import net.happygod.jerrymouse.database.*;
 
 public class Settings
 {
 	private static final Database db=new Database("jerrymouse");
-	private static Object getValue(Settings settings,String key)
+	private static Map<String,Object> getValues(Settings settings,String key)
 	{
-		String sql="SELECT "+key+" FROM link WHERE port="+settings.port+" AND uri IN("+settings.URIs+") AND "+key+" IS NOT NULL ORDER BY LENGTH(uri) DESC LIMIT 1;";
+		String sql="SELECT uri,"+key+" FROM link WHERE port="+settings.port+" AND (uri='"+settings.URI+"' OR uri IN("+settings.URIs+") AND extensive=1) AND "+key+" IS NOT NULL ORDER BY LENGTH(uri) DESC LIMIT 5;";
 		Result result=db.query(sql);
 		try
 		{
-			return result.values.iterator().next().get(key);
+			return result.values.iterator().next();
 		}
-		catch(Exception e)
+		catch(RuntimeException re)
+		{
+			return null;
+		}
+	}
+	private static Object getValue(Settings settings,String key)
+	{
+		try
+		{
+			return getValues(settings,key).get(key);
+		}
+		catch(RuntimeException re)
 		{
 			return null;
 		}
@@ -21,20 +33,21 @@ public class Settings
 	public final int port, permission,type;
 	public final boolean directory,visible;
 	public final String webroot,authentication,path;
-	private final String URIs;
+	private final String URI,URIs;
 	Settings(Server server,String URI)
 	{
 		port=server.port();
 		webroot=server.webroot();
 		if(URI==null)
 		{
-			URI="/";
+			URI="";
 			//permission=type=0;
 			//directory=visible=false;
 			//authentication=path=URIs=null;
 			//return;
 		}
-		StringBuilder sb=new StringBuilder("'/',");
+		this.URI=URI;
+		StringBuilder sb=new StringBuilder("'',");
 		String tmp="";
 		for(String s:URI.split("/"))
 		{
@@ -56,7 +69,19 @@ public class Settings
 		visible=o!=null&&(int)o!=0;
 		o=getValue(this,"type");
 		type=(int)(o==null?0:o);
-		o=getValue(this,"path");
-		path=(String)(o==null?"":o);
+		Map<String,Object> map=getValues(this,"path");
+		String path,uri;
+		if(map==null||(path=(String)map.get("path"))==null)
+			path="";
+		if(map==null||(uri=(String)map.get("uri"))==null)
+			uri="";
+		if("".equals(path))
+			path=webroot;
+		else if(path.charAt(0)!='/'&&!path.startsWith("http"))
+			path=webroot+'/'+path;
+		Boolean pathextensive;
+		if(map==null||(pathextensive=(Boolean)map.get("pathextensive"))==null||pathextensive)
+			path+=URI.substring(uri.length());
+		this.path=path;
 	}
 }

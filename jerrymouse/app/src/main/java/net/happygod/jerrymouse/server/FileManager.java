@@ -1,6 +1,9 @@
 package net.happygod.jerrymouse.server;
 
+import android.os.*;
 import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
 class FileManager extends Servlet
 {
@@ -8,23 +11,17 @@ class FileManager extends Servlet
 	public void doGet(Request request,Response response) throws HTTPException
 	{
 		String URI=request.getRequestURI();
-		File file=fetchFile(URI);
+		File file=new File(settings().path);
+		checkFile(file,"r");
 		if(file.isDirectory())
 		{
 			if(settings().directory)
 			{
-				//TODO pretty page & rename function
+				//TODO pretty page
 				PrintWriter pw=response.getWriter();
 				response.setContentType("text/html; charset=UTF-8");
-				pw.println("<html><head></head><body>");
+				pw.println("<html><head><title>File Manager</title></head><body>");
 				pw.println("<form action='' method='POST' enctype='multipart/form-data'>");
-				pw.println("<label>Type</label>"
-				           +"<br />"
-				           +"<input id='file' type='radio' name='type' value='file'>"
-				           +"<label for='file'>File</label>"
-				           +"<input id='directory' type='radio' name='type' value='directory'>"
-				           +"<label for='directory'>Directory</label>"
-				           +"<br />");
 				pw.println("<label>Operation</label>"
 				           +"<br />"
 				           +"<input id='create' type='radio' name='operation' value='create'>"
@@ -34,22 +31,32 @@ class FileManager extends Servlet
 				           +"<input id='delete' type='radio' name='operation' value='delete'>"
 				           +"<label for='delete'>Delete</label>"
 				           +"<br />");
-				pw.println("<input id='oldname' type='text' name='oldname' placeholder='filename'>"+"<br />");
+				pw.println("<label>Type</label>"
+				           +"<br />"
+				           +"<input id='filetype' type='radio' name='type' value='file'>"
+				           +"<label for='filetype'>File</label>"
+				           +"<input id='directorytype' type='radio' name='type' value='directory'>"
+				           +"<label for='directorytype'>Directory</label>"
+				           +"<br />");
+				pw.println("<label>Filename</label>"
+				           +"<br />"
+				           +"<label for='oldname'>Old</label>"
+				           +"<input id='oldname' type='text' name='oldname'>"
+				           +"<label for='newname'>New</label>"
+				           +"<input id='newname' type='text' name='newname'>"
+				           +"<br />");
 				pw.println("<label for='file'>Upload File</label>"
 				           +"<br />"
-				           +"<input id='file' type='file' name='file'>"
+				           +"<input id='file' type='file' name='file' onchange=\"document.getElementById('newname').value=this.value.substring(Math.max(this.value.lastIndexOf('\\\\'),this.value.lastIndexOf('/'))+1)\">"
 				           +"<br />");
 				pw.println("<button type='submit'>Submit</button>");
-				pw.println("</form>");
-				pw.println("<a href='..'>Parent</a><br />");
+				pw.println("</form><table>");
+				pw.println("<tr><td><a href='..'>Parent Directory</a></td></tr>");
 				for(File subFile:file.listFiles())
 				{
-					if(subFile.isDirectory())
-						pw.println("<a href='"+subFile.getName()+"/'>"+subFile.getName()+"</a><br />");
-					else
-						pw.println("<a href='"+subFile.getName()+"'>"+subFile.getName()+"</a><br />");
+					pw.println("<tr><td><a href='"+subFile.getName()+(subFile.isFile()?"' target='_blank'":"/' ")+">"+subFile.getName()+"</a></td><td>"+new Date(subFile.lastModified())+"</td><td>"+subFile.length()+"</td></tr>");
 				}
-				pw.println("</body></html>");
+				pw.println("</table></body></html>");
 				throw new HTTPException(200);
 			}
 			else
@@ -101,59 +108,76 @@ class FileManager extends Servlet
 	@Override
 	public void doPost(Request request,Response response) throws HTTPException
 	{
-		File file=fetchFile(request.getRequestURI());
-		if(!file.isDirectory())
-			throw new HTTPException(404);
-		file=new File(file,request.getParameter("oldname"));
-		String type=request.getParameter("type"),operation=request.getParameter("operation");
-		switch(type)
+		File file=new File(settings().path);
+		checkFile(file,"r");
+		if(file.isDirectory())
 		{
-			case "directory":
-				switch(operation)
-				{
-					case "create":
-						file.mkdirs();
-						break;
-					case "delete":
-						file.delete();
-						break;
-				}
-				break;
-			case "file":
-				switch(operation)
-				{
-					case "create":
+			File oldfile=new File(file,request.getParameter("oldname"));
+			checkFile(oldfile,"w");
+			File newfile=new File(file,request.getParameter("newname"));
+			checkFile(newfile,"");
+			boolean success=false;
+			String type=request.getParameter("type"), operation=request.getParameter("operation");
+			switch(operation)
+			{
+				case "create":
+					if("file".equals(type))
+					{
 						try
 						{
-							BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(file));
+							BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(newfile));
 							bos.write(request.getBinaryParameter("file"));
 							bos.close();
+							success=true;
 						}
 						catch(IOException ioe)
 						{
 							throw new HTTPException(500,ioe);
 						}
-						break;
-					case "delete":
-						file.delete();
-						break;
-				}
-				break;
+					}
+					else if("directory".equals(type))
+					{
+						success=newfile.mkdirs();
+					}
+					break;
+				case "rename":
+					success=oldfile.renameTo(newfile);
+					break;
+				case "delete":
+					success=deleteR(oldfile);
+					break;
+			}
+			if(!success)
+				throw new HTTPException(500);
 		}
 		doGet(request,response);
 	}
-	private File fetchFile(String URI) throws HTTPException
+	private void checkFile(File file,String mode) throws HTTPException
 	{
-		File file=new File(Connector.getPath(settings(),URI));
 		// Check for file permission or not found error.
-		if(!file.exists())
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+		if(!Paths.get(file.getAbsolutePath()).normalize().startsWith(Paths.get(new File(settings().webroot).getAbsolutePath()).normalize()))
 		{
-			throw new HTTPException(404,"Unable to find "+URI+" on this server");
+			throw new HTTPException(403,"You have no permission to access "+file.getName()+" on this server");
 		}
-		if(!file.canRead())
+		if((mode.contains("e")||mode.contains("r")||mode.contains("w"))&&!file.exists())
 		{
-			throw new HTTPException(403,"You have no permission to access "+URI+" on this server");
+			throw new HTTPException(404,"Unable to find "+file.getName()+" on this server");
 		}
-		return file;
+		if(mode.contains("r")&&!file.canRead()||mode.contains("w")&&!file.canWrite())
+		{
+			throw new HTTPException(403,"You have no permission to access "+file.getName()+" on this server");
+		}
+	}
+	private boolean deleteR(File file)
+	{
+		if(file.isDirectory())
+		{
+			for(File subFile:file.listFiles())
+			{
+				deleteR(subFile);
+			}
+		}
+		return file.delete();
 	}
 }
