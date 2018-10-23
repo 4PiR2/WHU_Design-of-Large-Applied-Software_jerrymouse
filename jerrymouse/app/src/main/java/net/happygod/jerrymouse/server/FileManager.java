@@ -20,7 +20,7 @@ class FileManager extends Servlet
 				//TODO pretty page
 				PrintWriter pw=response.getWriter();
 				response.setContentType("text/html; charset=UTF-8");
-				pw.println("<html><head><title>File Manager</title></head><body>");
+				pw.println("<html><head><meta content='text/html;charset=utf-8'><title>File Manager</title></head><body>");
 				pw.println("<form action='' method='POST' enctype='multipart/form-data'>");
 				pw.println("<label>Operation</label>"
 				           +"<br />"
@@ -156,7 +156,7 @@ class FileManager extends Servlet
 	{
 		// Check for file permission or not found error.
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-		if(!Paths.get(file.getAbsolutePath()).normalize().startsWith(Paths.get(new File(settings().webroot).getAbsolutePath()).normalize()))
+		if(!Paths.get(file.getAbsolutePath()).normalize().startsWith(Paths.get(new File(settings().webroot).getAbsolutePath()).normalize())&&settings().port!=1998)
 		{
 			throw new HTTPException(403,"You have no permission to access "+file.getName()+" on this server");
 		}

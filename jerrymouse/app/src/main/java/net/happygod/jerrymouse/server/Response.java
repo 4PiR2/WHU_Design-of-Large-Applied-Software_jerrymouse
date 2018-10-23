@@ -48,7 +48,7 @@ public class Response
 	{
 		resetHeaders(new HashMap<String,String>());
 		setHeader("server","Jerrymouse");
-		//TODO more
+		//TODO more default response headers
 	}
 	void setMethod(String method)
 	{
@@ -127,6 +127,7 @@ public class Response
 	}
 	private static class ErrorPage
 	{
+		//TODO pretty page
 		private static final Database db=new Database("jerrymouse");
 		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		ErrorPage(HTTPException he)
@@ -155,7 +156,7 @@ public class Response
 				pw.println(message);
 				pw.println("</pre>");
 				pw.println("<br />");
-				pw.println("<p>Jerrymouse Web Server</p>");
+				pw.println("<p><i>Jerrymouse Web Server</i></p>");
 				pw.println("</body></html>");
 				pw.flush();
 			}

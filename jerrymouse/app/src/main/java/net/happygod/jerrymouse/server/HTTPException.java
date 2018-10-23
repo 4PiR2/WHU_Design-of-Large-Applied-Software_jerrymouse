@@ -26,7 +26,7 @@ public class HTTPException extends Exception
 				break;
 			default:
 				description="";
-				//TODO more
+				//TODO more error codes
 		}
 	}
 	public HTTPException(int code,String message)

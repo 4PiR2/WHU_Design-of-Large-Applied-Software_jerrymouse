@@ -10,6 +10,8 @@ import android.view.*;
 import android.webkit.*;
 import android.widget.*;
 import java.io.*;
+import java.util.*;
+import net.happygod.jerrymouse.database.*;
 import net.happygod.jerrymouse.server.*;
 
 public class WebPageActivity extends AppCompatActivity
@@ -17,6 +19,7 @@ public class WebPageActivity extends AppCompatActivity
 	private WebView webView;
 	private ProgressBar progressBar;
 	private Server server;
+	private static final Database db=new Database("jerrymouse");
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -31,7 +34,10 @@ public class WebPageActivity extends AppCompatActivity
 			//e.printStackTrace();
 			Toast.makeText(SharedContext.get(),"Oops! Files are damaged!\nPlease try to reinstall the APP!",Toast.LENGTH_LONG).show();
 		}
-		server=new Server(1998,getFilesDir().getPath()+"/settings",0);
+		Result result=db.query("SELECT port,path,proxy FROM general WHERE port=1998 LIMIT 1;");
+		Map<String,Object> map=result.values.iterator().next();
+		server=new Server((Integer)map.get("port"),(String)map.get("path"),(Integer)map.get("proxy"));
+		//server=new Server(1998,getFilesDir().getPath()+"/settings",0);
 		server.start();
 		progressBar=(ProgressBar)findViewById(R.id.progressbar);//进度条
 

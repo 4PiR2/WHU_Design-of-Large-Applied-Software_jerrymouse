@@ -203,7 +203,7 @@ public class Request
 		}
 		catch(RuntimeException re)
 		{
-			return "";
+			return null;
 		}
 	}
 	public byte[] getBinaryParameter(String name)

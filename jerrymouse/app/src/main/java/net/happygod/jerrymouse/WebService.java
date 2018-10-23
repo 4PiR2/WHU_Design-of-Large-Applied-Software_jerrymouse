@@ -57,7 +57,7 @@ public class WebService extends Service
 	void startServers()
 	{
 		Result result=db.query("SELECT port,path,proxy FROM general WHERE port<>1998;");
-		for(Map map:result.values)
+		for(Map<String,Object> map:result.values)
 		{
 			Integer port=(Integer)map.get("port");
 			String webroot=(String)map.get("path");

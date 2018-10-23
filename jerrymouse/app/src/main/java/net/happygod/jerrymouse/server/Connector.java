@@ -38,8 +38,7 @@ class Connector implements Runnable
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
-			//TODO comment it after debug
+			//e.printStackTrace();
 		}
 	}
 
