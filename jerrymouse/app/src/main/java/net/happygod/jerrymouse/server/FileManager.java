@@ -156,7 +156,7 @@ class FileManager extends Servlet
 	{
 		// Check for file permission or not found error.
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-		if(!Paths.get(file.getAbsolutePath()).normalize().startsWith(Paths.get(new File(settings().webroot).getAbsolutePath()).normalize())&&settings().port!=1998)
+		if(!Paths.get(file.getAbsolutePath()).normalize().startsWith(Paths.get(new File(settings().webroot).getAbsolutePath()).normalize())&&settings().port!=ServerConst.SYS_PORT)
 		{
 			throw new HTTPException(403,"You have no permission to access "+file.getName()+" on this server");
 		}

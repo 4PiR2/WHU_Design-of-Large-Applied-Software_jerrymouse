@@ -1,107 +1,100 @@
 package net.happygod.jerrymouse;
 
 import android.*;
-import android.app.*;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.*;
 import android.content.pm.*;
 import android.net.*;
 import android.os.*;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.*;
 import android.support.v4.content.*;
-import android.support.v7.app.*;
+import android.support.v7.app.AppCompatActivity;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
+import net.happygod.jerrymouse.database.*;
+import net.happygod.jerrymouse.server.*;
 
 public class MainActivity extends AppCompatActivity
 {
+	private static final Fragment homeFragment=new HomeFragment();
+	private static final Fragment webPageFragment=new WebPageFragment();
+	private final FragmentManager fragmentManager=getFragmentManager();
+	private Server server;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
-		setContentView(net.happygod.jerrymouse.R.layout.activity_main);
-		SharedContext.set(getApplicationContext());
+		Const.context=getApplication();
 		checkPermission();
-		final Switch switchEnable=findViewById(R.id.switchEnable);
-		final Button buttonSettings=findViewById(R.id.buttonSettings);
-		final TextView textviewIP=findViewById(R.id.textviewIP);
-		final TextView textviewStatus=findViewById(R.id.textviewStatus);
-		final Intent serviceIntent=new Intent(SharedContext.get(),WebService.class);
-		switchEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+		setContentView(R.layout.activity_main);
+
+		BottomNavigationView navigation=(BottomNavigationView)findViewById(R.id.navigation);
+		navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
 		{
 			@Override
-			public void onCheckedChanged(CompoundButton compoundButton,boolean b)
+			public boolean onNavigationItemSelected(MenuItem item)
 			{
-				if(b)
+				FragmentTransaction transaction=fragmentManager.beginTransaction();
+				switch(item.getItemId())
 				{
-					startService(serviceIntent);
-					Toast.makeText(SharedContext.get(),"Started",Toast.LENGTH_SHORT).show();
+					case R.id.navigation_home:
+						transaction.replace(R.id.frame_layout,homeFragment);
+						break;
+					case R.id.navigation_dashboard:
+						//transaction.replace(R.id.frame_layout,new HomeFragment());
+						break;
+					case R.id.navigation_settings:
+						transaction.replace(R.id.frame_layout,webPageFragment);
+						break;
+					case R.id.navigation_about:
+						//transaction.replace(R.id.frame_layout,webPageFragment);
+						break;
+					default:
+						return false;
 				}
-				else
-				{
-					stopService(serviceIntent);
-					Toast.makeText(SharedContext.get(),"Stopped",Toast.LENGTH_SHORT).show();
-				}
+				transaction.commit();
+				return true;
 			}
 		});
-		final Intent webIntent=new Intent(SharedContext.get(),WebPageActivity.class);
-		buttonSettings.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				startActivity(webIntent);
-			}
-		});
-		textviewIP.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				NetworkStateReceiver.showIP(textviewIP);
-				//refresh when clicked
-				((ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE)).setText(textviewIP.getText());
-				Toast.makeText(SharedContext.get(),"Copied",Toast.LENGTH_SHORT).show();
-				for(String str:WebService.checkServer())
-				{
-					if(str!=null)
-						System.out.println(str+"\nPlease check your phone and try again!");
-				}
-			}
-		});
-		textviewStatus.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				StringBuilder sb=new StringBuilder();
-				for(String status:WebService.checkServer())
-				{
-					if(status!=null)
-						sb.append(status+"\n");
-				}
-				if(sb.length()>0)
-					sb.append("Please check your phone and try again!");
-				else
-					sb.append("Status: OK");
-				textviewStatus.setText(sb);
-				//TODO auto-update
-			}
-		});
-		NetworkStateReceiver networkStateReceiver=new NetworkStateReceiver(textviewIP);
+
+		FragmentTransaction transaction=fragmentManager.beginTransaction();
+		transaction.replace(R.id.frame_layout,homeFragment);
+		transaction.commit();
+
+		NetworkStateReceiver networkStateReceiver=new NetworkStateReceiver();
 		IntentFilter filter=new IntentFilter();
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		registerReceiver(networkStateReceiver,filter);
-		if(isServiceRunning(SharedContext.get(),"net.happygod.jerrymouse.WebService"))
-			switchEnable.setChecked(true);
+
+		if(DBConst.SYS_DB.query("SELECT version FROM lock;").values.isEmpty())
+		{
+			try
+			{
+				Const.copyAssets(getAssets(),"settings/dynamic",getFilesDir().getPath()+"/settings");
+			}
+			catch(Exception e)
+			{
+				Const.toast("Oops! Files are damaged!\nPlease try to reinstall the APP!",Toast.LENGTH_LONG);
+			}
+			DBConst.SYS_DB.query("INSERT INTO lock VALUES(1);");
+		}
+
+		Result result=DBConst.SYS_DB.query("SELECT port,path,proxy FROM general WHERE port="+ServerConst.SYS_PORT+" LIMIT 1;");
+		Map<String,Object> map=result.values.iterator().next();
+		server=new Server((Integer)map.get("port"),(String)map.get("path"),(Integer)map.get("proxy"));
+		server.start();
 	}
+
 	@Override
-	public void onDestroy()
+	protected void onDestroy()
 	{
 		super.onDestroy();
-	}
-
-	private void reset()
-	{
-
+		server.stop();
 	}
 
 	public void checkPermission()
@@ -111,7 +104,7 @@ public class MainActivity extends AppCompatActivity
 		boolean isAllGranted=true;
 		for(String permission : permissions)
 		{
-			if(ContextCompat.checkSelfPermission(SharedContext.get(),permission)!=PackageManager.PERMISSION_GRANTED)
+			if(ContextCompat.checkSelfPermission(Const.context(),permission)!=PackageManager.PERMISSION_GRANTED)
 			{
 				// 只要有一个权限没有被授予, 则直接返回 false
 				isAllGranted=false;
@@ -136,29 +129,5 @@ public class MainActivity extends AppCompatActivity
 		{
 
 		}
-	}
-
-	/*
-	 * 判断服务是否启动,context上下文对象 ，className服务的name
-	 */
-	public static boolean isServiceRunning(Context mContext,String className)
-	{
-		boolean isRunning=false;
-		ActivityManager activityManager=(ActivityManager)mContext.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningServiceInfo> serviceList=activityManager.getRunningServices(30);
-		if(!(serviceList.size()>0))
-		{
-			return false;
-		}
-		for(int i=0;i<serviceList.size();i++)
-		{
-			System.out.println(serviceList.get(i).service.getClassName());
-			if(className.equals(serviceList.get(i).service.getClassName())==true)
-			{
-				isRunning=true;
-				break;
-			}
-		}
-		return isRunning;
 	}
 }

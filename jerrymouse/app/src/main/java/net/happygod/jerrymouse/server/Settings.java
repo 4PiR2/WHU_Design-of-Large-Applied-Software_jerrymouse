@@ -5,11 +5,10 @@ import net.happygod.jerrymouse.database.*;
 
 public class Settings
 {
-	private static final Database db=new Database("jerrymouse");
 	private static Map<String,Object> getValues(Settings settings,String key)
 	{
 		String sql="SELECT uri,"+key+" FROM link WHERE port="+settings.port+" AND (uri='"+settings.URI+"' OR uri IN("+settings.URIs+") AND extensive=1) AND "+key+" IS NOT NULL ORDER BY LENGTH(uri) DESC LIMIT 1;";
-		Result result=db.query(sql);
+		Result result=DBConst.SYS_DB.query(sql);
 		try
 		{
 			return result.values.iterator().next();

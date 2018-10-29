@@ -19,40 +19,44 @@ public class DBManager extends Servlet
 		out.println("<html><head>");
 		out.println("<title>Results</title>");
 		out.println("</head><body>");
+		String database=request.getParameter("database");
 		String type=request.getParameter("type");
 		String sql=request.getParameter("sql");
-		Database db=new Database("jerrymouse");
-		if(type==null||sql==null)
+		if(database==null||type==null||sql==null)
 		{
 			out.println("<h3>Parameters Error</h3>");
 		}
-		else if("query".equals(type))
+		else
 		{
-			Result result=db.query(sql);
-			out.println("<table border='1'>");
-			out.println("<tr>");
-			for(String column:result.columns)
+			Database db=new Database(database);
+			if("query".equals(type))
 			{
-				out.println("<th>"+column+"</th>");
-			}
-			out.println("</tr>");
-			for(Map map:result.values)
-			{
+				Result result=db.query(sql);
+				out.println("<table border='1'>");
 				out.println("<tr>");
-				for(String column:result.columns)
+				for(String column : result.columns)
 				{
-					Object v=map.get(column);
-					out.println("<td>"+(v!=null?v:"")+"</td>");
+					out.println("<th>"+column+"</th>");
 				}
 				out.println("</tr>");
+				for(Map map : result.values)
+				{
+					out.println("<tr>");
+					for(String column : result.columns)
+					{
+						Object v=map.get(column);
+						out.println("<td>"+(v!=null?v:"")+"</td>");
+					}
+					out.println("</tr>");
+				}
+				out.println("</table>");
 			}
-			out.println("</table>");
+			else if("execute".equals(type))
+			{
+				db.execSQL(sql);
+			}
+			db.close();
 		}
-		else if("execute".equals(type))
-		{
-			db.execSQL(sql);
-		}
-		db.close();
 		out.println("</body></html>");
 		out.flush();
 	}

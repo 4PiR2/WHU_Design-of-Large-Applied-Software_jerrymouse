@@ -8,12 +8,7 @@ import java.util.*;
 
 public class NetworkStateReceiver extends BroadcastReceiver
 {
-	private final TextView textviewIP;
-	NetworkStateReceiver(TextView textviewIP)
-	{
-		super();
-		this.textviewIP=textviewIP;
-	}
+	static TextView textviewIP;
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
@@ -28,7 +23,8 @@ public class NetworkStateReceiver extends BroadcastReceiver
 		{
 			//ie.printStackTrace();
 		}
-		showIP(textviewIP);
+		if(textviewIP!=null)
+			showIP(textviewIP);
 	}
 	static void showIP(TextView textView)
 	{

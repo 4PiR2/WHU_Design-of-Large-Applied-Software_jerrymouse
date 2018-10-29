@@ -7,7 +7,6 @@ import java.util.concurrent.*;
 class Listener implements Runnable
 {
 	private final Thread thread;
-	private static final ExecutorService executor=Executors.newCachedThreadPool(); //all listeners now use the same thread pool!
 	private boolean running;
 	private final Server server;
 	private ServerSocket serverSocket;
@@ -57,7 +56,7 @@ class Listener implements Runnable
 				continue;
 			}
 			//System.err.println("Connection accepted.");
-			executor.execute(new Connector(socket,server));
+			ServerConst.EXECUTOR.execute(new Connector(socket,server));
 		}
 		//executor.shutdownNow();
 		try

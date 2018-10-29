@@ -90,7 +90,7 @@ class Connector implements Runnable
 					if(className.contains("."))
 						className=className.substring(0,className.lastIndexOf("."));
 					//Load servlet
-					DexClassLoader classLoader=new DexClassLoader(filePath,SharedContext.get().getCacheDir().getPath(),null,getClass().getClassLoader());
+					DexClassLoader classLoader=new DexClassLoader(filePath,Const.context().getCacheDir().getPath(),null,getClass().getClassLoader());
 					container.run(classLoader.loadClass(className));
 					throw new HTTPException(200);
 				default:

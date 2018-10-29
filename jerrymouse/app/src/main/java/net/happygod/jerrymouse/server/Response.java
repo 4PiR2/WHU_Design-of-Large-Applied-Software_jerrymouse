@@ -128,13 +128,12 @@ public class Response
 	private static class ErrorPage
 	{
 		//TODO pretty page
-		private static final Database db=new Database("jerrymouse");
 		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		ErrorPage(HTTPException he)
 		{
 			int code=he.code();
 			String description=he.description(),message=he.message();
-			Result result=db.query("SELECT path FROM error WHERE code="+code+" LIMIT 1;");
+			Result result=DBConst.SYS_DB.query("SELECT path FROM error WHERE code="+code+" LIMIT 1;");
 			try
 			{
 				String page=(String)result.values.iterator().next().get("path");
