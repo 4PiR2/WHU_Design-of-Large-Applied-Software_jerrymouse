@@ -20,8 +20,10 @@ import net.happygod.jerrymouse.server.*;
 
 public class MainActivity extends AppCompatActivity
 {
-	private static final Fragment homeFragment=new HomeFragment();
-	private static final Fragment webPageFragment=new WebPageFragment();
+	private static final Fragment homeFragment=new HomeFragment(),
+		dashboardFragment=new DashboardFragment(),
+		webPageFragment=new WebPageFragment(),
+		aboutFragment=new AboutFragment();
 	private final FragmentManager fragmentManager=getFragmentManager();
 	private Server server;
 	@Override
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity
 		checkPermission();
 		setContentView(R.layout.activity_main);
 
-		BottomNavigationView navigation=(BottomNavigationView)findViewById(R.id.navigation);
+		BottomNavigationView navigation=findViewById(R.id.navigation);
 		navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
 		{
 			@Override
@@ -46,13 +48,13 @@ public class MainActivity extends AppCompatActivity
 						transaction.replace(R.id.frame_layout,homeFragment);
 						break;
 					case R.id.navigation_dashboard:
-						//transaction.replace(R.id.frame_layout,new HomeFragment());
+						transaction.replace(R.id.frame_layout,dashboardFragment);
 						break;
 					case R.id.navigation_settings:
 						transaction.replace(R.id.frame_layout,webPageFragment);
 						break;
 					case R.id.navigation_about:
-						//transaction.replace(R.id.frame_layout,webPageFragment);
+						transaction.replace(R.id.frame_layout,aboutFragment);
 						break;
 					default:
 						return false;
@@ -94,13 +96,13 @@ public class MainActivity extends AppCompatActivity
 	protected void onDestroy()
 	{
 		super.onDestroy();
-		server.stop();
+		//server.stop();
 	}
 
 	public void checkPermission()
 	{
 		//第 1 步: 检查是否有相应的权限
-		String[] permissions=new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+		String[] permissions=new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 		boolean isAllGranted=true;
 		for(String permission : permissions)
 		{

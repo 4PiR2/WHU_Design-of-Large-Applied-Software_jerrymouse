@@ -37,13 +37,4 @@ public class WebPageActivity extends AppCompatActivity
 		return super.onKeyDown(keyCode,event);
 		*/
 	}
-
-	@Override
-	protected void onDestroy()
-	{
-		super.onDestroy();
-		//释放资源
-		//webView.destroy();
-		//webView=null;
-	}
 }

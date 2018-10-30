@@ -11,6 +11,7 @@ import java.util.*;
 public class HomeFragment extends Fragment
 {
 	private Activity activity;
+	private boolean isServiceOn;
 	@Override
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState)
 	{
@@ -22,9 +23,6 @@ public class HomeFragment extends Fragment
 		super.onActivityCreated(savedInstanceState);
 		activity=getActivity();
 		final Switch switchEnable=activity.findViewById(R.id.switchEnable);
-		final Button buttonSettings=activity.findViewById(R.id.buttonSettings);
-		final TextView textviewIP=activity.findViewById(R.id.textviewIP);
-		final TextView textviewStatus=activity.findViewById(R.id.textviewStatus);
 		final Intent serviceIntent=new Intent(Const.context(),WebService.class);
 		switchEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
@@ -34,54 +32,19 @@ public class HomeFragment extends Fragment
 				if(b)
 				{
 					activity.startService(serviceIntent);
-					Const.toast("Started",Toast.LENGTH_SHORT);
+					if(!isServiceOn)
+						Const.toast("Started",Toast.LENGTH_SHORT);
+					isServiceOn=true;
 				}
 				else
 				{
 					activity.stopService(serviceIntent);
-					Const.toast("Stopped",Toast.LENGTH_SHORT);
+					if(isServiceOn)
+						Const.toast("Stopped",Toast.LENGTH_SHORT);
+					isServiceOn=false;
 				}
 			}
 		});
-		final Intent webIntent=new Intent(Const.context(),WebPageActivity.class);
-		buttonSettings.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				startActivity(webIntent);
-			}
-		});
-		NetworkStateReceiver.textviewIP=textviewIP;
-		NetworkStateReceiver.showIP(textviewIP);
-		textviewIP.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				NetworkStateReceiver.showIP(textviewIP);
-				//refresh when clicked
-				((ClipboardManager)activity.getSystemService(Context.CLIPBOARD_SERVICE)).setText(textviewIP.getText());
-				Const.toast("Copied",Toast.LENGTH_SHORT);
-			}
-		});
-		textviewStatus.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				StringBuilder sb=new StringBuilder();
-				for(String status:WebService.checkServer())
-				{
-					if(status!=null)
-						sb.append(status+"\n");
-				}
-				if(sb.length()>0)
-					sb.append("Please check your phone and try again!");
-				else
-					sb.append("Status: OK");
-				textviewStatus.setText(sb);
-				//TODO auto-update
-			}
-		});
-
 		//if(isServiceRunning(Const.context(),"net.happygod.jerrymouse.WebService"))
 			//switchEnable.setChecked(true);
 	}

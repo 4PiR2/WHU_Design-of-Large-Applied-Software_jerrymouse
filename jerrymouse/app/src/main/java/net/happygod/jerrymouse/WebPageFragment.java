@@ -1,7 +1,6 @@
 package net.happygod.jerrymouse;
 
 import android.app.*;
-import android.content.*;
 import android.graphics.*;
 import android.os.*;
 import android.support.v7.app.AlertDialog;
@@ -28,11 +27,10 @@ public class WebPageFragment extends Fragment
 		super.onActivityCreated(savedInstanceState);
 		activity=getActivity();
 
-		progressBar=(ProgressBar)activity.findViewById(R.id.progressbar);//进度条
+		progressBar=activity.findViewById(R.id.progressbar);//进度条
 
-		webView=(WebView)activity.findViewById(R.id.webview);
+		webView=activity.findViewById(R.id.webview);
 		webView.loadUrl(homepage);
-		//webView.loadUrl("http://localhost:1998/dbmanage.html");
 
 		//使用webview显示html代码
 		//        webView.loadDataWithBaseURL(null,"<html><head><title> 欢迎您 </title></head>" +
@@ -75,20 +73,7 @@ public class WebPageFragment extends Fragment
 		{//页面开始加载
 			progressBar.setVisibility(View.VISIBLE);
 		}
-
-		@Override
-		public boolean shouldOverrideUrlLoading(WebView view,String url)
-		{
-			Log.i("ansen","拦截url:"+url);
-			if(url.equals("http://www.google.com/"))
-			{
-				//Toast.makeText(WebPageActivity.this,"国内不能访问google,拦截该url",Toast.LENGTH_LONG).show();
-				return true;//表示我已经处理过了
-			}
-			return super.shouldOverrideUrlLoading(view,url);
-		}
 	};
-
 	//WebChromeClient主要辅助WebView处理Javascript的对话框、网站图标、网站title、加载进度等
 	private WebChromeClient webChromeClient=new WebChromeClient()
 	{
@@ -109,15 +94,6 @@ public class WebPageFragment extends Fragment
 			return true;
 		}
 
-		//获取网页标题
-		@Override
-		public void onReceivedTitle(WebView view,String title)
-		{
-			super.onReceivedTitle(view,title);
-			Log.i("ansen","网页标题:"+title);
-		}
-
-		//加载进度回调
 		@Override
 		public void onProgressChanged(WebView view,int newProgress)
 		{
@@ -125,15 +101,11 @@ public class WebPageFragment extends Fragment
 		}
 	};
 
-
 	//@Override
 	public boolean onKeyDown(int keyCode,KeyEvent event)
 	{
-		final Intent mainIntent=new Intent(Const.context(),MainActivity.class);
-		startActivity(mainIntent);
 		return true;
 		/*
-		Log.i("ansen","是否有上一个页面:"+webView.canGoBack());
 		if(webView.canGoBack()&&keyCode==KeyEvent.KEYCODE_BACK)
 		{//点击返回按钮的时候判断有没有上一页
 			webView.goBack(); // goBack()表示返回webView的上一页面
@@ -143,15 +115,18 @@ public class WebPageFragment extends Fragment
 		*/
 	}
 
-	/**
-	 * JS调用android的方法
-	 *
-	 * @param str
-	 * @return
-	 */
+	//JS调用android的方法
 	@JavascriptInterface //仍然必不可少
 	public void getClient(String str)
 	{
 		Log.i("ansen","html调用客户端:"+str);
+	}
+
+	@Override
+	public void onDestroyView()
+	{
+		super.onDestroyView();
+		webView.destroy();
+		webView=null;
 	}
 }
