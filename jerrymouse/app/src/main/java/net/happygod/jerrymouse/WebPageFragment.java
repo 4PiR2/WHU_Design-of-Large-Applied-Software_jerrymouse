@@ -14,7 +14,7 @@ public class WebPageFragment extends Fragment
 	private Activity activity;
 	private WebView webView;
 	private ProgressBar progressBar;
-	String homepage="file:///android_asset/settings/dbmanager.html";
+	String homepage;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState)

@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity
 		Const.context=getApplication();
 		checkPermission();
 		setContentView(R.layout.activity_main);
-
 		BottomNavigationView navigation=findViewById(R.id.navigation);
 		navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
 		{
@@ -51,6 +50,7 @@ public class MainActivity extends AppCompatActivity
 						transaction.replace(R.id.frame_layout,dashboardFragment);
 						break;
 					case R.id.navigation_settings:
+						((WebPageFragment)webPageFragment).homepage="file:///android_asset/settings/dbmanager.html";
 						transaction.replace(R.id.frame_layout,webPageFragment);
 						break;
 					case R.id.navigation_about:
