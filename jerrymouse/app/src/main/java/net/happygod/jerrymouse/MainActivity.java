@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity
 						transaction.replace(R.id.frame_layout,dashboardFragment);
 						break;
 					case R.id.navigation_settings:
-						((WebPageFragment)webPageFragment).homepage="file:///android_asset/settings/dbmanager.html";
+						((WebPageFragment)webPageFragment).homepage="file:///android_asset/settings/index.html";
 						transaction.replace(R.id.frame_layout,webPageFragment);
 						break;
 					case R.id.navigation_about:
