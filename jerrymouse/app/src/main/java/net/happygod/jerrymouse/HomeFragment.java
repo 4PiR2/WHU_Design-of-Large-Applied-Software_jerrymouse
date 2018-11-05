@@ -2,8 +2,10 @@ package net.happygod.jerrymouse;
 
 import android.app.*;
 import android.content.*;
+import android.content.res.*;
 import android.os.*;
 import android.app.Fragment;
+import android.support.design.widget.*;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
@@ -22,8 +24,8 @@ public class HomeFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 		activity=getActivity();
-		final Switch switchEnable=activity.findViewById(R.id.switchEnable);
 		final Intent serviceIntent=new Intent(Const.context(),WebService.class);
+		/*final Switch switchEnable=activity.findViewById(R.id.switchEnable);
 		switchEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			@Override
@@ -44,9 +46,34 @@ public class HomeFragment extends Fragment
 					isServiceOn=false;
 				}
 			}
+		});*/
+		final FloatingActionButton fabEnable=activity.findViewById(R.id.fabEnable);
+		fabEnable.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorDisabled)));
+		fabEnable.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v)
+			{
+				if(!isServiceOn)
+				{
+					activity.startService(serviceIntent);
+					fabEnable.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorEnabled)));
+					Const.toast("Started",Toast.LENGTH_SHORT);
+				}
+				else
+				{
+					activity.stopService(serviceIntent);
+					fabEnable.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorDisabled)));
+					Const.toast("Stopped",Toast.LENGTH_SHORT);
+				}
+				isServiceOn=!isServiceOn;
+			}
 		});
-		//if(isServiceRunning(Const.context(),"net.happygod.jerrymouse.WebService"))
+		if(isServiceRunning(Const.context(),"net.happygod.jerrymouse.WebService"))
+		{
 			//switchEnable.setChecked(true);
+			isServiceOn=true;
+			fabEnable.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorEnabled)));
+		}
 	}
 
 	/*
