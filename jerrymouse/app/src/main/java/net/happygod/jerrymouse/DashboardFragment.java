@@ -46,10 +46,11 @@ public class DashboardFragment extends Fragment
 				if(sb.length()>0)
 					sb.append("Please check your phone and try again!");
 				else
-					sb.append("Status: OK");
+					sb.append("OK");
 				textviewStatus.setText(sb);
 				//TODO auto-update
 			}
 		});
+		textviewStatus.callOnClick();
 	}
 }

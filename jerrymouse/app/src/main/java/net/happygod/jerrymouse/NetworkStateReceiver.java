@@ -67,6 +67,6 @@ public class NetworkStateReceiver extends BroadcastReceiver
 		{
 			e.printStackTrace();
 		}
-		textView.setText("IP Address\n"+sb);
+		textView.setText(sb);
 	}
 }

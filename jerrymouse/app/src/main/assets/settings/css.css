@@ -1,0 +1,84 @@
+@font-face
+{
+	font-family:'Product Sans';
+	src:url(./font.woff2) format('woff2');
+}
+body
+{
+	margin:0;
+	text-align:center;
+	font-family:'Product Sans','Times New Roman','Microsoft YaHei','SimSun';
+}
+div
+{
+	width:100%;
+}
+h2
+{
+	margin:2;
+	color:#009ed6;
+}
+h3
+{
+	margin:2;
+}
+a
+{
+	text-decoration:none;
+	color:white;
+}
+a:visited
+{
+	color:white;
+}
+form
+{
+	margin-bottom:0;
+}
+input
+{
+	width:100%;
+	color:black;
+	font-family:'Product Sans','Times New Roman','Microsoft YaHei','SimSun';
+}
+button
+{
+	width:60;
+	font-family:'Product Sans','Times New Roman','Microsoft YaHei','SimSun';
+}
+hr
+{
+	margin:0;
+}
+.tr
+{
+	display:flex;
+}
+.tr:hover
+{
+	background-color:#6edbff;
+}
+.td
+{
+	flex:1;
+	margin:2;
+	min-width:0;
+}
+.tb
+{
+	margin-top:0;
+	margin-bottom:0;
+}
+#links
+{
+	background-color:#009ed6;
+}
+#headline
+{
+	background-color:white;
+}
+#headTable
+{
+	position:fixed;
+	background-color:white;
+}

@@ -15,7 +15,7 @@ def list_all_files(rootdir):
 
 def process(name):
 	count=0
-	txtfile=open(name,'r')
+	txtfile=open(name,'r',encoding='utf-8')
 	for line in txtfile:
 		count+=1
 	txtfile.close()
