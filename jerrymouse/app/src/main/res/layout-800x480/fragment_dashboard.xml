@@ -30,22 +30,22 @@
 		app:layout_constraintStart_toStartOf="@+id/cardView3"
 		app:layout_constraintTop_toTopOf="@+id/cardView3" />
 
-	<android.support.v7.widget.CardView
-		android:id="@+id/cardView"
-		android:layout_width="362dp"
-		android:layout_height="257dp"
-		android:layout_marginStart="8dp"
-		android:layout_marginTop="8dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginBottom="8dp"
-		app:cardBackgroundColor="@android:color/white"
-		app:cardCornerRadius="10dp"
-		app:cardElevation="5dp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/textView2"
-		app:layout_constraintVertical_bias="0.0" />
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="303dp"
+        android:layout_height="214dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.0" />
 
 	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/fabRefresh"
@@ -64,10 +64,10 @@
 
 	<android.support.v7.widget.CardView
 		android:id="@+id/cardView3"
-		android:layout_width="363dp"
+		android:layout_width="302dp"
 		android:layout_height="110dp"
 		android:layout_marginStart="8dp"
-		android:layout_marginTop="20dp"
+		android:layout_marginTop="4dp"
 		android:layout_marginEnd="8dp"
 		app:cardBackgroundColor="@android:color/white"
 		app:cardCornerRadius="10dp"

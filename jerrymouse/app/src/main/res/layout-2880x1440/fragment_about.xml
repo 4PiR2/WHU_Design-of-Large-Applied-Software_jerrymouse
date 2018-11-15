@@ -70,21 +70,21 @@
         app:layout_constraintVertical_bias="0.136"
         app:srcCompat="@drawable/ic_launcher_colored" />
 
-    <TextView
-        android:id="@+id/textViewVersion"
-        android:layout_width="137dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="V1.0 Alpha Build 11"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.662"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.257" />
+	<TextView
+		android:id="@+id/textViewVersion"
+		android:layout_width="137dp"
+		android:layout_height="18dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginEnd="8dp"
+		android:layout_marginBottom="8dp"
+		android:text="V1.0 Alpha Build 11"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.678"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.24" />
 
 	<Button
 		android:id="@+id/buttonContact"
