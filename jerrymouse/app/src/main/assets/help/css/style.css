@@ -1,0 +1,94 @@
+
+
+
+@media (min-width:1920px) {
+.inner h2{ font-size:80px; color:#FFF}
+.inner h6{ font-size:48px; color:#FFF}
+}
+@media (max-width: 1919px) {
+.inner h2{ font-size:64px; color:#FFF}
+.inner h6{ font-size:36px; color:#FFF}
+}
+@media (max-width: 768px) {
+.inner h2{ font-size:48px; color:#FFF}
+.inner h6{ font-size:24px; color:#FFF}
+}
+
+@media (max-width: 480px) {
+.inner h2{ font-size:38px; color:#FFF; line-height:46px; text-align:left; margin-left:15px;}
+.inner h6{ font-size:20px; color:#FFF; line-height:24px; text-align:left; margin-left:15px;}
+}
+
+.stripe {
+	position: relative;
+	width: 100%;
+	background-color: #fff
+}
+
+.stripe:before,.stripe:after {
+	content: " ";
+	display: table
+}
+
+.stripe:after {
+	clear: both
+}
+
+
+
+
+header.stripe .bg-image {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	z-index: 0
+}
+
+header.stripe .contain {
+    position: relative;
+    z-index: 1;
+}
+.stripe .contain {
+    margin: 0px auto;
+   
+}
+.text-center-tight {
+    display: table;
+    position: absolute;
+    width: 100%;
+}
+header.stripe .text-center-tight .inner {
+   text-align: center;display: table-cell;
+vertical-align: middle;
+}
+header.stripe .scroll-down {
+    position: absolute;
+    left: 50%;
+    margin-left: -25px;
+    margin-top: 100vh;
+    color: #FFF;
+    font-size: 38px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-clip: padding-box;
+    z-index: 1;
+    transition: all 0.3s ease-out 0s;
+	text-decoration:none;
+}
+
+@media (max-width: 480px) {
+header.stripe .scroll-down {
+	font-size: 24px;
+	line-height:150px;
+}
+}
+header.stripe .scroll-down::before {
+    content: "﹀";
+}
