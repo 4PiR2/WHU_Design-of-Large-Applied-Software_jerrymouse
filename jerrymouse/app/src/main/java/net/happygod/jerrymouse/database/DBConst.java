@@ -22,7 +22,6 @@ public final class DBConst
 		+"pathextensive BOOLEAN DEFAULT TRUE,"
 		+"PRIMARY KEY(port,uri)"
 		+");",
-		//TODO different error page for different port
 		"CREATE TABLE error("
 		+"code INTEGER PRIMARY KEY,"
 		+"path VARCHAR(1024) NOT NULL DEFAULT ''"
