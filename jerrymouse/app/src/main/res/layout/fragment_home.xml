@@ -10,13 +10,14 @@
 		android:id="@+id/textView"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginBottom="160dp"
 		android:text="Start Now!"
 		android:textSize="18sp"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintHorizontal_bias="0.509"
+		app:layout_constraintHorizontal_bias="0.5"
 		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent" />
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/fabEnable"
+		app:layout_constraintVertical_bias="0.2" />
 
     <!--<Switch
         android:id="@+id/switchEnable"
@@ -32,15 +33,13 @@
 		android:id="@+id/fabEnable"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="20dp"
 		android:clickable="true"
 		android:focusable="true"
 		app:fabCustomSize="150dp"
-		app:layout_constraintBottom_toTopOf="@+id/textView"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.688"
 		app:maxImageSize="80dp"
 		app:srcCompat="@drawable/ic_launcher_white" />
 

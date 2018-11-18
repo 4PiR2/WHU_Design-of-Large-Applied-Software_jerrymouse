@@ -9,125 +9,100 @@
 	<Button
 		android:id="@+id/buttonHelp"
 		style="@style/Widget.MaterialComponents.Button.TextButton"
-		android:layout_width="63dp"
-		android:layout_height="40dp"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="8dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:text="Help"
 		android:textSize="18sp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.501"
+		app:layout_constraintHorizontal_bias="0.5"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.65" />
+		app:layout_constraintVertical_bias="0.63" />
 
 	<Button
 		android:id="@+id/buttonUpdate"
 		style="@style/Widget.MaterialComponents.Button.TextButton"
-		android:layout_width="175dp"
-		android:layout_height="33dp"
-		android:layout_marginBottom="8dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:text="Check for Updates"
 		android:textSize="18sp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.502"
+		app:layout_constraintHorizontal_bias="0.5"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.549" />
+		app:layout_constraintVertical_bias="0.53" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="206dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Jerrymouse"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.783"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.142" />
+	<TextView
+		android:id="@+id/textView3"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Jerrymouse"
+		android:textSize="36sp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.05" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="83dp"
-        android:layout_height="107dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.154"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.136"
-        app:srcCompat="@drawable/ic_launcher_colored" />
+	<ImageView
+		android:id="@+id/imageView"
+		android:layout_width="0dp"
+		android:layout_height="100dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.31"
+		app:srcCompat="@drawable/ic_launcher_colored" />
 
-    <TextView
-        android:id="@+id/textViewVersion"
-        android:layout_width="137dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="V1.0 Alpha Build 11"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.662"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.257" />
+	<TextView
+		android:id="@+id/textViewVersion"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Build V1.0"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.18" />
 
 	<Button
 		android:id="@+id/buttonContact"
 		style="@style/Widget.MaterialComponents.Button.TextButton"
-		android:layout_width="126dp"
-		android:layout_height="41dp"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="8dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:text="Contact Us"
 		android:textSize="18sp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.754" />
+		app:layout_constraintVertical_bias="0.73" />
 
 	<Button
 		android:id="@+id/buttonRestore"
 		style="@style/Widget.MaterialComponents.Button.TextButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="8dp"
 		android:text="Restore Settings"
 		android:textSize="18sp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.859" />
+		app:layout_constraintVertical_bias="0.83" />
 
 	<TextView
 		android:id="@+id/textView6"
-		android:layout_width="253dp"
-		android:layout_height="24dp"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="8dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:text="Designed &amp; Developed by 2016ZGAP01"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.634"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="1.0" />
+		app:layout_constraintVertical_bias="0.95" />
 
 </android.support.constraint.ConstraintLayout>
