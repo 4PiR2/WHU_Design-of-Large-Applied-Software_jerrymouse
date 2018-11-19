@@ -12,6 +12,7 @@ public class WebPageActivity extends AppCompatActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		setTheme(Const.theme);
 		setContentView(R.layout.activity_frame);
 		WebPageFragment webPageFragment=new WebPageFragment();
 		webPageFragment.homepage="file:///android_asset/help/index.html";

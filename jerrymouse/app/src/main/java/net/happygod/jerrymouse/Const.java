@@ -10,6 +10,7 @@ import net.happygod.jerrymouse.server.*;
 public final class Const
 {
 	static Application context;
+	static int theme=R.style.AppTheme;
 	public static Context context()
 	{
 		return context;

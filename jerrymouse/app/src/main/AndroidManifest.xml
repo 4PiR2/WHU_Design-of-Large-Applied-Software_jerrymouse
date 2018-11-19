@@ -21,7 +21,7 @@
 		<activity android:name=".WebPageActivity" android:launchMode="singleTask">
 		</activity>
 		<service android:name=".WebService" android:launchMode="singleTask"/>
-		<receiver android:name=".NetworkStateReceiver">
+		<receiver android:name=".NetworkStateReceiver" android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
 				<category android:name="android.intent.category.DEFAULT" />
