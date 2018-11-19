@@ -3,13 +3,13 @@ package net.happygod.jerrymouse;
 import android.app.*;
 import android.content.*;
 import android.os.*;
-import android.support.design.widget.FloatingActionButton;
 import android.view.*;
 import android.widget.*;
 
 public class DashboardFragment extends Fragment
 {
 	private Activity activity;
+	private StatusUpdater su;
 	@Override
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState)
 	{
@@ -22,15 +22,8 @@ public class DashboardFragment extends Fragment
 		activity=getActivity();
 		final TextView textviewIP=activity.findViewById(R.id.textviewIP);
 		final TextView textviewStatus=activity.findViewById(R.id.textviewStatus);
-		final FloatingActionButton fabRefresh=activity.findViewById(R.id.fabRefresh);
 		NetworkStateReceiver.textviewIP=textviewIP;
 		NetworkStateReceiver.showIP(textviewIP);
-		fabRefresh.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				NetworkStateReceiver.showIP(textviewIP);
-			}
-		});
 		textviewIP.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
@@ -45,20 +38,62 @@ public class DashboardFragment extends Fragment
 		{
 			public void onClick(View v)
 			{
+				((ClipboardManager)activity.getSystemService(Context.CLIPBOARD_SERVICE)).setText(textviewStatus.getText());
+				Const.toast("Copied",Toast.LENGTH_SHORT);
+			}
+		});
+		su=new StatusUpdater(textviewStatus,50);
+	}
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		su.halt();
+	}
+	private static class StatusUpdater extends Thread
+	{
+		private TextView v;
+		private int interval;
+		private boolean running=true;
+		StatusUpdater(TextView v,int interval)
+		{
+			this.v=v;
+			this.interval=interval;
+			start();
+		}
+		@Override
+		public void run()
+		{
+			while(running)
+			{
 				StringBuilder sb=new StringBuilder();
 				for(String status : WebService.checkServer())
 				{
-					if(status!=null)
-						sb.append(status+"\n");
+					if(status!=null&&!"".equals(status))
+						sb.append(status).append("\n");
 				}
 				if(sb.length()>0)
 					sb.append("Please check your phone and try again!");
 				else
 					sb.append("OK");
-				textviewStatus.setText(sb);
-				//TODO auto-update
+				v.setText(sb);
+				try
+				{
+					Thread.sleep(interval);
+				}
+				catch(InterruptedException ie)
+				{}
 			}
-		});
-		textviewStatus.callOnClick();
+		}
+		void halt()
+		{
+			running=false;
+			try
+			{
+				join();
+			}
+			catch(InterruptedException ie)
+			{}
+		}
 	}
 }

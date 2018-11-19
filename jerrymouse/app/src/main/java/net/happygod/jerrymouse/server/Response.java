@@ -2,6 +2,7 @@ package net.happygod.jerrymouse.server;
 
 import java.io.*;
 import java.net.*;
+import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 import net.happygod.jerrymouse.database.*;
@@ -48,7 +49,7 @@ public class Response
 	{
 		resetHeaders(new HashMap<String,String>());
 		setHeader("server","Jerrymouse");
-		//TODO more default response headers
+		setHeader("date",new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss zzz",Locale.US).format(new Date()));
 	}
 	void setMethod(String method)
 	{

@@ -8,8 +8,8 @@
 
 	<TextView
 		android:id="@+id/textviewIP"
-		android:layout_width="334dp"
-		android:layout_height="168dp"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		android:elevation="10dp"
 		android:textAlignment="center"
 		app:layout_constraintBottom_toBottomOf="@+id/cardView"
@@ -20,8 +20,8 @@
 
 	<TextView
 		android:id="@+id/textviewStatus"
-		android:layout_width="327dp"
-		android:layout_height="83dp"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		android:elevation="10dp"
 		android:textAlignment="center"
 		android:textSize="14sp"
@@ -46,21 +46,6 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/textView2"
 		app:layout_constraintVertical_bias="0.0" />
-
-	<android.support.design.widget.FloatingActionButton
-		android:id="@+id/fabRefresh"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginEnd="20dp"
-		android:layout_marginBottom="20dp"
-		android:clickable="true"
-		android:focusable="true"
-		app:borderWidth="0dp"
-		app:elevation="7dp"
-		app:fabSize="normal"
-		app:layout_constraintBottom_toBottomOf="@+id/cardView"
-		app:layout_constraintEnd_toEndOf="@+id/cardView"
-		app:srcCompat="@android:drawable/ic_popup_sync" />
 
 	<android.support.v7.widget.CardView
 		android:id="@+id/cardView3"
