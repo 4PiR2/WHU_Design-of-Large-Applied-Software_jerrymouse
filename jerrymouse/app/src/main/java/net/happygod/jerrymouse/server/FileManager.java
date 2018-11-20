@@ -54,7 +54,7 @@ class FileManager extends Servlet
 				pw.println("<tr><td><a href='..'>Parent Directory</a></td></tr>");
 				for(File subFile:file.listFiles())
 				{
-					pw.println("<tr><td><a href='"+subFile.getName()+(subFile.isFile()?"' target='_blank'":"/' ")+">"+subFile.getName()+"</a></td><td>"+new Date(subFile.lastModified())+"</td><td>"+subFile.length()+"</td></tr>");
+					pw.println("<tr><td><a href='"+subFile.getName()+(subFile.isFile()?"' target='_blank'":"/' ")+">"+subFile.getName()+"</a></td><td>"+new Date(subFile.lastModified())+"</td><td>"+(subFile.isFile()?subFile.length():"")+"</td></tr>");
 				}
 				pw.println("</table></body></html>");
 				throw new HTTPException(200);
@@ -64,32 +64,12 @@ class FileManager extends Servlet
 		}
 		else
 		{
-			String extension="",mime;
+			String extension="";
 			int index=URI.lastIndexOf(".");
 			if(index>=0)
 				extension=URI.substring(index+1);
-			switch(extension)
-			{
-				case "html":
-					mime="text/html; charset=utf-8";
-					break;
-				case "jpg":
-					mime="image/jpeg";
-					break;
-				case "png":
-					mime="image/png";
-					break;
-				case "gif":
-					mime="image/gif";
-					break;
-				case "css":
-					mime="text/css; charset=utf-8";
-					break;
-				default:
-					mime="application/octet-stream";
-					//TODO more file types
-			}
-			response.setContentType(mime);
+			String mime=ServerConst.MIME.get(extension);
+			response.setContentType(mime!=null?mime:ServerConst.MIME.get(""));
 			try
 			{
 				BufferedInputStream bis=new BufferedInputStream(new FileInputStream(file));

@@ -32,8 +32,9 @@ public class MainActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 		Const.context=getApplication();
-		checkPermission();
+		setTheme(Const.theme);
 		setContentView(R.layout.activity_main);
+		checkPermission();
 		BottomNavigationView navigation=findViewById(R.id.navigation);
 		navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
 		{

@@ -22,9 +22,9 @@ class Helper extends SQLiteOpenHelper
 	{
 		if(DBConst.SYS_DBNAME.equals(getDatabaseName()))
 		{
-			//TODO may cause DBConst_DB unavailable
-			Const.context().deleteDatabase(DBConst.SYS_DBNAME);
-			new Database(DBConst.SYS_DBNAME);
+			//This way may cause DBConst_DB unavailable
+			//Const.context().deleteDatabase(DBConst.SYS_DBNAME);
+			//new Database(DBConst.SYS_DBNAME);
 		}
 	}
 }

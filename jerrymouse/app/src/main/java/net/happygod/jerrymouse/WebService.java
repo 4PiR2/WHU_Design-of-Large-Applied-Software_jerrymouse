@@ -26,9 +26,9 @@ public class WebService extends Service
 			PendingIntent pendingIntent=PendingIntent.getActivity(Const.context(),0,intentForeService,0);
 			Notification notification=new NotificationCompat.Builder(Const.context(),"fore_service").setContentTitle("Jerrymouse Web Server is running").setContentText("Touch for more options").setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_launcher_white).setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher_white)).setContentIntent(pendingIntent).build();
 			startForeground(1,notification);
-			running=true;
-			startServers();
 		}
+		running=true;
+		startServers();
 	}
 	@Override
 	public int onStartCommand(Intent intent,int flags,int startId)

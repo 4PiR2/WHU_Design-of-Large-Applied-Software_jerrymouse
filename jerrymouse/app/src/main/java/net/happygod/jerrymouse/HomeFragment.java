@@ -74,8 +74,34 @@ public class HomeFragment extends Fragment
 			isServiceOn=true;
 			fabEnable.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorEnabled)));
 		}
-	}
+		final SeekBar seekbarTheme=activity.findViewById(R.id.seekbarTheme);
+		seekbarTheme.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+		{
+			@Override
+			public void onProgressChanged(SeekBar seekBar,int i,boolean b)
+			{
+				if(i<50)
+				{
+					Const.theme=R.style.AppTheme;
+				}
+				else
+				{
+					Const.theme=R.style.AppTheme2;
+				}
+			}
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
 
+			}
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+				activity.getFragmentManager().beginTransaction().detach(HomeFragment.this).commit();
+				activity.recreate();
+			}
+		});
+	}
 	/*
 	 * 判断服务是否启动,context上下文对象 ，className服务的name
 	 */
