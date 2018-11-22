@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
+import java.io.File;
 
 public class AboutFragment extends Fragment
 {
@@ -20,6 +21,7 @@ public class AboutFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 		activity=getActivity();
+
 		final Button buttonHelp=activity.findViewById(R.id.buttonHelp);
 		final Intent webIntent=new Intent(Const.context(),WebPageActivity.class);
 		final Button buttonContact=activity.findViewById(R.id.buttonContact);
@@ -49,7 +51,34 @@ public class AboutFragment extends Fragment
 		buttonRestore.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v){
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+				builder.setTitle("Warning!");
+				builder.setMessage("This operation will restore all your settings.");
+				builder.setIcon(R.drawable.ic_launcher_colored);
+				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						File dirFile=new File("/data/user/0/net.happygod.jerrymouse/databases/");
+						if(dirFile.exists()&&dirFile.isDirectory()){
+							File[] files=dirFile.listFiles();
+							for (int m = 0; m< files.length;m++){
+								if(files[m].exists()&&files[m].isFile())
+									files[m].delete();
+							}
+						}
 
+
+						Const.toast("Finish!Please restart App.",Toast.LENGTH_SHORT);
+					}
+				});
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						dialog.dismiss();
+					}
+				});
+				builder.setCancelable(false).create();
+				builder.show();
 			}
 		});
 	}
