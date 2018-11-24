@@ -80,13 +80,25 @@ public class HomeFragment extends Fragment
 			@Override
 			public void onProgressChanged(SeekBar seekBar,int i,boolean b)
 			{
-				if(i<50)
+				if(i<20)
 				{
 					Const.theme=R.style.AppTheme;
 				}
-				else
+				else if(i<40)
 				{
 					Const.theme=R.style.AppTheme2;
+				}
+				else if(i<60)
+				{
+					Const.theme=R.style.AppTheme3;
+				}
+				else if(i<80)
+				{
+					Const.theme=R.style.AppTheme4;
+				}
+				else
+				{
+					Const.theme=R.style.AppTheme5;
 				}
 			}
 			@Override
