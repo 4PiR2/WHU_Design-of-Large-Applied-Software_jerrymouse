@@ -15,7 +15,7 @@ public class WebPageActivity extends AppCompatActivity
 		setTheme(Const.theme);
 		setContentView(R.layout.activity_frame);
 		WebPageFragment webPageFragment=new WebPageFragment();
-		webPageFragment.homepage="file:///android_asset/help/index.html";
+		webPageFragment.homepage="file:///android_asset/help/about.html";
 		FragmentManager fragmentManager=getFragmentManager();
 		FragmentTransaction transaction=fragmentManager.beginTransaction();
 		transaction.replace(R.id.frame_layout,webPageFragment);
