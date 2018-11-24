@@ -5,80 +5,123 @@
 }
 body
 {
-	margin:0;
 	text-align:center;
-	font-family:'Product Sans','Times New Roman','Microsoft YaHei','SimSun';
+	margin:0;
+	padding:0;
+	font-family:'Product Sans';
+	cursor:default;
 }
-div
+:focus
 {
-	width:100%;
-}
-h2
-{
-	margin:2;
-	color:#009ed6;
-}
-h3
-{
-	margin:2;
+	outline:none;
 }
 a
 {
-	text-decoration:none;
+	text-decoration: none;
+	color:white
+}
+#navigator
+{
+	position:relative;
+	width:100%;
+	text-align:left;
+	padding:10px 0 10px 0;
 	color:white;
 }
-a:visited
+#title
 {
-	color:white;
+	position:absolute;
+	width:40%;
+	top:10px;
+	left:0;
+	text-align:center;
+	margin:0 30% 0 30%;
 }
-form
+#add
 {
-	margin-bottom:0;
+	position:absolute;
+	top:0;
+	right:0;
+	text-align:right;
+	margin:0 10px 0 10px;
+	font-size:1.65em;
+	cursor:pointer;	
 }
-input
+.entry
+{
+	position:relative;
+	width:100%;
+	text-align:left;
+	border-bottom: 1px solid black;
+	border-top: 1px solid white;
+	cursor:pointer;	
+}
+.line
+{
+	margin:10px;
+	height:1em;
+	text-align:center;
+}
+#floatingwindow
+{
+	position:fixed;
+	width:100%;
+	height:100%;
+	text-align:center;
+	top:0;
+	margin:0;
+	padding:0;
+	display:none;
+	z-index:1;
+}
+#mask
+{
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	margin:0;
+	padding:0;
+	background-color: grey;
+	opacity:0.8;
+	z-index:-1;
+}
+input,select,button,#detail
 {
 	width:100%;
-	color:black;
-	font-family:'Product Sans','Times New Roman','Microsoft YaHei','SimSun';
+	border-radius: 5px;
+	border: 1px solid grey;
+	background: none;
+	font-family:'Product Sans';
+}
+#detail
+{
+	width: fit-content;
+	margin: 0 auto;
+	padding: 10px;
+	background-color: white;
+}
+th,td
+{
+	font-weight:normal;
+	text-align:center;
 }
 button
 {
-	width:60;
-	font-family:'Product Sans','Times New Roman','Microsoft YaHei','SimSun';
+	width:30%;
+	height:1.5em;
+	color:white;
+	border:none;
 }
-hr
+.buttongreen
 {
-	margin:0;
+	background-color: green;
 }
-.tr
+.buttonred
 {
-	display:flex;
+	background-color: red;
 }
-.tr:hover
+.buttongrey
 {
-	background-color:#6edbff;
-}
-.td
-{
-	flex:1;
-	margin:2;
-	min-width:0;
-}
-.tb
-{
-	margin-top:0;
-	margin-bottom:0;
-}
-#links
-{
-	background-color:#009ed6;
-}
-#headline
-{
-	background-color:white;
-}
-#headTable
-{
-	position:fixed;
-	background-color:white;
+	background-color: grey;
 }

@@ -27,7 +27,7 @@ public class DBManager extends Servlet
 				case "table":
 				case "database":
 				case "sql":
-				case "qe":
+				case "type":
 					if(value!=null&&!"".equals(value))
 						control.put(name,value);
 					break;
@@ -38,7 +38,7 @@ public class DBManager extends Servlet
 						newValue.put(name,value);
 			}
 		}
-		String database=control.get("database"),table=control.get("table"),sql=control.get("sql"),qe=control.get("qe");
+		String database=control.get("database"),table=control.get("table"),sql=control.get("sql"),type=control.get("type");
 		if(database!=null&&!(sql==null&&table==null))
 		{
 			if(sql==null)
@@ -65,7 +65,10 @@ public class DBManager extends Servlet
 		try
 		{
 			Database db=new Database(database);
-			result=db.query(sql);
+			if("execute".equalsIgnoreCase(type))
+				db.execSQL(sql);
+			else
+				result=db.query(sql);
 			db.close();
 		}
 		catch(Exception e)
@@ -89,6 +92,8 @@ public class DBManager extends Servlet
 	public void doPost(Request request,Response response)
 	{
 		StringBuilder SQL=new StringBuilder();
+		//String message="";
+		//Result result=null;
 		Map<String,String> control=new HashMap<>(),newValue=new HashMap<>(),oldValue=new HashMap<>();
 		Enumeration<String> names=request.getParameterNames();
 		while(names.hasMoreElements())
@@ -101,7 +106,7 @@ public class DBManager extends Servlet
 				case "table":
 				case "database":
 				case "sql":
-				case "qe":
+				case "type":
 					if(value!=null&&!"".equals(value))
 						control.put(name,value);
 					break;
@@ -112,7 +117,7 @@ public class DBManager extends Servlet
 						newValue.put(name,value);
 			}
 		}
-		String database=control.get("database"),table=control.get("table"),sql=control.get("sql"),qe=control.get("qe");
+		String database=control.get("database"),table=control.get("table"),sql=control.get("sql"),type=control.get("type");
 		if(database!=null&&!(sql==null&&table==null))
 		{
 			if(sql==null)
@@ -185,7 +190,10 @@ public class DBManager extends Servlet
 			if(!"SELECT".equals(operation))
 			{
 				Database db=new Database(database);
-				db.execSQL(sql);
+				if("query".equalsIgnoreCase(type))
+					db.query(sql);
+				else
+					db.execSQL(sql);
 				db.close();
 			}
 		}

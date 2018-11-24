@@ -6,7 +6,8 @@ public final class DBConst
 	static final int SYS_DBVERSION=1;
 	static final String[] SYS_DBINIT=new String[]{
 		"CREATE TABLE general("
-		+"port INTEGER PRIMARY KEY,"+"proxy INTEGER NOT NULL DEFAULT 0,"
+		+"port INTEGER PRIMARY KEY,"
+		+"proxy INTEGER NOT NULL DEFAULT 0,"
 		+"path VARCHAR(1024) NOT NULL DEFAULT ''"
 		+");",
 		"CREATE TABLE link("

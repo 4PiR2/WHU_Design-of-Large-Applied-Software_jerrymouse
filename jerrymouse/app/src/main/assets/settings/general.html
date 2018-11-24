@@ -1,0 +1,181 @@
+<html>
+	<head>
+		<meta charset='UTF-8'/>
+		<link rel="stylesheet" href="./css.css" type="text/css">
+		<style>
+			#navigator
+			{
+				background-color:#01b27e;
+			}
+		</style>
+	<script src='jquery.js'></script>
+	</head>
+	<body>
+		<form id='dbsql' method='GET' action='http://localhost:1998/DBManager' style='display:none;'>
+			<input type='hidden' name='type' value='query'>
+			<input type='hidden' name='database' value='jerrymouse'>
+			<input id='sql' type='hidden' name='sql' value=''>
+		</form>
+		<div id='navigator'>
+			<a href='./index.html'><span><b>&nbsp;&lt;&nbsp;Back</b></span></a>
+			<span id='title'><b>GENERAL</b></span>
+			<span id='add' onclick='openwindow();'><b>+</b></span>
+		</div>
+		<div id='floatingwindow'>
+			<div id='mask'></div>
+			<table width='100%' height='100%'><tr><td align='center'>
+			<form id='detail'>
+				<table>
+					<tbody>
+						<tr>
+							<th>
+								<label for='port'>Port</label>
+							</th>
+							<td>
+								<input id='port' type='number' name='port' min='1024' max='65535' placeholder='1024-65536' onchange='if(this.value<this.min||this.value>this.max) this.value="";' value=''>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='proxy'>Proxy</label>
+							</th>
+							<td>
+								<select id='proxy' name='proxy'></select>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='path'>WebRoot</label>
+							</th>
+							<td>
+								<input id='path' type='text' name='path' placeholder='Default' value=''>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td id='formfoot' colspan='2'></td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</td></tr></table>
+		</div>
+		<div id='list'>
+		</div>
+		<script src='js.js'></script>
+		<script>
+			var loadpk=function(data)
+			{
+				data=cleannullvalue(data);
+				var list="";
+				data['values'].forEach(entry => {
+					list+="\
+						<div class='entry' onclick='setwindow($(this));'>\
+							<div class='line'><span>"+entry['port']+"</span></div>\
+						</div>\
+						";
+				});
+				$('#list').html(list);
+			};
+			var loaddata=function(data)
+			{
+				data=cleannullvalue(data);
+				var entry=data['values'][0];
+				$('#port').val(entry['port']);
+				$('#proxy').html("\
+					<option value='0'>Direct</option>\
+					<option value='1'>Reverse Proxy</option>\
+					<option value='2'>Proxy</option>\
+					");
+				$('#proxy').val(entry['proxy']);
+				$('#path').val(entry['path']);
+				$('#floatingwindow').css('display','inherit');
+			};
+			var setwindow=function(entry)
+			{
+				currententry=entry;
+				var values=entry.find('span');
+				var port=values.eq(0).html();
+				sendsql("SELECT * FROM general WHERE port='"+port+"';",loaddata,null);
+				var formfoot="\
+					<button class='buttongreen' type='button' onclick='updateentry();'>Save</button>\
+					<button class='buttonred' type='button' onclick='deleteentry();'>Delete</button>\
+					<button class='buttongrey' type='button' onclick='closewindow();'>Cancel</button>\
+					";
+				$('#formfoot').html(formfoot);
+			}
+			var openwindow=function()
+			{
+				$('#port').val('');
+				$('#proxy').html("\
+					<option disabled selected>Select</option>\
+					<option value='0'>Direct</option>\
+					<option value='1'>Reverse Proxy</option>\
+					<option value='2'>Proxy</option>\
+					");
+				$('#path').val('');
+				var formfoot="\
+					<button class='buttongreen' type='button' onclick='insertentry();'>Add</button>\
+					<button class='buttongrey' type='button' onclick='closewindow();'>Cancel</button>\
+					";
+				$('#formfoot').html(formfoot);
+				$('#floatingwindow').css('display','inherit');
+			}
+			var deleteentry=function()
+			{
+				//if(!confirm('Sure to delete?')) return;
+				var values=currententry.find('span');
+				var port=values.eq(0).html();
+				sendsql("DELETE FROM general WHERE port='"+port+"';",function(data){currententry.remove();closewindow();},null);
+			}
+			var getwindowdata=function()
+			{
+				var port=$('#port').val();
+				var proxy=$('#proxy').val();
+				var path=$('#path').val();
+				path="'"+path+"'";
+				return {'port':port,'proxy':proxy,'path':path};
+			}
+			var insertentry=function()
+			{
+				var data=getwindowdata();
+				var columns='(',values='(';
+				for(var key in data)
+				{
+					columns+=key+',';
+					values+=data[key]+',';
+				}
+				columns=columns.substring(0,columns.length-1)+')';
+				values=values.substring(0,values.length-1)+')';
+				sendsql("INSERT INTO general"+columns+" VALUES"+values+";",function(data){
+					if(data['operation']=='FAIL') return errortip();
+					$('#list').append("\
+						<div class='entry' onclick='setwindow($(this));'>\
+							<div class='line'><span>"+$('#port').val()+"</span></div>\
+						</div>\
+						");
+					closewindow();},errortip);
+			}
+			var updateentry=function()
+			{
+				var values=currententry.find('span');
+				var port=values.eq(0).html();
+				var data=getwindowdata();
+				var set='';
+				for(var key in data)
+				{
+					set+=key+'='+data[key]+',';
+				}
+				set=set.substring(0,set.length-1);
+				sendsql("UPDATE general SET "+set+" WHERE port='"+port+"';",function(data){
+					if(data['operation']=='FAIL') return errortip();
+					var values=currententry.find('span');
+					values.eq(0).html($('#port').val());
+					closewindow();
+				},errortip);
+			}
+			sendsql("SELECT port FROM general WHERE port<>1998;",loadpk,null);
+		</script>
+	</body>
+</html>

@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<meta charset="utf-8" />
+		<meta charset="UTF-8" />
 		<title>Database Management</title>
 		<style>
 			input[type=text],textarea,input[type=url]
@@ -19,276 +19,13 @@
 		</style>
 		<script>
 			var prepare=function()
-			{  var tablename=document.getElementById("table").value;
-               switch(tablename)
-               {
-               case "general":
-              if(document.getElementById("query").checked)
-              {
-              document.getElementById("form").action=document.getElementById("url").value;
+			{
+				document.getElementById("form").action=document.getElementById("url").value;
 				if(document.getElementById("get").checked)
 					document.getElementById("form").method="GET";
 				else
 					document.getElementById("form").method="POST";
-					document.getElementById("form").submit();
-					}
-              else if(document.getElementById("update").checked)
-              {
-              document.getElementById("update_general").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("update_general").method="GET";
-				else
-					document.getElementById("update_general").method="POST";
-					document.getElementById("update_general").submit();}
-              else if(document.getElementById("insert").checked)
-              {
-              document.getElementById("insert_general").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("insert_general").method="GET";
-				else
-					document.getElementById("insert_general").method="POST";
-					document.getElementById("insert_general").submit();}
-              else
-              {
-              document.getElementById("delete_general").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("delete_general").method="GET";
-				else
-					document.getElementById("delete_general").method="POST";
-					document.getElementById("delete_general").submit();}
-               break;
-
-
-               case "link":
-                if(document.getElementById("query").checked)
-              {
-              document.getElementById("form").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("form").method="GET";
-				else
-					document.getElementById("form").method="POST";
-					document.getElementById("form").submit();}
-              else if(document.getElementById("update").checked)
-              {
-              document.getElementById("update_link").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("update_link").method="GET";
-				else
-					document.getElementById("update_link").method="POST";
-					document.getElementById("update_link").submit();}
-              else if(document.getElementById("insert").checked)
-              {
-              document.getElementById("insert_link").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("insert_link").method="GET";
-				else
-					document.getElementById("insert_link").method="POST";
-					document.getElementById("insert_link").submit();}
-              else
-              {
-              document.getElementById("delete_link").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("delete_link").method="GET";
-				else
-					document.getElementById("delete_link").method="POST";
-					document.getElementById("delete_link").submit();}
-               break;
-
-
-               case "error":
-                if(document.getElementById("query").checked)
-              {
-              document.getElementById("form").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("form").method="GET";
-				else
-					document.getElementById("form").method="POST";
-					document.getElementById("form").submit();}
-              else if(document.getElementById("update").checked)
-              {
-              document.getElementById("update_error").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("update_error").method="GET";
-				else
-					document.getElementById("update_error").method="POST";
-					document.getElementById("update_error").submit();}
-              else if(document.getElementById("insert").checked)
-              {
-              document.getElementById("insert_error").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("insert_error").method="GET";
-				else
-					document.getElementById("insert_error").method="POST";
-					document.getElementById("insert_error").submit();}
-              else
-              {
-              document.getElementById("delete_error").action=document.getElementById("url").value;
-				if(document.getElementById("delete_error").checked)
-					document.getElementById("get").method="GET";
-				else
-					document.getElementById("delete_error").method="POST";
-					document.getElementById("delete_error").submit();}
-               break;
-
-              default:
-              document.getElementById("form").action=document.getElementById("url").value;
-				if(document.getElementById("get").checked)
-					document.getElementById("form").method="GET";
-				else
-					document.getElementById("form").method="POST";
-					document.getElementById("form").submit();
-               }
-
 			}
-
-            var check=function()
-            {
-               var tablename=document.getElementById("table").value;
-               switch(tablename)
-               {
-               case "general":
-              if(document.getElementById("query").checked)
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else if(document.getElementById("update").checked)
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="block";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else if(document.getElementById("insert").checked)
-              {document.getElementById("insert_general").style.display="block";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="block";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-               break;
-
-
-               case "link":
-                if(document.getElementById("query").checked)
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else if(document.getElementById("update").checked)
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="block";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else if(document.getElementById("insert").checked)
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="block";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="block";
-              document.getElementById("delete_error").style.display="none";}
-               break;
-
-
-               case "error":
-                if(document.getElementById("query").checked)
-             {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else if(document.getElementById("update").checked)
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="block";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else if(document.getElementById("insert").checked)
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="block";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";}
-              else
-              {document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="block";}
-              break;
-
-              default:
-              document.getElementById("insert_general").style.display="none";
-              document.getElementById("insert_link").style.display="none";
-              document.getElementById("insert_error").style.display="none";
-              document.getElementById("update_general").style.display="none";
-              document.getElementById("update_link").style.display="none";
-              document.getElementById("update_error").style.display="none";
-              document.getElementById("delete_general").style.display="none";
-              document.getElementById("delete_link").style.display="none";
-              document.getElementById("delete_error").style.display="none";
-               }
-            }
 		</script>
 	</head>
 	<body>
@@ -296,139 +33,30 @@
 		<br />
 		<input id="url" type="url" value="http://localhost:1998/DBManager">
 		<br />
-		<br />
 		<label>Method</label>
 		<br />
-		<input id="get" type="radio" name="method" value="GET">
+		<input id="get" type="radio" name="method" value="GET" checked>
 		<label for="get">GET</label>
-		<input id="post" type="radio" name="method" value="POST" checked>
+		<input id="post" type="radio" name="method" value="POST">
 		<label for="post">POST</label>
-        <br />
-		<br />
-		<!--<form id="form" name="form" action method target="iframe">  -->
+		<form id="form" action method target="iframe">
 			<label for="database">Database</label>
 			<br />
 			<input id="database" type="text" name="database" value="jerrymouse">
 			<br />
-			<br />
-		<form id="form" name="form" target="iframe">
-            <label for="table">Table</label>
-			<br />
-			<select id="table" name="table" onchange="check()">
-				<option value="general" selected="selected" >general</option>
-				<option value="link">link</option>
-				<option value="error">error</option>
-			</select>
-            <br />
-			<br />
 			<label>Type</label>
 			<br />
-			<input id="query" type="radio" name="type" value="query" checked onclick="check()">
+			<input id="query" type="radio" name="type" value="query" checked>
 			<label for="query">Query</label>
-			<input id="update" type="radio" name="type" value="update" onclick="check()">
-			<label for="update">Update</label>
-			<input id="insert" type="radio" name="type" value="insert" onclick="check()">
-			<label for="insert">Insert</label>
-			<input id="delete" type="radio" name="type" value="delete" onclick="check()">
-			<label for="delete">Delete</label>
-		</form>
-			<!--<label for="sql">SQL</label>
+			<input id="execute" type="radio" name="type" value="execute">
+			<label for="execute">Execute</label>
+			<br />
+			<label for="sql">SQL</label>
 			<br />
 			<textarea id="sql" name="sql">select *&#x0A;from general&#x0A;where 1</textarea>
-			-->
-			<form id="insert_general" style="display:none" target="iframe">
-				<input id="ig" type="text" name="table" value="general" style="display:none">
-				<input id="insert_general_port" type="text" name="port" placeholder="port">
-				<input id="insert_proxy" type="text" name="proxy" placeholder="proxy">
-				<input id="insert_general_path" type="text" name="path" placeholder="path">
-			</form>
-			<form id="insert_link" style="display:none" target="iframe">
-				<input id="il" type="text" name="table" value="link" style="display:none">
-				<input id="insert_link_port" type="text" name="port" placeholder="port">
-				<input id="insert_uri" type="text" name="uri" placeholder="uri">
-				<input id="insert_extensive" type="text" name="extensive" placeholder="extensive">
-				<input id="insert_permission" type="text" name="permission" placeholder="permission">
-				<input id="insert_authentication" type="text" name="authentication" placeholder="authentication">
-				<input id="insert_directory" type="text" name="directory" placeholder="directory">
-				<input id="insert_visible" type="text" name="visible" placeholder="visible">
-				<input id="insert_type" type="text" name="type" placeholder="type">
-				<input id="insert_link_path" type="text" name="path" placeholder="path">
-				<input id="insert_pathextensive" type="text" name="pathextensive" placeholder="pathextensive">
-			</form>
-		    <form id="insert_error" style="display:none" target="iframe">
-				<input id="ie" type="text" name="table" value="error" style="display:none">
-				<input id="insert_code" type="text" name="code" placeholder="code">
-				<input id="insert_error_path" type="text" name="path" placeholder="path">
-			</form>
-
-		<form id="update_general" style="display:none" target="iframe">
-			<input id="ug" type="text" name="table" value="general" style="display:none">
-			<input id="update_general_old_port" type="text" name="old_port" placeholder="old_port">
-			<input id="update_general_port" type="text" name="port" placeholder="port">
-			<input id="update_old_proxy" type="text" name="old_proxy" placeholder="old_proxy">
-			<input id="update_proxy" type="text" name="proxy" placeholder="proxy">
-			<input id="update_general_old_path" type="text" name="old_path" placeholder="old_path">
-			<input id="update_general_path" type="text" name="path" placeholder="path">
-		</form>
-		<form id="update_link" style="display:none" target="iframe">
-			<input id="ul" type="text" name="table" value="link" style="display:none">
-			<input id="update_link_old_port" type="text" name="old_port" placeholder="old_port">
-			<input id="update_link_port" type="text" name="port" placeholder="port">
-			<input id="update_old_uri" type="text" name="old_uri" placeholder="old_uri">
-			<input id="update_uri" type="text" name="uri" placeholder="uri">
-			<input id="update_old_extensive" type="text" name="old_extensive" placeholder="old_extensive">
-			<input id="update_extensive" type="text" name="extensive" placeholder="extensive">
-			<input id="update_old_permission" type="text" name="old_permission" placeholder="old_permission">
-			<input id="update_permission" type="text" name="permission" placeholder="permission">
-			<input id="update_old_authentication" type="text" name="old_authentication" placeholder="old_authentication">
-			<input id="update_authentication" type="text" name="authentication" placeholder="authentication">
-			<input id="update_old_directory" type="text" name="old_directory" placeholder="old_directory">
-			<input id="update_directory" type="text" name="directory" placeholder="directory">
-			<input id="update_old_visible" type="text" name="old_visible" placeholder="old_visible">
-			<input id="update_visible" type="text" name="visible" placeholder="visible">
-			<input id="update_old_type" type="text" name="old_type" placeholder="old_type">
-			<input id="update_type" type="text" name="type" placeholder="type">
-			<input id="update_link_old_path" type="text" name="old_path" placeholder="old_path">
-			<input id="update_link_path" type="text" name="path" placeholder="path">
-			<input id="update_old_pathextensive" type="text" name="old_pathextensive" placeholder="old_pathextensive">
-			<input id="update_pathextensive" type="text" name="pathextensive" placeholder="pathextensive">
-		</form>
-		<form id="update_error" style="display:none" target="iframe">
-			<input id="ue" type="text" name="table" value="error" style="display:none">
-			<input id="update_old_code" type="text" name="old_code" placeholder="old_code">
-			<input id="update_code" type="text" name="code" placeholder="code">
-			<input id="update_error_old_path" type="text" name="old_path" placeholder="old_path">
-			<input id="update_error_path" type="text" name="path" placeholder="path">
-		</form>
-
-
-		<form id="delete_general" style="display:none" target="iframe">
-			<input id="dg" type="text" name="table" value="general" style="display:none">
-			<input id="delete_general_port" type="text" name="old_port" placeholder="old_port">
-			<input id="delete_proxy" type="text" name="old_proxy" placeholder="old_proxy">
-			<input id="delete_general_path" type="text" name="old_path" placeholder="old_path">
-		</form>
-		<form id="delete_link" style="display:none" target="iframe">
-			<input id="dl" type="text" name="table" value="link" style="display:none">
-			<input id="delete_link_port" type="text" name="old_port" placeholder="old_port">
-			<input id="delete_uri" type="text" name="old_uri" placeholder="old_uri">
-			<input id="delete_extensive" type="text" name="old_extensive" placeholder="old_extensive">
-			<input id="delete_permission" type="text" name="old_permission" placeholder="old_permission">
-			<input id="delete_authentication" type="text" name="old_authentication" placeholder="old_authentication">
-			<input id="delete_directory" type="text" name="old_directory" placeholder="old_directory">
-			<input id="delete_visible" type="text" name="old_visible" placeholder="old_visible">
-			<input id="delete_type" type="text" name="old_type" placeholder="old_type">
-			<input id="delete_link_path" type="text" name="old_path" placeholder="old_path">
-			<input id="delete_pathextensive" type="text" name="old_pathextensive" placeholder="old_pathextensive">
-		</form>
-		<form id="delete_error" style="display:none" target="iframe">
-			<input id="de" type="text" name="table" value="error" style="display:none">
-			<input id="delete_code" type="text" name="old_code" placeholder="old_code">
-			<input id="delete_error_path" type="text" name="old_path" placeholder="old_path">
-		</form>
-
+			<br />
 			<button type="submit" onclick="prepare()">Submit</button>
-		<!--</form>-->
+		</form>
 		<iframe name="iframe"></iframe>
 	</body>
 </html>
