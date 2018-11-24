@@ -34,7 +34,6 @@ public class Server
 	}
 	public void reset(int port,String webroot,int proxy)
 	{
-		message=null;
 		if(isRunning)
 			stop();
 		this.port=port;
@@ -48,6 +47,7 @@ public class Server
 		if(isRunning)
 			stop();
 		isRunning=true;
+		message="Listening on port "+port;
 		listener=new Listener(this);
 		return listener;
 	}
@@ -57,6 +57,7 @@ public class Server
 			return;
 		listener.stop();
 		listener=null;
+		message=null;
 		isRunning=false;
 	}
 	void failure(String message)

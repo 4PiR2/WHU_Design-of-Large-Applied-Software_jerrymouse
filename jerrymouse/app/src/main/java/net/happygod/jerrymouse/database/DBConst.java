@@ -2,7 +2,7 @@ package net.happygod.jerrymouse.database;
 
 public final class DBConst
 {
-	static final String SYS_DBNAME="jerrymouse";
+	public static final String SYS_DBNAME="jerrymouse";
 	static final int SYS_DBVERSION=1;
 	static final String[] SYS_DBINIT=new String[]{
 		"CREATE TABLE general("
@@ -19,7 +19,7 @@ public final class DBConst
 		+"visible BOOLEAN DEFAULT NULL,"
 		+"type INTEGER DEFAULT NULL,"
 		+"path VARCHAR(1024) DEFAULT NULL,"
-		+"pathextensive BOOLEAN DEFAULT TRUE,"
+		+"pathextensive BOOLEAN DEFAULT NULL,"
 		+"PRIMARY KEY(port,uri)"
 		+");",
 		"CREATE TABLE error("

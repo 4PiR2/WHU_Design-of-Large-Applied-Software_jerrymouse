@@ -50,6 +50,7 @@ public class Response
 		resetHeaders(new HashMap<String,String>());
 		setHeader("server","Jerrymouse");
 		setHeader("date",new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss zzz",Locale.US).format(new Date()));
+		setHeader("Access-Control-Allow-Origin","*");
 	}
 	void setMethod(String method)
 	{

@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
-import java.io.File;
+import net.happygod.jerrymouse.database.*;
 
 public class AboutFragment extends Fragment
 {
@@ -45,7 +45,7 @@ public class AboutFragment extends Fragment
 		{
 			public void onClick(View v)
 			{
-				openApplicationMarket("net.happygod.jerrymouse");
+				openApplicationMarket(Const.context().getPackageName());
 			}
 		});
 		buttonRestore.setOnClickListener(new View.OnClickListener()
@@ -53,22 +53,14 @@ public class AboutFragment extends Fragment
 			public void onClick(View v){
 				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 				builder.setTitle("Warning!");
-				builder.setMessage("This operation will restore all your settings.");
+				builder.setMessage("This operation will restore all your settings.\nAfter pressing OK please restart this APP to finish!");
 				builder.setIcon(R.drawable.ic_launcher_colored);
 				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int i) {
-						File dirFile=new File("/data/user/0/net.happygod.jerrymouse/databases/");
-						if(dirFile.exists()&&dirFile.isDirectory()){
-							File[] files=dirFile.listFiles();
-							for (int m = 0; m< files.length;m++){
-								if(files[m].exists()&&files[m].isFile())
-									files[m].delete();
-							}
-						}
-
-
-						Const.toast("Finish!Please restart App.",Toast.LENGTH_SHORT);
+						Const.context().deleteDatabase(DBConst.SYS_DBNAME);
+						ActivityManager am = (ActivityManager) Const.context().getSystemService(Context.ACTIVITY_SERVICE);
+						am.restartPackage(Const.context().getPackageName());
 					}
 				});
 				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

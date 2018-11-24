@@ -72,10 +72,8 @@ public class DashboardFragment extends Fragment
 					if(status!=null&&!"".equals(status))
 						sb.append(status).append("\n");
 				}
-				if(sb.length()>0)
-					sb.append("Please check your phone and try again!");
-				else
-					sb.append("OK");
+				if(sb.length()==0)
+					sb.append("OFF");
 				v.setText(sb);
 				try
 				{

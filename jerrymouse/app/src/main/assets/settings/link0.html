@@ -1,0 +1,66 @@
+<html>
+	<head>
+		<meta charset='UTF-8'>
+		<title>Jerrymouse</title>
+		<link rel='shortcut icon' href='./icon.ico'/>
+		<link rel='stylesheet' href='./css.css' type='text/css'/>
+		<script src='./jquery-min.js'></script>
+		<script type='text/javascript'>
+			var tableInfo=
+			{
+				'table':'link',
+				'columns':
+				{
+					'Port':{'key':'port','type':'primary','default':''},
+					'URI':{'key':'uri','type':'primary','default':''},
+					'Extensive':{'key':'student','type':'hidden','default':'1'},
+					'Permission':{'key':'permission','type':'','default':''},
+					'Authentication':{'key':'authentication','type':'hidden','default':''},
+					'Username':{'key':'','type':'field','default':''},
+					'Password':{'key':'','type':'field','default':''},
+					'Directory':{'key':'directory','type':'','default':''},
+					'Visible':{'key':'visible','type':'hidden','default':''},
+					'Type':{'key':'type','type':'','default':''},
+					'Path':{'key':'path','type':'','default':''},
+					'Pathextensive':{'key':'pathextensive','type':'hidden','default':''},
+					'Operation':{'key':'','type':'label','default':''}
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id='headTable'>
+			<h2>EDUCATIONAL MANAGEMENT SYSTEM</h2>
+			<div id='links' class='tr'>
+				<h3 class='td'><a href='?'>Main Page</a></h3>
+				<h3 class='td'><a href='?page=school'>School</a></h3>
+				<h3 class='td'><a href='?page=class'>Class</a></h3>
+				<h3 class='td'><a href='?page=student'>Student</a></h3>
+				<h3 class='td'><a href='?page=teacher'>Teacher</a></h3>
+				<h3 class='td'><a href='?page=course'>Course</a></h3>
+				<h3 class='td'><a href='?page=score'>Score</a></h3>
+			</div>
+			<div id='headline' class='tr'>
+				<div class='td'>
+					<span>Welcome to Jerrymouse Settings Page! Please choose one object above to continue! ↑↑↑</span>
+					<br/>
+					<span>© 2018 2016ZGAP01</span>
+				</div>
+			</div>
+			<hr/>
+		</div>
+		<div id='blankTable'></div>
+		<div id='showTable'></div>
+		<datalist id='rank'>
+			<option value='Professor'>
+			<option value='Associate professor'>
+			<option value='Lecturer'>
+			<option value='Assistant lecturer'>
+		</datalist>
+		<datalist id='gender'>
+			<option value='Male'>
+			<option value='Female'>
+		</datalist>
+		<script src='./js.js'></script>
+	</body>
+</html>

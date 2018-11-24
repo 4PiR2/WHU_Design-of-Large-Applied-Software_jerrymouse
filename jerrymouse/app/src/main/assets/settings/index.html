@@ -1,9 +1,65 @@
 <html>
 	<head>
-		<script>
-			open('dbmanager.html','_self');
-		</script>
+		<meta charset='UTF-8'/>
+		<title>Settings</title>
+		<style>
+			@font-face
+			{
+				font-family:'Product Sans';
+				src:url(./font.woff2) format('woff2');
+			}
+			body
+			{
+				text-align:center;
+				margin:0;
+				padding:0;
+				font-family:'Product Sans';
+				color: white;
+			}
+			.bigbutton
+			{
+				position:relative;
+				left:5%;
+				margin:3% 0 3% 0;
+				width:90%;
+				height:30%;
+			}
+			table
+			{
+				width:100%;
+				height: 100%;
+			}
+			span
+			{
+				font-size: 150%;
+			}
+			a
+			{
+				text-decoration: none;
+			}
+		</style>
 	</head>
 	<body>
+		<a href='./general.html'>
+			<div class='bigbutton' style='background-color:#01b27e;'>
+				<table><tr><td align='center'><div>
+					<span>GENERAL</span>
+				</div></td></tr></table>
+			</div>
+		</a>
+		<a href='./link.html'>
+			<div class='bigbutton' style='background-color:#44a6e7;'>
+				<table><tr><td align='center'><div>
+					<span>SPECIAL LINKS</span>
+				</div></td></tr></table>
+			</div>
+		</a>
+		<a href='./error.html'>
+			<div class='bigbutton' style='background-color:#d54c54;'>
+				<table><tr><td align='center'><div>
+					<span>ERROR PAGES</span>
+				</div></td></tr></table>
+			</div>
+		</a>
 	</body>
 </html>

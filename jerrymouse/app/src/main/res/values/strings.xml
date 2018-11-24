@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">Jerrymouse</string>
+	<string name="app_name">Jerrymouse Web Server</string>
 	<string name="disabled">Disabled</string>
 	<string name="enabled">Enabled</string>
 	<string name="title_home">Home</string>

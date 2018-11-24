@@ -1,66 +1,452 @@
 <html>
 	<head>
-		<meta charset='UTF-8'>
-		<title>Jerrymouse</title>
-		<link rel='shortcut icon' href='./icon.ico'/>
-		<link rel='stylesheet' href='./css.css' type='text/css'/>
-		<script src='./jquery-min.js'></script>
-		<script type='text/javascript'>
-			var tableInfo=
+		<meta charset='UTF-8'/>
+		<style>
+			@font-face
 			{
-				'table':'link',
-				'columns':
-				{
-					'Port':{'key':'port','type':'primary','default':''},
-					'URI':{'key':'uri','type':'primary','default':''},
-					'Extensive':{'key':'student','type':'hidden','default':'1'},
-					'Permission':{'key':'permission','type':'','default':''},
-					'Authentication':{'key':'authentication','type':'hidden','default':''},
-					'Username':{'key':'','type':'field','default':''},
-					'Password':{'key':'','type':'field','default':''},
-					'Directory':{'key':'directory','type':'','default':''},
-					'Visible':{'key':'visible','type':'hidden','default':''},
-					'Type':{'key':'type','type':'','default':''},
-					'Path':{'key':'path','type':'','default':''},
-					'Pathextensive':{'key':'pathextensive','type':'hidden','default':''},
-					'Operation':{'key':'','type':'label','default':''}
-				}
+				font-family:'Product Sans';
+				src:url(./font.woff2) format('woff2');
 			}
-		</script>
+			body
+			{
+				text-align:center;
+				margin:0;
+				padding:0;
+				font-family:'Product Sans';
+				cursor:default;
+			}
+			:focus
+			{
+				outline:none;
+			}
+			a
+			{
+				text-decoration: none;
+				color:white
+			}
+			#navigator
+			{
+				position:relative;
+				width:100%;
+				text-align:left;
+				background-color:#44a6e7;
+				padding:10px 0 10px 0;
+				color:white;
+			}
+			#title
+			{
+				position:absolute;
+				width:40%;
+				top:10px;
+				left:0;
+				text-align:center;
+				margin:0 30% 0 30%;
+			}
+			#add
+			{
+				position:absolute;
+				top:0;
+				right:0;
+				text-align:right;
+				margin:0 10px 0 10px;
+				font-size:1.65em;
+				cursor:pointer;	
+			}
+			.entry
+			{
+				position:relative;
+				width:100%;
+				text-align:left;
+				border-bottom: 1px solid black;
+				border-top: 1px solid white;
+				cursor:pointer;	
+			}
+			.line
+			{
+				margin:10px;
+				height:1em;
+			}
+			#floatingwindow
+			{
+				position:fixed;
+				width:100%;
+				height:100%;
+				text-align:center;
+				top:0;
+				margin:0;
+				padding:0;
+				display:none;
+				z-index:1;
+			}
+			#mask
+			{
+				position:absolute;
+				width:100%;
+				height:100%;
+				top:0;
+				margin:0;
+				padding:0;
+				background-color: grey;
+				opacity:0.8;
+				z-index:-1;
+			}
+			input,select,button,#detail
+			{
+				width:100%;
+				border-radius: 5px;
+				border: 1px solid grey;
+				background: none;
+			}
+			#detail
+			{
+				width: fit-content;
+				margin: 0 auto;
+				padding: 10px;
+				background-color: white;
+			}
+			th,td
+			{
+				font-weight:normal;
+				text-align:center;
+			}
+			button
+			{
+				width:30%;
+				height:1.5em;
+				color:white;
+				border:none;
+			}
+			.buttongreen
+			{
+				background-color: green;
+			}
+			.buttonred
+			{
+				background-color: red;
+			}
+			.buttongrey
+			{
+				background-color: grey;
+			}
+		</style>
+		<script src='jquery.js'></script>
+		<script src='base64.js'></script>
 	</head>
 	<body>
-		<div id='headTable'>
-			<h2>EDUCATIONAL MANAGEMENT SYSTEM</h2>
-			<div id='links' class='tr'>
-				<h3 class='td'><a href='?'>Main Page</a></h3>
-				<h3 class='td'><a href='?page=school'>School</a></h3>
-				<h3 class='td'><a href='?page=class'>Class</a></h3>
-				<h3 class='td'><a href='?page=student'>Student</a></h3>
-				<h3 class='td'><a href='?page=teacher'>Teacher</a></h3>
-				<h3 class='td'><a href='?page=course'>Course</a></h3>
-				<h3 class='td'><a href='?page=score'>Score</a></h3>
-			</div>
-			<div id='headline' class='tr'>
-				<div class='td'>
-					<span>Welcome to Jerrymouse Settings Page! Please choose one object above to continue! ↑↑↑</span>
-					<br/>
-					<span>© 2018 2016ZGAP01</span>
-				</div>
-			</div>
-			<hr/>
+		<form id='dbsql' method='GET' action='http://localhost:1998/DBManager' style='display:none;'>
+			<input type='hidden' name='database' value='jerrymouse'>
+			<input id='sql' type='hidden' name='sql' value=''>
+		</form>
+		<div id='navigator'>
+			<a href='./index.html'><span><b>&nbsp;&lt;&nbsp;Back</b></span></a>
+			<span id='title'><b>LINKS</b></span>
+			<span id='add' onclick='openwindow();'><b>+</b></span>
 		</div>
-		<div id='blankTable'></div>
-		<div id='showTable'></div>
-		<datalist id='rank'>
-			<option value='Professor'>
-			<option value='Associate professor'>
-			<option value='Lecturer'>
-			<option value='Assistant lecturer'>
-		</datalist>
-		<datalist id='gender'>
-			<option value='Male'>
-			<option value='Female'>
-		</datalist>
-		<script src='./js.js'></script>
+		<div id='floatingwindow'>
+			<div id='mask'></div>
+			<table width='100%' height='100%'><tr><td align='center'>
+			<form id='detail'>
+				<input id='extensive' type='hidden' name='extensive' value='1'>
+				<input id='authentication' type='hidden' name='authentication' value=''>
+				<input id='visible' type='hidden' name='visible' value=''>
+				<input id='pathextensive' type='hidden' name='pathextensive' value=''>
+				<table>
+					<tbody>
+						<tr>
+							<th>
+								<label for='port'>Port</label>
+							</th>
+							<td>
+								<select id='port' name='port'>
+									<option>Select</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='uri'>URI</label>
+							</th>
+							<td>
+								<input id='uri' type='text' name='uri' placeholder='Default(webroot)' value=''>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='type'>Type</label>
+							</th>
+							<td>
+								<select id='type' name='type'>
+									<option value=''>Default</option>
+									<option value='0'>File/Directory</option>
+									<option value='1'>301 Permanent Redirect</option>
+									<option value='2'>302 Temporary Redirect</option>
+									<option value='3'>Servlet</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='path'>Path</label>
+							</th>
+							<td>
+								<input id='path' type='text' name='path' placeholder='Optional' value=''>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='permission'>Permission</label>
+							</th>
+							<td>
+								<select id='permission' name='permission'>
+									<option value='' selected>Default</option>
+									<option value='0'>Prohibited</option>
+									<option value='1'>Private</option>
+									<option value='2'>Public</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='username'>Username</label>
+							</th>
+							<td>
+								<input id='username' type='text' placeholder='Optional' value=''>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='password'>Password</label>
+							</th>
+							<td>
+								<input id='password' type='password' placeholder='Optional' value=''>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for='directory'>FileManager</label>
+							</th>
+							<td>
+								<select id='directory' name='directory'>
+									<option value=''>Default</option>
+									<option value='0'>Disabled</option>
+									<option value='1'>Enabled</option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td id='formfoot' colspan='2'></td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</td></tr></table>
+		</div>
+		<div id='list'>
+		</div>
+		<pre id='test'></pre>
+		<script>
+			var cleannullvalue=function(data)
+			{
+				data['values'].forEach(entry => {
+					for(var key in entry)
+					{
+						if(entry[key]==null)
+						{
+							data['values'][key]='';
+						}
+					}
+				});
+				return data;
+			};
+			var sendform=function(form,funs,fune)
+			{
+				$.ajax
+				({
+					type:form.attr('method'),
+					dataType:'json',
+					url:form.attr('action'),
+					data:form.serialize(),
+					success:funs,
+					error:fune
+				});
+			};
+			var sendsql=function(sql,funs,fune)
+			{
+				$('#sql').val(sql);
+				sendform($('#dbsql'),funs,fune);
+			};
+			var loadpk=function(data)
+			{
+				data=cleannullvalue(data);
+				var list="";
+				data['values'].forEach(entry => {
+					list+="\
+						<div class='entry' onclick='setwindow($(this));'>\
+							<div class='line'><span>"+entry['port']+"</span></div>\
+							<div class='line'><span>"+entry['uri']+"</span></div>\
+						</div>\
+						";
+				});
+				$('#list').html(list);
+			};
+			var loadport=function(data)
+			{
+				data=cleannullvalue(data);
+				var options="";
+				data['values'].forEach(entry => {
+					options+="<option value='"+entry['port']+"'>"+entry['port']+"</option>";
+				});
+				if(currententry==null)
+				{
+					options="<option value='' disabled selected>Select</option>"+options;
+				}
+				$('#port').html(options);
+				$('#port').find("option[value='"+$('#port').attr('value')+"']").attr('selected',true);
+			};
+			var loaddata=function(data)
+			{
+				data=cleannullvalue(data);
+				var entry=data['values'][0];
+				$('#port').attr('value',entry['port']);
+				sendsql("SELECT port FROM general WHERE 1 or port<>1998;",loadport,null);
+				$('#uri').val(entry['uri']);
+				$('#extensive').val(entry['extensive']);
+				$('#permission').val(entry['permission']);
+				$('#authentication').val(entry['authentication']);
+				if(entry['authentication']!=null&&entry['authentication']!='')
+				{
+					var authentication=Base64.decode(entry['authentication']).split(':');
+					$('#username').val(authentication[0]);
+					$('#password').val(authentication[1]);
+				}
+				$('#directory').val(entry['directory']);
+				$('#visible').val(entry['visible']);
+				$('#type').val(entry['type']);
+				$('#path').val(entry['path']);
+				$('#pathextensive').val(entry['pathextensive']);
+				$('#floatingwindow').css('display','inherit');
+			};
+			var setwindow=function(entry)
+			{
+				currententry=entry;
+				var values=entry.find('span');
+				var port=values.eq(0).html(),uri=values.eq(1).html();
+				sendsql("SELECT * FROM link WHERE port='"+port+"' AND uri='"+uri+"';",loaddata,null);
+				var formfoot="\
+					<button class='buttongreen' type='button' onclick='updateentry();'>Save</button>\
+					<button class='buttonred' type='button' onclick='deleteentry();'>Delete</button>\
+					<button class='buttongrey' type='button' onclick='closewindow();'>Cancel</button>\
+					";
+				$('#formfoot').html(formfoot);
+			}
+			var openwindow=function()
+			{
+				sendsql("SELECT port FROM general WHERE 1 or port<>1998;",loadport,null);
+				$('#port').attr('value',null);
+				$('#uri').val('');
+				$('#extensive').val('1');
+				$('#permission').val('');
+				$('#authentication').val('');
+				$('#username').val('');
+				$('#password').val('');
+				$('#directory').val('');
+				$('#visible').val('');
+				$('#type').val('');
+				$('#path').val('');
+				$('#pathextensive').val('');
+				var formfoot="\
+					<button class='buttongreen' type='button' onclick='insertentry();'>Add</button>\
+					<button class='buttongrey' type='button' onclick='closewindow();'>Cancel</button>\
+					";
+				$('#formfoot').html(formfoot);
+				$('#floatingwindow').css('display','inherit');
+			}
+			var closewindow=function()
+			{
+				$('#floatingwindow').css('display','none');
+				currententry=null;
+			}
+			var deleteentry=function()
+			{
+				var values=currententry.find('span');
+				var port=values.eq(0).html(),uri=values.eq(1).html();
+				sendsql("DELETE FROM link WHERE port='"+port+"' AND uri='"+uri+"';",function(data){currententry.remove();closewindow();},null);
+			}
+			var getwindowdata=function()
+			{
+				var port=$('#port').val();
+				var uri=$('#uri').val();
+				uri="'"+uri+"'";
+				var extensive=$('#extensive').val();
+				var permission=$('#permission').val();
+				permission=permission!=''?permission:'NULL';
+				var username=$('#username').val();
+				var password=$('#password').val();
+				if(username!=''&&password!='')
+				{
+					$('#authentication').val(Base64.encode(username+':'+password));
+				}
+				else
+				{
+					$('#authentication').val('');
+				}
+				var authentication=$('#authentication').val();
+				authentication=authentication!=''?"'"+authentication+"'":'NULL';
+				var directory=$('#directory').val();
+				directory=directory!=''?directory:'NULL';
+				var visible=$('#visible').val();
+				visible=visible!=''?visible:'NULL';
+				var type=$('#type').val();
+				type=type!=''?type:'NULL';
+				var path=$('#path').val();
+				path=path!=''?"'"+path+"'":'NULL';
+				var pathextensive=$('#pathextensive').val();
+				pathextensive=pathextensive!=''?pathextensive:'NULL';
+				return {'port':port,'uri':uri,'extensive':extensive,'permission':permission,'authentication':authentication,
+				'directory':directory,'visible':visible,'type':type,'path':path,'pathextensive':pathextensive};
+			}
+			var insertentry=function()
+			{
+				var data=getwindowdata();
+				var columns='(',values='(';
+				for(var key in data)
+				{
+					columns+=key+',';
+					values+=data[key]+',';
+				}
+				columns=columns.substring(0,columns.length-1)+')';
+				values=values.substring(0,values.length-1)+')';
+				sendsql("INSERT INTO link"+columns+" VALUES"+values+";",function(data){
+				$('#list').append("\
+					<div class='entry' onclick='setwindow($(this));'>\
+						<div class='line'><span>"+$('#port').val()+"</span></div>\
+						<div class='line'><span>"+$('#uri').val()+"</span></div>\
+					</div>\
+					");
+					closewindow();},null);
+			}
+			var updateentry=function()
+			{
+				var values=currententry.find('span');
+				var port=values.eq(0).html(),uri=values.eq(1).html();
+				var data=getwindowdata();
+				var set='';
+				for(var key in data)
+				{
+					set+=key+'='+data[key]+',';
+				}
+				set=set.substring(0,set.length-1);
+				sendsql("UPDATE link SET "+set+" WHERE port='"+port+"' AND uri='"+uri+"';",function(data){
+				var values=currententry.find('span');
+				values.eq(0).html($('#port').val());
+				values.eq(1).html($('#uri').val());
+				closewindow();
+				},null);
+			}
+			var currententry=null;
+			sendsql("SELECT port,uri FROM link WHERE 1 or port<>1998;",loadpk,null);
+		</script>
 	</body>
 </html>
