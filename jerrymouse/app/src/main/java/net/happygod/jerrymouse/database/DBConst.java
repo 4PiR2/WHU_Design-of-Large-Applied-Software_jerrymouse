@@ -45,6 +45,8 @@ public final class DBConst
 		+"(8080,'/redirectp',1,NULL,NULL,NULL,NULL,1,'https://www.happygod.net',NULL),"
 		+"(8080,'/redirect',1,NULL,NULL,NULL,NULL,2,'https://www.happygod.net',NULL),"
 		+"(8080,'/test.dex',1,NULL,NULL,NULL,NULL,3,NULL,NULL),"
+		+"(8080,'/divide0.dex',1,NULL,NULL,NULL,NULL,3,NULL,NULL),"
+		+"(8080,'/files',1,NULL,'dXNlcm5hbWU6cGFzc3dvcmQ=',NULL,NULL,0,'/data/user/0/net.happygod.jerrymouse',NULL),"
 		+"(8000,'',0,NULL,'dXNlcm5hbWU6cGFzc3dvcmQ=',NULL,NULL,NULL,NULL,NULL)"
 		+";",
 		"INSERT INTO error VALUES"

@@ -32,7 +32,7 @@
 								<label for='port'>Port</label>
 							</th>
 							<td>
-								<input id='port' type='number' name='port' min='1024' max='65535' placeholder='1024-65536' onchange='if(this.value<this.min||this.value>this.max) this.value="";' value=''>
+								<input id='port' type='number' name='port' min='1024' max='65535' placeholder='1024-65536' onchange='if(this.value<1024||this.value>65536) this.value="";' value=''>
 							</td>
 						</tr>
 						<tr>
