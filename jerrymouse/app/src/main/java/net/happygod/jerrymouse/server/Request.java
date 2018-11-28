@@ -36,9 +36,6 @@ public class Request
 			//Wait for HTTP request from the connection
 			String line;
 			line=rs.readLine();
-			//Bail out if line is null. In case some client tries to be
-			//funny and close immediately after connection.  (I am
-			//looking at you, Chrome!)
 			if(line==null)
 			{
 				throw new HTTPException(400);

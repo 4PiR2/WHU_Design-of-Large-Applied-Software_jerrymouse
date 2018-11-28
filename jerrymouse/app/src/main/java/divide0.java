@@ -1,8 +1,5 @@
 import net.happygod.jerrymouse.server.*;
 
-import java.io.*;
-import java.util.*;
-
 public class divide0 extends Servlet
 {
 	@Override

@@ -29,7 +29,7 @@ public class WebPageActivity extends AppCompatActivity
 		startActivity(mainIntent);
 		return true;
 		/*
-		Log.i("ansen","是否有上一个页面:"+webView.canGoBack());
+		Log.i("aaa","是否有上一个页面:"+webView.canGoBack());
 		if(webView.canGoBack()&&keyCode==KeyEvent.KEYCODE_BACK)
 		{//点击返回按钮的时候判断有没有上一页
 			webView.goBack(); // goBack()表示返回webView的上一页面

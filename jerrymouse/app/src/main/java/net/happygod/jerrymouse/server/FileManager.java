@@ -17,7 +17,7 @@ class FileManager extends Servlet
 		{
 			if(settings().directory)
 			{
-				//TODO pretty page
+				//need pretty page
 				PrintWriter pw=response.getWriter();
 				response.setContentType("text/html; charset=UTF-8");
 				pw.println("<html><head><meta content='text/html;charset=utf-8'><title>File Manager</title></head><body>");

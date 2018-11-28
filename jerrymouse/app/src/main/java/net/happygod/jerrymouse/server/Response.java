@@ -129,7 +129,7 @@ public class Response
 	}
 	private static class ErrorPage
 	{
-		//TODO pretty page
+		//need pretty page
 		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		ErrorPage(HTTPException he)
 		{
